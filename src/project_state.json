@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 21,
+  "projectStateVersion": 23,
   "summary": "Expand RockHog TV main page content offerings beyond the original five categories to include Radio, DJs, IRL, Audio & Video Podcasts, and PPV Events.",
   "architectural_notes": [
     "Public share URL is rockhogtv.caffeine.xyz (use as canonical link for share/copy actions)."

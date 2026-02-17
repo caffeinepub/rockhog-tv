@@ -1,7 +1,7 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-17T22:22:53.238Z",
+  "generatedAt": "2026-02-17T22:30:06.051Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
@@ -12,29 +12,9 @@
     "items": []
   },
   "changedFiles": [
-    "backend/main.mo",
     "build-request.json",
     "feature_evidence.json",
-    "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/App.tsx",
-    "frontend/src/components/navigation/PrimaryNav.tsx",
-    "frontend/src/game/baconOps/engine/ai.ts",
-    "frontend/src/game/baconOps/engine/constants.ts",
-    "frontend/src/game/baconOps/engine/gameLoop.ts",
-    "frontend/src/game/baconOps/engine/gameState.ts",
-    "frontend/src/game/baconOps/engine/renderer.ts",
-    "frontend/src/game/baconOps/engine/systems.ts",
-    "frontend/src/game/baconOps/engine/types.ts",
-    "frontend/src/game/baconOps/input/VirtualControls.tsx",
-    "frontend/src/game/baconOps/input/useDesktopControls.ts",
-    "frontend/src/game/baconOps/input/useTouchControls.ts",
-    "frontend/src/game/baconOps/ui/BaconOpsMainMenu.tsx",
-    "frontend/src/game/baconOps/ui/Hud.tsx",
-    "frontend/src/game/baconOps/ui/RoundOverlay.tsx",
-    "frontend/src/game/baconOps/ui/StatsPanel.tsx",
-    "frontend/src/hooks/useQueries.ts",
-    "frontend/src/pages/BaconOpsArenaPage.tsx",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

@@ -1,17 +1,17 @@
 {
   "kind": "build_request",
-  "title": "Delete Bacon Ops Arena",
+  "title": "Add new categories to the home page browse grid",
   "projectName": "RockHog TV",
   "priority": "normal",
   "requirements": [],
   "constraints": [
-    "Do not edit any frontend files under the immutable paths listed in SYSTEM_CONTEXT (compose existing UI components instead).",
-    "Backend must remain a single Motoko actor (backend/main.mo); only add backend migration code (backend/migration.mo) if required for an upgrade.",
-    "Use English for any user-facing text."
+    "Do not edit files under frontend/src/components/ui (Shadcn UI components); compose them instead.",
+    "Do not edit immutable hook/bootstrapping files: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx.",
+    "Backend must remain a single Motoko actor in backend/main.mo; only add backend/migration.mo if an upgrade requires state migration."
   ],
   "nonGoals": [
-    "Do not add a replacement game or new game features.",
-    "Do not introduce new backend services, external databases, or third-party authentication providers beyond Internet Identity."
+    "Do not add new backend services or external databases.",
+    "Do not introduce new authentication providers beyond Internet Identity."
   ],
   "imageRequirements": {
     "required": [],
