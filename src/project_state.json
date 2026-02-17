@@ -1,0 +1,144 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 7,
+  "summary": "Build a free, no-code, all-in-one live streaming platform called RockHog TV featuring multiple content categories (music, gaming, sports, horror, adult) and a purchasable viewer currency called Bacon Cash.",
+  "architectural_notes": [
+    "Public share URL is rockhogtv.caffeine.xyz (use as canonical link for share/copy actions)."
+  ],
+  "known_issues": [],
+  "isFixRequest": false,
+  "existing_features": [
+    {
+      "id": "feature-create-the-rockhog-tv-app-shell-with-navigation-for-the-five-content-categories-music-gaming-sports-horror-and-adult",
+      "title": "Create the RockHog TV app shell with navigation for the five content categories: Music, Gaming, Sports, Horror, and Adult.",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-a-no-code-creator-admin-workflow-in-the-ui-to-add-and-manage-channels-streams-including-title-category-music-gaming-sports-horror-adult-description-thumbnail-image-upload-and-a-stream-source-url-embed-code-field",
+      "title": "Implement a no-code creator/admin workflow in the UI to add and manage channels/streams, including: title, category (Music/Gaming/Sports/Horror/Adult), description, thumbnail image upload, and a stream source URL/embed code field.",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-build-viewer-facing-browsing-and-watch-pages-category-listings-cards-with-thumbnail-title-and-a-stream-detail-page-that-renders-the-provided-stream-source-url-embed-plus-channel-metadata",
+      "title": "Build viewer-facing browsing and watch pages: category listings (cards with thumbnail/title) and a stream detail page that renders the provided stream source (URL/embed) plus channel metadata.",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-adult-content-gating-require-an-explicit-age-consent-confirmation-before-viewing-adult-category-listings-and-adult-stream-pages-and-show-a-content-warning-on-entry",
+      "title": "Add Adult content gating: require an explicit age/consent confirmation before viewing Adult category listings and Adult stream pages, and show a content warning on entry.",
+      "reqIds": [
+        "REQ-4"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-bacon-cash-as-an-in-app-virtual-currency-balance-per-viewer-account-including-balance-display-in-the-ui-and-backend-persistence",
+      "title": "Implement \"Bacon Cash\" as an in-app virtual currency balance per viewer account, including balance display in the UI and backend persistence.",
+      "reqIds": [
+        "REQ-5"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-buy-bacon-cash-flow-that-lets-viewers-request-a-top-up-amount-and-records-a-purchase-request-in-the-backend-for-fulfillment-since-no-payment-rails-were-specified-include-an-admin-only-screen-to-mark-requests-as-completed-and-credit-the-user-s-balance",
+      "title": "Add a \"Buy Bacon Cash\" flow that lets viewers request a top-up amount and records a purchase request in the backend for fulfillment (since no payment rails were specified). Include an admin-only screen to mark requests as completed and credit the user’s balance.",
+      "reqIds": [
+        "REQ-6"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-authentication-via-internet-identity-and-basic-roles-permissions-viewer-default-creator-can-manage-own-channels-admin-can-fulfill-bacon-cash-requests-and-moderate-delete-any-channel",
+      "title": "Add authentication via Internet Identity and basic roles/permissions: viewer (default), creator (can manage own channels), admin (can fulfill Bacon Cash requests and moderate/delete any channel).",
+      "reqIds": [
+        "REQ-7"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-define-and-apply-a-coherent-visual-theme-for-rockhog-tv-distinct-consistent-colors-typography-layout-suitable-for-an-entertainment-streaming-hub-avoiding-a-blue-purple-default",
+      "title": "Define and apply a coherent visual theme for RockHog TV (distinct, consistent colors/typography/layout) suitable for an entertainment streaming hub, avoiding a blue/purple default.",
+      "reqIds": [
+        "REQ-8"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-generate-and-include-static-branding-category-artwork-logo-category-icons-a-hero-banner-and-render-them-in-the-ui-from-frontend-public-assets-generated-not-via-backend",
+      "title": "Generate and include static branding/category artwork (logo + category icons + a hero/banner) and render them in the UI from frontend/public/assets/generated (not via backend).",
+      "reqIds": [
+        "REQ-9"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-user-visible-sharing-control-that-lets-users-share-rockhog-tv-by-copying-a-link-to-the-clipboard-and-using-the-native-share-sheet-when-supported",
+      "title": "Add a user-visible sharing control that lets users share RockHog TV by copying a link to the clipboard (and using the native share sheet when supported).",
+      "reqIds": [
+        "REQ-10"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-new-viewer-accessible-contact-page-that-displays-the-site-owner-contact-information-email-address-brianlellis24-gmail-com-without-any-contact-form-or-email-sending-capability",
+      "title": "Add a new viewer-accessible \"Contact\" page that displays the site owner contact information (email address: brianlellis24@gmail.com) without any contact form or email-sending capability.",
+      "reqIds": [
+        "REQ-11"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-an-in-app-navigation-entry-point-to-the-new-contact-page-from-the-global-layout-footer-is-acceptable-so-users-can-find-it-from-anywhere-in-the-app",
+      "title": "Add an in-app navigation entry point to the new Contact page from the global layout (footer is acceptable) so users can find it from anywhere in the app.",
+      "reqIds": [
+        "REQ-12"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "Create an all-in-one live streaming platform (no-code)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "Support content categories/channels: music, gaming, sports, horror, and adult content",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "Add purchasable viewer virtual currency called \"Bacon Cash\"",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-4",
+      "summary": "Add a shareable RockHog TV link (e.g., copy/share button) so users can easily share the site/app",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-5",
+      "summary": "Add a non-email 'Contact / Site Owner' page that displays the owner's contact info (e.g., brianlellis24@gmail.com) without a contact form or email sending",
+      "reqIds": [],
+      "status": "pending"
+    }
+  ],
+  "gameProjectType": "none",
+  "projectName": "RockHog TV",
+  "clarification_mode": "instant",
+  "clarification_rounds": 0
+}

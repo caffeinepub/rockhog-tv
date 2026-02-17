@@ -1,0 +1,57 @@
+{
+  "kind": "build_request",
+  "title": "Add a non-email Contact page displaying site owner contact info",
+  "projectName": "RockHog TV",
+  "priority": "normal",
+  "requirements": [
+    {
+      "id": "REQ-11",
+      "text": "Add a new viewer-accessible \"Contact\" page that displays the site owner contact information (email address: brianlellis24@gmail.com) without any contact form or email-sending capability.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-user-1"
+        ],
+        "quotes": [
+          "yes please add a non-email page that displays my contact info."
+        ]
+      },
+      "acceptanceCriteria": [
+        "A new route exists for a Contact page (e.g., /contact) and it renders inside the existing AppLayout.",
+        "The Contact page clearly displays the email address \"brianlellis24@gmail.com\" as plain text and as a clickable mailto: link.",
+        "The Contact page does not include a form and does not attempt to send email from the app."
+      ]
+    },
+    {
+      "id": "REQ-12",
+      "text": "Add an in-app navigation entry point to the new Contact page from the global layout (footer is acceptable) so users can find it from anywhere in the app.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-user-1"
+        ],
+        "quotes": [
+          "yes please add a non-email page that displays my contact info."
+        ]
+      },
+      "acceptanceCriteria": [
+        "The footer includes a \"Contact\" link that navigates to the Contact page using the existing router navigation patterns.",
+        "The link is visible in both desktop and mobile layouts and matches the existing visual theme (colors/typography)."
+      ]
+    }
+  ],
+  "constraints": [
+    "Do not implement any email sending/receiving features (no contact form, no backend email integration).",
+    "Respect the existing TanStack Router setup in frontend/src/App.tsx (add a new route rather than replacing the router).",
+    "Do not modify files under frontend/src/components/ui (compose existing UI components instead)."
+  ],
+  "nonGoals": [
+    "Adding a contact form or any workflow that sends messages to brianlellis24@gmail.com.",
+    "Adding third-party email services or integrations.",
+    "Adding new backend storage for messages."
+  ],
+  "imageRequirements": {
+    "required": [],
+    "edits": []
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "kind": "feature_evidence_report",
+  "features": [
+    {
+      "featureId": "feature-add-a-new-viewer-accessible-contact-page-that-displays-the-site-owner-contact-information-email-address-brianlellis24-gmail-com-without-any-contact-form-or-email-sending-capability",
+      "featureTitle": "Add a new viewer-accessible \"Contact\" page that displays the site owner contact information (email address: brianlellis24@gmail.com) without any contact form or email-sending capability.",
+      "files": [
+        "frontend/src/App.tsx",
+        "frontend/src/pages/ContactPage.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-11"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-an-in-app-navigation-entry-point-to-the-new-contact-page-from-the-global-layout-footer-is-acceptable-so-users-can-find-it-from-anywhere-in-the-app",
+      "featureTitle": "Add an in-app navigation entry point to the new Contact page from the global layout (footer is acceptable) so users can find it from anywhere in the app.",
+      "files": [
+        "frontend/src/components/layout/AppLayout.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-12"
+      ],
+      "confidence": "high"
+    }
+  ]
+}

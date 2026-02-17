@@ -1,0 +1,43 @@
+{
+  "kind": "implementation_plan",
+  "version": "1.0",
+  "title": "Add Contact page and global footer navigation link",
+  "requirements": [
+    {
+      "id": "REQ-11",
+      "summary": "Create a viewer-accessible Contact page that displays the site owner's email as text and a mailto link, with no contact form or email-sending behavior.",
+      "acceptanceCriteria": [
+        "A new route exists for a Contact page (e.g., /contact) and it renders inside the existing AppLayout.",
+        "The Contact page clearly displays the email address \"brianlellis24@gmail.com\" as plain text and as a clickable mailto: link.",
+        "The Contact page does not include a form and does not attempt to send email from the app."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/ContactPage.tsx",
+          "operation": "create",
+          "description": "Add a new ContactPage view using existing layout/styles conventions. Render the email address \"brianlellis24@gmail.com\" as plain text and as a mailto: link, and include only informational content (no form elements, no submit handlers, no email-sending logic)."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Respect the existing TanStack Router setup by adding a new /contact route as a child of the root route (so it renders within AppLayout). Import and register the new ContactPage in the route tree without replacing the router."
+        }
+      ]
+    },
+    {
+      "id": "REQ-12",
+      "summary": "Add a global navigation entry point to the Contact page from the AppLayout footer using existing router navigation patterns.",
+      "acceptanceCriteria": [
+        "The footer includes a \"Contact\" link that navigates to the Contact page using the existing router navigation patterns.",
+        "The link is visible in both desktop and mobile layouts and matches the existing visual theme (colors/typography)."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/layout/AppLayout.tsx",
+          "operation": "modify",
+          "description": "Add a \"Contact\" navigation link in the global footer that routes to /contact using the existing TanStack Router navigation approach used in the app (e.g., Link or useNavigate). Ensure it remains visible in the current responsive footer layout and matches existing theme classes; do not add any contact form UI."
+        }
+      ]
+    }
+  ]
+}
