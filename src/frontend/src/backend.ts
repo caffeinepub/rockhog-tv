@@ -105,7 +105,9 @@ export interface Channel {
     owner: Principal;
     description: string;
     category: Category;
+    streamKey: string;
     streamUrl: string;
+    ingestUrl: string;
 }
 export interface _CaffeineStorageCreateCertificateResult {
     method: string;
@@ -114,17 +116,23 @@ export interface _CaffeineStorageCreateCertificateResult {
 export interface UserProfile {
     baconCashBalance: bigint;
     name: string;
+    bestScore: bigint;
 }
 export interface _CaffeineStorageRefillResult {
     success?: boolean;
     topped_up_amount?: bigint;
 }
 export enum Category {
+    djs = "djs",
+    irl = "irl",
     music = "music",
     adult = "adult",
     gaming = "gaming",
+    audio_video_podcasts = "audio_video_podcasts",
     sports = "sports",
-    horror = "horror"
+    horror = "horror",
+    ppv_events = "ppv_events",
+    radio = "radio"
 }
 export enum UserRole {
     admin = "admin",
@@ -140,12 +148,13 @@ export interface backendInterface {
     _caffeineStorageUpdateGatewayPrincipals(): Promise<void>;
     _initializeAccessControlWithSecret(userSecret: string): Promise<void>;
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
-    createChannel(id: string, title: string, category: string, description: string, thumbnail: ExternalBlob, streamUrl: string): Promise<void>;
+    createChannel(id: string, title: string, category: string, description: string, thumbnail: ExternalBlob, streamUrl: string, ingestUrl: string, streamKey: string): Promise<void>;
     deleteChannel(id: string): Promise<void>;
     fulfillBaconCashRequest(requestId: string): Promise<void>;
     getAllBaconCashRequests(): Promise<Array<BaconCashRequest>>;
     getAllChannels(): Promise<Array<Channel>>;
     getBalance(): Promise<bigint>;
+    getBestScore(): Promise<bigint>;
     getCallerUserProfile(): Promise<UserProfile | null>;
     getCallerUserRole(): Promise<UserRole>;
     getChannel(id: string): Promise<Channel | null>;
@@ -155,7 +164,8 @@ export interface backendInterface {
     isCallerAdmin(): Promise<boolean>;
     requestBaconCash(amount: bigint): Promise<string>;
     saveCallerUserProfile(profile: UserProfile): Promise<void>;
-    updateChannel(id: string, title: string, category: string, description: string, thumbnail: ExternalBlob, streamUrl: string): Promise<void>;
+    updateBestScore(score: bigint): Promise<void>;
+    updateChannel(id: string, title: string, category: string, description: string, thumbnail: ExternalBlob, streamUrl: string, ingestUrl: string, streamKey: string): Promise<void>;
 }
 import type { Category as _Category, Channel as _Channel, ExternalBlob as _ExternalBlob, UserProfile as _UserProfile, UserRole as _UserRole, _CaffeineStorageRefillInformation as __CaffeineStorageRefillInformation, _CaffeineStorageRefillResult as __CaffeineStorageRefillResult } from "./declarations/backend.did.d.ts";
 export class Backend implements backendInterface {
@@ -272,17 +282,17 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async createChannel(arg0: string, arg1: string, arg2: string, arg3: string, arg4: ExternalBlob, arg5: string): Promise<void> {
+    async createChannel(arg0: string, arg1: string, arg2: string, arg3: string, arg4: ExternalBlob, arg5: string, arg6: string, arg7: string): Promise<void> {
         if (this.processError) {
             try {
-                const result = await this.actor.createChannel(arg0, arg1, arg2, arg3, await to_candid_ExternalBlob_n10(this._uploadFile, this._downloadFile, arg4), arg5);
+                const result = await this.actor.createChannel(arg0, arg1, arg2, arg3, await to_candid_ExternalBlob_n10(this._uploadFile, this._downloadFile, arg4), arg5, arg6, arg7);
                 return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.createChannel(arg0, arg1, arg2, arg3, await to_candid_ExternalBlob_n10(this._uploadFile, this._downloadFile, arg4), arg5);
+            const result = await this.actor.createChannel(arg0, arg1, arg2, arg3, await to_candid_ExternalBlob_n10(this._uploadFile, this._downloadFile, arg4), arg5, arg6, arg7);
             return result;
         }
     }
@@ -353,6 +363,20 @@ export class Backend implements backendInterface {
             }
         } else {
             const result = await this.actor.getBalance();
+            return result;
+        }
+    }
+    async getBestScore(): Promise<bigint> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getBestScore();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getBestScore();
             return result;
         }
     }
@@ -482,17 +506,31 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async updateChannel(arg0: string, arg1: string, arg2: string, arg3: string, arg4: ExternalBlob, arg5: string): Promise<void> {
+    async updateBestScore(arg0: bigint): Promise<void> {
         if (this.processError) {
             try {
-                const result = await this.actor.updateChannel(arg0, arg1, arg2, arg3, await to_candid_ExternalBlob_n10(this._uploadFile, this._downloadFile, arg4), arg5);
+                const result = await this.actor.updateBestScore(arg0);
                 return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.updateChannel(arg0, arg1, arg2, arg3, await to_candid_ExternalBlob_n10(this._uploadFile, this._downloadFile, arg4), arg5);
+            const result = await this.actor.updateBestScore(arg0);
+            return result;
+        }
+    }
+    async updateChannel(arg0: string, arg1: string, arg2: string, arg3: string, arg4: ExternalBlob, arg5: string, arg6: string, arg7: string): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.updateChannel(arg0, arg1, arg2, arg3, await to_candid_ExternalBlob_n10(this._uploadFile, this._downloadFile, arg4), arg5, arg6, arg7);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.updateChannel(arg0, arg1, arg2, arg3, await to_candid_ExternalBlob_n10(this._uploadFile, this._downloadFile, arg4), arg5, arg6, arg7);
             return result;
         }
     }
@@ -531,7 +569,9 @@ async function from_candid_record_n13(_uploadFile: (file: ExternalBlob) => Promi
     owner: Principal;
     description: string;
     category: _Category;
+    streamKey: string;
     streamUrl: string;
+    ingestUrl: string;
 }): Promise<{
     id: string;
     title: string;
@@ -539,7 +579,9 @@ async function from_candid_record_n13(_uploadFile: (file: ExternalBlob) => Promi
     owner: Principal;
     description: string;
     category: Category;
+    streamKey: string;
     streamUrl: string;
+    ingestUrl: string;
 }> {
     return {
         id: value.id,
@@ -548,7 +590,9 @@ async function from_candid_record_n13(_uploadFile: (file: ExternalBlob) => Promi
         owner: value.owner,
         description: value.description,
         category: from_candid_Category_n15(_uploadFile, _downloadFile, value.category),
-        streamUrl: value.streamUrl
+        streamKey: value.streamKey,
+        streamUrl: value.streamUrl,
+        ingestUrl: value.ingestUrl
     };
 }
 function from_candid_record_n5(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
@@ -564,17 +608,27 @@ function from_candid_record_n5(_uploadFile: (file: ExternalBlob) => Promise<Uint
     };
 }
 function from_candid_variant_n16(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+    djs: null;
+} | {
+    irl: null;
+} | {
     music: null;
 } | {
     adult: null;
 } | {
     gaming: null;
 } | {
+    audio_video_podcasts: null;
+} | {
     sports: null;
 } | {
     horror: null;
+} | {
+    ppv_events: null;
+} | {
+    radio: null;
 }): Category {
-    return "music" in value ? Category.music : "adult" in value ? Category.adult : "gaming" in value ? Category.gaming : "sports" in value ? Category.sports : "horror" in value ? Category.horror : value;
+    return "djs" in value ? Category.djs : "irl" in value ? Category.irl : "music" in value ? Category.music : "adult" in value ? Category.adult : "gaming" in value ? Category.gaming : "audio_video_podcasts" in value ? Category.audio_video_podcasts : "sports" in value ? Category.sports : "horror" in value ? Category.horror : "ppv_events" in value ? Category.ppv_events : "radio" in value ? Category.radio : value;
 }
 function from_candid_variant_n19(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
     admin: null;

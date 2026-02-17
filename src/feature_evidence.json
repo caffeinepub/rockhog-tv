@@ -2,11 +2,12 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-add-a-new-viewer-accessible-contact-page-that-displays-the-site-owner-contact-information-email-address-brianlellis24-gmail-com-without-any-contact-form-or-email-sending-capability",
-      "featureTitle": "Add a new viewer-accessible \"Contact\" page that displays the site owner contact information (email address: brianlellis24@gmail.com) without any contact form or email-sending capability.",
+      "featureId": "feature-extend-the-channel-category-system-to-support-the-following-new-categories-end-to-end-creation-editing-storage-and-retrieval-radio-djs-irl-audio-video-podcasts-and-ppv-events",
+      "featureTitle": "Extend the channel category system to support the following new categories end-to-end (creation/editing, storage, and retrieval): Radio, DJs, IRL, Audio & Video Podcasts, and PPV Events.",
       "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/pages/ContactPage.tsx"
+        "frontend/src/components/channels/ChannelEditorDialog.tsx",
+        "frontend/src/pages/CategoryPage.tsx",
+        "frontend/src/utils/category.ts"
       ],
       "components": [
         "authorization@4.0.0",
@@ -18,15 +19,16 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-11"
+        "REQ-34"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-add-an-in-app-navigation-entry-point-to-the-new-contact-page-from-the-global-layout-footer-is-acceptable-so-users-can-find-it-from-anywhere-in-the-app",
-      "featureTitle": "Add an in-app navigation entry point to the new Contact page from the global layout (footer is acceptable) so users can find it from anywhere in the app.",
+      "featureId": "feature-update-the-main-home-page-category-browsing-section-to-include-clickable-entries-for-radio-djs-irl-audio-video-podcasts-and-ppv-events-alongside-the-existing-categories",
+      "featureTitle": "Update the main (home) page category browsing section to include clickable entries for Radio, DJs, IRL, Audio & Video Podcasts, and PPV Events, alongside the existing categories.",
       "files": [
-        "frontend/src/components/layout/AppLayout.tsx"
+        "frontend/src/pages/BrowseHomePage.tsx",
+        "frontend/src/utils/category.ts"
       ],
       "components": [
         "authorization@4.0.0",
@@ -38,7 +40,71 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-12"
+        "REQ-35"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-update-the-creator-channel-editor-category-dropdown-to-include-radio-djs-irl-audio-video-podcasts-and-ppv-events-as-selectable-options-using-clear-english-labels-e-g-irl-djs-ppv-events-audio-video-podcasts",
+      "featureTitle": "Update the Creator channel editor category dropdown to include Radio, DJs, IRL, Audio & Video Podcasts, and PPV Events as selectable options, using clear English labels (e.g., \"IRL\", \"DJs\", \"PPV Events\", \"Audio & Video Podcasts\").",
+      "files": [
+        "frontend/src/components/channels/ChannelEditorDialog.tsx",
+        "frontend/src/utils/category.ts"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-36"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-update-category-display-naming-so-that-category-pages-and-ui-badges-show-appropriate-english-capitalization-for-the-new-categories-e-g-irl-not-irl-djs-not-djs-ppv-events-not-ppv",
+      "featureTitle": "Update category display naming so that category pages and UI badges show appropriate English capitalization for the new categories (e.g., \"IRL\" not \"Irl\", \"DJs\" not \"Djs\", \"PPV Events\" not \"Ppv\").",
+      "files": [
+        "frontend/src/components/channels/ChannelCard.tsx",
+        "frontend/src/pages/CategoryPage.tsx",
+        "frontend/src/pages/StreamDetailPage.tsx",
+        "frontend/src/utils/category.ts"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-37"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-new-static-category-icon-assets-for-radio-djs-irl-audio-video-podcasts-and-ppv-events-and-render-them-via-the-existing-categoryicon-component-mapping-served-from-frontend-public-assets-generated",
+      "featureTitle": "Add new static category icon assets for Radio, DJs, IRL, Audio & Video Podcasts, and PPV Events, and render them via the existing CategoryIcon component mapping (served from frontend/public/assets/generated).",
+      "files": [
+        "frontend/src/components/branding/CategoryIcon.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-38"
       ],
       "confidence": "high"
     }

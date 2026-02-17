@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useActor } from './useActor';
+import { useInternetIdentity } from './useInternetIdentity';
 import type { Channel, BaconCashRequest, UserProfile } from '../backend';
 import { ExternalBlob } from '../backend';
 
@@ -54,6 +55,8 @@ export function useCreateChannel() {
       description: string;
       thumbnail: ExternalBlob;
       streamUrl: string;
+      ingestUrl: string;
+      streamKey: string;
     }) => {
       if (!actor) throw new Error('Actor not available');
       await actor.createChannel(
@@ -62,7 +65,9 @@ export function useCreateChannel() {
         data.category,
         data.description,
         data.thumbnail,
-        data.streamUrl
+        data.streamUrl,
+        data.ingestUrl,
+        data.streamKey
       );
     },
     onSuccess: () => {
@@ -84,6 +89,8 @@ export function useUpdateChannel() {
       description: string;
       thumbnail: ExternalBlob;
       streamUrl: string;
+      ingestUrl: string;
+      streamKey: string;
     }) => {
       if (!actor) throw new Error('Actor not available');
       await actor.updateChannel(
@@ -92,7 +99,9 @@ export function useUpdateChannel() {
         data.category,
         data.description,
         data.thumbnail,
-        data.streamUrl
+        data.streamUrl,
+        data.ingestUrl,
+        data.streamKey
       );
     },
     onSuccess: (_, variables) => {
@@ -224,3 +233,33 @@ export function useFulfillBaconCashRequest() {
   });
 }
 
+export function useGetBestScore() {
+  const { actor, isFetching } = useActor();
+  const { identity } = useInternetIdentity();
+
+  return useQuery<bigint>({
+    queryKey: ['bestScore'],
+    queryFn: async () => {
+      if (!actor) return BigInt(0);
+      return actor.getBestScore();
+    },
+    enabled: !!actor && !isFetching && !!identity,
+  });
+}
+
+export function useUpdateBestScore() {
+  const { actor } = useActor();
+  const { identity } = useInternetIdentity();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (score: bigint) => {
+      if (!actor) throw new Error('Actor not available');
+      if (!identity) throw new Error('Must be authenticated');
+      await actor.updateBestScore(score);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['bestScore'] });
+    },
+  });
+}

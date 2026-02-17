@@ -10,14 +10,13 @@ import { useCreateChannel, useUpdateChannel } from '../../hooks/useQueries';
 import type { Channel } from '../../backend';
 import { ExternalBlob } from '../../backend';
 import { toast } from 'sonner';
+import { getAllCategories, getCategoryLabel } from '../../utils/category';
 
 interface ChannelEditorDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   channel?: Channel;
 }
-
-const categories = ['music', 'gaming', 'sports', 'horror', 'adult'];
 
 export default function ChannelEditorDialog({ open, onOpenChange, channel }: ChannelEditorDialogProps) {
   const [title, setTitle] = useState('');
@@ -28,6 +27,7 @@ export default function ChannelEditorDialog({ open, onOpenChange, channel }: Cha
 
   const createChannel = useCreateChannel();
   const updateChannel = useUpdateChannel();
+  const categories = getAllCategories();
 
   useEffect(() => {
     if (channel) {
@@ -54,13 +54,17 @@ export default function ChannelEditorDialog({ open, onOpenChange, channel }: Cha
     }
 
     try {
+      const channelId = channel?.id || `channel_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      
       const data = {
-        id: channel?.id || `channel_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        id: channelId,
         title: title.trim(),
         category,
         description: description.trim(),
         streamUrl: streamUrl.trim(),
         thumbnail,
+        ingestUrl: channel?.ingestUrl || `rtmp://ingest.rockhog.tv/live/${channelId}`,
+        streamKey: channel?.streamKey || `sk_${Math.random().toString(36).substr(2, 16)}`,
       };
 
       if (channel) {
@@ -104,8 +108,8 @@ export default function ChannelEditorDialog({ open, onOpenChange, channel }: Cha
               </SelectTrigger>
               <SelectContent>
                 {categories.map((cat) => (
-                  <SelectItem key={cat} value={cat}>
-                    {cat.charAt(0).toUpperCase() + cat.slice(1)}
+                  <SelectItem key={cat.value} value={cat.value}>
+                    {cat.label}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -152,4 +156,3 @@ export default function ChannelEditorDialog({ open, onOpenChange, channel }: Cha
     </Dialog>
   );
 }
-

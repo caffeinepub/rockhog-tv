@@ -4,19 +4,13 @@ import CategoryIcon from '../components/branding/CategoryIcon';
 import ChannelGrid from '../components/channels/ChannelGrid';
 import { useNavigate } from '@tanstack/react-router';
 import { Card, CardContent } from '@/components/ui/card';
-
-const categories = [
-  { name: 'Music', value: 'music' },
-  { name: 'Gaming', value: 'gaming' },
-  { name: 'Sports', value: 'sports' },
-  { name: 'Horror', value: 'horror' },
-  { name: 'Adult', value: 'adult' },
-];
+import { getAllCategories } from '../utils/category';
 
 export default function BrowseHomePage() {
   const navigate = useNavigate();
   const { data: channels = [], isLoading } = useGetAllChannels();
 
+  const categories = getAllCategories();
   const recentChannels = channels.slice(0, 8);
 
   return (
@@ -34,7 +28,7 @@ export default function BrowseHomePage() {
             >
               <CardContent className="p-6 flex flex-col items-center gap-3">
                 <CategoryIcon category={category.value} className="w-20 h-20 group-hover:scale-110 transition-transform" />
-                <h3 className="font-semibold text-center">{category.name}</h3>
+                <h3 className="font-semibold text-center">{category.label}</h3>
               </CardContent>
             </Card>
           ))}
@@ -50,4 +44,3 @@ export default function BrowseHomePage() {
     </div>
   );
 }
-

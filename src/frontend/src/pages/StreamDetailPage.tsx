@@ -22,6 +22,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import { getCategoryLabel } from '../utils/category';
 
 function StreamDetailContent() {
   const { streamId } = useParams({ strict: false });
@@ -86,7 +87,7 @@ function StreamDetailContent() {
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-2">
               <h1 className="text-3xl font-bold">{channel.title}</h1>
-              <Badge>{channel.category}</Badge>
+              <Badge>{getCategoryLabel(channel.category)}</Badge>
             </div>
             <p className="text-muted-foreground">{channel.description}</p>
           </div>
@@ -156,4 +157,3 @@ export default function StreamDetailPage() {
 
   return <StreamDetailContent />;
 }
-

@@ -21,6 +21,7 @@ export default function ProfileSetupDialog() {
       await saveProfile.mutateAsync({
         name: name.trim(),
         baconCashBalance: BigInt(0),
+        bestScore: BigInt(0),
       });
       toast.success('Profile created successfully!');
     } catch (error: any) {
@@ -56,4 +57,3 @@ export default function ProfileSetupDialog() {
     </Dialog>
   );
 }
-

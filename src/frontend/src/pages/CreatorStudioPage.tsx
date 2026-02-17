@@ -6,7 +6,7 @@ import ChannelEditorDialog from '../components/channels/ChannelEditorDialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Edit, Trash2, Loader2 } from 'lucide-react';
+import { Plus, Edit, Trash2, Loader2, Copy, Check } from 'lucide-react';
 import { useDeleteChannel } from '../hooks/useQueries';
 import { toast } from 'sonner';
 import {
@@ -19,6 +19,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import { Separator } from '@/components/ui/separator';
 import type { Channel } from '../backend';
 
 export default function CreatorStudioPage() {
@@ -27,6 +28,7 @@ export default function CreatorStudioPage() {
   const [showEditor, setShowEditor] = useState(false);
   const [editingChannel, setEditingChannel] = useState<Channel | undefined>(undefined);
   const [deletingChannel, setDeletingChannel] = useState<Channel | null>(null);
+  const [copiedField, setCopiedField] = useState<string | null>(null);
   const deleteChannel = useDeleteChannel();
 
   if (!identity) {
@@ -52,6 +54,34 @@ export default function CreatorStudioPage() {
       setDeletingChannel(null);
     } catch (error: any) {
       toast.error(error.message || 'Failed to delete channel');
+    }
+  };
+
+  const handleCopy = async (text: string, fieldName: string, channelId: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      const fieldKey = `${channelId}-${fieldName}`;
+      setCopiedField(fieldKey);
+      toast.success(`${fieldName} copied to clipboard`);
+      setTimeout(() => setCopiedField(null), 2000);
+    } catch (error) {
+      // Fallback for older browsers
+      const textArea = document.createElement('textarea');
+      textArea.value = text;
+      textArea.style.position = 'fixed';
+      textArea.style.left = '-999999px';
+      document.body.appendChild(textArea);
+      textArea.select();
+      try {
+        document.execCommand('copy');
+        const fieldKey = `${channelId}-${fieldName}`;
+        setCopiedField(fieldKey);
+        toast.success(`${fieldName} copied to clipboard`);
+        setTimeout(() => setCopiedField(null), 2000);
+      } catch (err) {
+        toast.error('Failed to copy to clipboard');
+      }
+      document.body.removeChild(textArea);
     }
   };
 
@@ -83,47 +113,109 @@ export default function CreatorStudioPage() {
           </CardContent>
         </Card>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {myChannels.map((channel) => (
-            <Card key={channel.id}>
-              <div className="aspect-video overflow-hidden rounded-t-lg bg-muted">
-                <img
-                  src={channel.thumbnail.getDirectURL()}
-                  alt={channel.title}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <CardHeader>
-                <div className="flex items-start justify-between gap-2">
-                  <CardTitle className="line-clamp-1">{channel.title}</CardTitle>
-                  <Badge variant="secondary">{channel.category}</Badge>
+        <div className="grid grid-cols-1 gap-6">
+          {myChannels.map((channel) => {
+            const ingestUrlKey = `${channel.id}-Ingest URL`;
+            const streamKeyKey = `${channel.id}-Stream Key`;
+            const isIngestUrlCopied = copiedField === ingestUrlKey;
+            const isStreamKeyCopied = copiedField === streamKeyKey;
+
+            return (
+              <Card key={channel.id}>
+                <div className="grid grid-cols-1 md:grid-cols-[300px_1fr] gap-6">
+                  <div className="aspect-video md:aspect-auto overflow-hidden rounded-t-lg md:rounded-l-lg md:rounded-tr-none bg-muted">
+                    <img
+                      src={channel.thumbnail.getDirectURL()}
+                      alt={channel.title}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="flex flex-col">
+                    <CardHeader>
+                      <div className="flex items-start justify-between gap-2">
+                        <CardTitle className="line-clamp-1">{channel.title}</CardTitle>
+                        <Badge variant="secondary">{channel.category}</Badge>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="flex-1 space-y-4">
+                      <p className="text-sm text-muted-foreground line-clamp-2">
+                        {channel.description}
+                      </p>
+
+                      <Separator />
+
+                      <div className="space-y-3">
+                        <h3 className="text-sm font-semibold">Live Streaming Connection Info</h3>
+                        
+                        <div className="space-y-2">
+                          <label className="text-xs font-medium text-muted-foreground">Ingest URL</label>
+                          <div className="flex gap-2">
+                            <div className="flex-1 px-3 py-2 bg-muted rounded-md text-sm font-mono break-all">
+                              {channel.ingestUrl}
+                            </div>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleCopy(channel.ingestUrl, 'Ingest URL', channel.id)}
+                              className="shrink-0"
+                            >
+                              {isIngestUrlCopied ? (
+                                <Check className="w-4 h-4" />
+                              ) : (
+                                <Copy className="w-4 h-4" />
+                              )}
+                            </Button>
+                          </div>
+                        </div>
+
+                        <div className="space-y-2">
+                          <label className="text-xs font-medium text-muted-foreground">Stream Key</label>
+                          <div className="flex gap-2">
+                            <div className="flex-1 px-3 py-2 bg-muted rounded-md text-sm font-mono break-all">
+                              {channel.streamKey}
+                            </div>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleCopy(channel.streamKey, 'Stream Key', channel.id)}
+                              className="shrink-0"
+                            >
+                              {isStreamKeyCopied ? (
+                                <Check className="w-4 h-4" />
+                              ) : (
+                                <Copy className="w-4 h-4" />
+                              )}
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+
+                      <Separator />
+
+                      <div className="flex gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleEdit(channel)}
+                          className="flex-1"
+                        >
+                          <Edit className="w-4 h-4 mr-2" />
+                          Edit
+                        </Button>
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => setDeletingChannel(channel)}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </div>
                 </div>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground line-clamp-2 mb-4">
-                  {channel.description}
-                </p>
-                <div className="flex gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleEdit(channel)}
-                    className="flex-1"
-                  >
-                    <Edit className="w-4 h-4 mr-2" />
-                    Edit
-                  </Button>
-                  <Button
-                    variant="destructive"
-                    size="sm"
-                    onClick={() => setDeletingChannel(channel)}
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+              </Card>
+            );
+          })}
         </div>
       )}
 
@@ -152,4 +244,3 @@ export default function CreatorStudioPage() {
     </div>
   );
 }
-

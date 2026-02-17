@@ -16,11 +16,16 @@ export interface BaconCashRequest {
   'completed' : boolean,
   'amount' : bigint,
 }
-export type Category = { 'music' : null } |
+export type Category = { 'djs' : null } |
+  { 'irl' : null } |
+  { 'music' : null } |
   { 'adult' : null } |
   { 'gaming' : null } |
+  { 'audio_video_podcasts' : null } |
   { 'sports' : null } |
-  { 'horror' : null };
+  { 'horror' : null } |
+  { 'ppv_events' : null } |
+  { 'radio' : null };
 export interface Channel {
   'id' : string,
   'title' : string,
@@ -28,10 +33,16 @@ export interface Channel {
   'owner' : Principal,
   'description' : string,
   'category' : Category,
+  'streamKey' : string,
   'streamUrl' : string,
+  'ingestUrl' : string,
 }
 export type ExternalBlob = Uint8Array;
-export interface UserProfile { 'baconCashBalance' : bigint, 'name' : string }
+export interface UserProfile {
+  'baconCashBalance' : bigint,
+  'name' : string,
+  'bestScore' : bigint,
+}
 export type UserRole = { 'admin' : null } |
   { 'user' : null } |
   { 'guest' : null };
@@ -65,7 +76,7 @@ export interface _SERVICE {
   '_initializeAccessControlWithSecret' : ActorMethod<[string], undefined>,
   'assignCallerUserRole' : ActorMethod<[Principal, UserRole], undefined>,
   'createChannel' : ActorMethod<
-    [string, string, string, string, ExternalBlob, string],
+    [string, string, string, string, ExternalBlob, string, string, string],
     undefined
   >,
   'deleteChannel' : ActorMethod<[string], undefined>,
@@ -73,6 +84,7 @@ export interface _SERVICE {
   'getAllBaconCashRequests' : ActorMethod<[], Array<BaconCashRequest>>,
   'getAllChannels' : ActorMethod<[], Array<Channel>>,
   'getBalance' : ActorMethod<[], bigint>,
+  'getBestScore' : ActorMethod<[], bigint>,
   'getCallerUserProfile' : ActorMethod<[], [] | [UserProfile]>,
   'getCallerUserRole' : ActorMethod<[], UserRole>,
   'getChannel' : ActorMethod<[string], [] | [Channel]>,
@@ -82,8 +94,9 @@ export interface _SERVICE {
   'isCallerAdmin' : ActorMethod<[], boolean>,
   'requestBaconCash' : ActorMethod<[bigint], string>,
   'saveCallerUserProfile' : ActorMethod<[UserProfile], undefined>,
+  'updateBestScore' : ActorMethod<[bigint], undefined>,
   'updateChannel' : ActorMethod<
-    [string, string, string, string, ExternalBlob, string],
+    [string, string, string, string, ExternalBlob, string, string, string],
     undefined
   >,
 }

@@ -1,16 +1,52 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-17T19:07:13.968Z",
-  "summary": "Implemented a new /contact route rendering inside AppLayout, added a Contact page that displays brianlellis24@gmail.com as plain text and a mailto link, and added a footer navigation link to the Contact page using TanStack Router Link.",
-  "missing_requirements": [],
-  "hallucinated_features": [],
-  "confidence": 0.86,
+  "generatedAt": "2026-02-17T22:16:21.226Z",
+  "summary": "Diff adds new category values across backend and frontend, including shared label utilities and updated browse/category/stream UI. However, backend parsing for new categories appears incomplete (likely breaking create/update for lowercase values), and the required static icon assets are not evidenced as added. Diff also includes unrelated “Bacon Ops Arena”/game-stat additions per the frontend summaries.",
+  "missing_requirements": [
+    {
+      "id": "REQ-34",
+      "requirement": "Backend accepts the new category values (Radio, DJs, IRL, Audio & Video Podcasts, PPV Events) when creating/updating channels, and returns them correctly.",
+      "reason": "backend/main.mo adds new category variants and toText mappings, but Category.fromText does not include lowercase/underscore inputs (e.g., \"radio\", \"djs\", \"irl\", \"audio_video_podcasts\", \"ppv_events\"), which the frontend appears to use. Unmatched inputs fall through to default #music, so create/update may not accept/store the new categories correctly.",
+      "evidence": [
+        "backend/main.mo (Category type includes #radio/#djs/#irl/#audio_video_podcasts/#ppv_events; fromText cases include \"Radio\"/\"DJs\"/\"IRL\"/\"Audio & Video Podcasts\"/\"PPV Events\" but not lowercase/underscore forms; default case returns #music)",
+        "frontend/src/utils/category.ts (CATEGORY_VALUES uses lowercase/underscore values: 'radio','djs','irl','audio_video_podcasts','ppv_events')",
+        "frontend/src/pages/BrowseHomePage.tsx (navigates using category.value from getAllCategories())",
+        "frontend/src/pages/CategoryPage.tsx (filters by channel.category.toLowerCase() === categoryName?.toLowerCase())"
+      ]
+    },
+    {
+      "id": "REQ-38",
+      "requirement": "Add new static category icon assets for Radio, DJs, IRL, Audio & Video Podcasts, and PPV Events under frontend/public/assets/generated.",
+      "reason": "CategoryIcon mapping was updated to reference the new icon filenames, but the diff summary does not show any new files added under frontend/public/assets/generated (no image assets are listed as added).",
+      "evidence": [
+        "frontend/src/components/branding/CategoryIcon.tsx (references /assets/generated/rockhog-cat-radio.dim_256x256.png, ...-djs..., ...-irl..., ...-podcasts..., ...-ppv...)"
+      ]
+    }
+  ],
+  "hallucinated_features": [
+    {
+      "description": "Addition of a new “Bacon Ops Arena” game route and associated game stat hooks/styles.",
+      "reason": "BuildRequest is only about adding five new content categories and related icons/labels; game routes and game-stat management are not requested.",
+      "evidence": [
+        "frontend-file-summaries.txt (App.tsx: \"the new Bacon Ops Arena game route\")",
+        "frontend-file-summaries.txt (hooks/useQueries.ts: \"new game stat hooks (useGetBestScore, useUpdateBestScore)\")",
+        "frontend-file-summaries.txt (index.css: \"new mode selection card styles\")"
+      ]
+    }
+  ],
+  "confidence": 0.72,
   "changed_files": [
+    "backend/main.mo",
+    "backend/migration.mo",
     "frontend-file-summaries.txt",
-    "frontend/src/App.tsx",
-    "frontend/src/components/layout/AppLayout.tsx",
-    "frontend/src/pages/ContactPage.tsx",
+    "frontend/src/components/branding/CategoryIcon.tsx",
+    "frontend/src/components/channels/ChannelCard.tsx",
+    "frontend/src/components/channels/ChannelEditorDialog.tsx",
+    "frontend/src/pages/BrowseHomePage.tsx",
+    "frontend/src/pages/CategoryPage.tsx",
+    "frontend/src/pages/StreamDetailPage.tsx",
+    "frontend/src/utils/category.ts",
     "project_state.json"
   ]
 }

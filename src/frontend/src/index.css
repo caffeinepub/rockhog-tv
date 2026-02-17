@@ -29,6 +29,11 @@
         --chart-3: 0.55 0.12 280;
         --chart-4: 0.70 0.18 120;
         --chart-5: 0.60 0.16 320;
+        
+        --bacon-ops-bg: 0.08 0 0;
+        --bacon-ops-surface: 0.14 0.02 25;
+        --bacon-ops-accent: 0.65 0.24 25;
+        --bacon-ops-text: 0.95 0 0;
     }
 
     .dark {
@@ -56,6 +61,11 @@
         --chart-3: 0.55 0.12 280;
         --chart-4: 0.70 0.18 120;
         --chart-5: 0.60 0.16 320;
+        
+        --bacon-ops-bg: 0.08 0 0;
+        --bacon-ops-surface: 0.14 0.02 25;
+        --bacon-ops-accent: 0.70 0.26 25;
+        --bacon-ops-text: 0.95 0 0;
     }
 
     * {
@@ -75,5 +85,376 @@
     .hero-overlay {
         background: linear-gradient(to bottom, transparent 0%, oklch(var(--background)) 100%);
     }
-}
 
+    .bacon-ops-page {
+        background: oklch(var(--bacon-ops-bg));
+        background-image: url('/assets/generated/arena-backdrop.dim_1920x1080.png');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+    }
+
+    .bacon-ops-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 2rem;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .bacon-ops-menu {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .bacon-ops-menu-content {
+        background: oklch(var(--bacon-ops-surface) / 0.95);
+        backdrop-filter: blur(12px);
+        border: 2px solid oklch(var(--bacon-ops-accent) / 0.3);
+        border-radius: 24px;
+        padding: 3rem;
+        text-align: center;
+        max-width: 700px;
+        width: 100%;
+        box-shadow: 0 20px 60px oklch(0 0 0 / 0.5);
+    }
+
+    .bacon-ops-logo {
+        width: 100%;
+        max-width: 500px;
+        height: auto;
+        margin: 0 auto 1.5rem;
+        filter: drop-shadow(0 4px 12px oklch(var(--bacon-ops-accent) / 0.4));
+    }
+
+    .bacon-ops-tagline {
+        font-size: 1.25rem;
+        color: oklch(var(--bacon-ops-text) / 0.8);
+        margin-bottom: 2rem;
+        font-weight: 500;
+    }
+
+    .bacon-ops-mode-selection {
+        margin-bottom: 2rem;
+    }
+
+    .bacon-ops-mode-title {
+        font-size: 1.125rem;
+        font-weight: 700;
+        color: oklch(var(--bacon-ops-text));
+        margin-bottom: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .bacon-ops-mode-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .bacon-ops-mode-card {
+        cursor: pointer;
+        transition: all 0.2s ease;
+        background: oklch(var(--bacon-ops-surface) / 0.6);
+        border: 2px solid oklch(var(--bacon-ops-accent) / 0.2);
+        text-align: left;
+    }
+
+    .bacon-ops-mode-card:hover {
+        transform: translateY(-2px);
+        border-color: oklch(var(--bacon-ops-accent) / 0.4);
+        box-shadow: 0 8px 24px oklch(0 0 0 / 0.3);
+    }
+
+    .bacon-ops-mode-card-selected {
+        border-color: oklch(var(--bacon-ops-accent));
+        background: oklch(var(--bacon-ops-accent) / 0.15);
+        box-shadow: 0 0 0 2px oklch(var(--bacon-ops-accent) / 0.3);
+    }
+
+    .bacon-ops-mode-card-selected:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0 0 2px oklch(var(--bacon-ops-accent) / 0.3), 0 8px 24px oklch(0 0 0 / 0.3);
+    }
+
+    .bacon-ops-start-btn {
+        font-size: 1.125rem;
+        padding: 1.5rem 3rem;
+        height: auto;
+        margin-bottom: 2rem;
+    }
+
+    .bacon-ops-stats-card {
+        background: oklch(var(--bacon-ops-surface) / 0.8);
+        border-color: oklch(var(--bacon-ops-accent) / 0.2);
+    }
+
+    .bacon-ops-game-area {
+        position: relative;
+        width: 100%;
+        max-width: 1280px;
+        margin: 0 auto;
+    }
+
+    .bacon-ops-canvas {
+        width: 100%;
+        height: auto;
+        display: block;
+        border-radius: 12px;
+        background: oklch(0.10 0 0);
+        box-shadow: 0 8px 32px oklch(0 0 0 / 0.6);
+        border: 2px solid oklch(var(--bacon-ops-accent) / 0.3);
+    }
+
+    .bacon-ops-hud {
+        position: absolute;
+        top: 1rem;
+        left: 1rem;
+        right: 1rem;
+        pointer-events: none;
+        z-index: 10;
+    }
+
+    .bacon-ops-hud-top {
+        display: flex;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+    }
+
+    .bacon-ops-hud-bottom {
+        position: absolute;
+        bottom: -3rem;
+        left: 0;
+        right: 0;
+        display: flex;
+        justify-content: center;
+    }
+
+    .bacon-ops-hud-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: oklch(var(--bacon-ops-surface) / 0.9);
+        backdrop-filter: blur(8px);
+        padding: 0.75rem 1rem;
+        border-radius: 12px;
+        border: 2px solid oklch(var(--bacon-ops-accent) / 0.3);
+        color: oklch(var(--bacon-ops-text));
+        font-weight: 600;
+        box-shadow: 0 4px 12px oklch(0 0 0 / 0.3);
+    }
+
+    .bacon-ops-hud-label {
+        font-size: 0.875rem;
+        color: oklch(var(--bacon-ops-text) / 0.7);
+    }
+
+    .bacon-ops-hud-value {
+        font-size: 1.125rem;
+        color: oklch(var(--bacon-ops-accent));
+    }
+
+    .bacon-ops-health-bar {
+        width: 120px;
+        height: 12px;
+        background: oklch(0.20 0 0);
+        border-radius: 6px;
+        overflow: hidden;
+        border: 1px solid oklch(0.30 0 0);
+    }
+
+    .bacon-ops-health-fill {
+        height: 100%;
+        background: linear-gradient(90deg, oklch(0.65 0.20 130), oklch(0.70 0.22 110));
+        transition: width 0.3s ease;
+    }
+
+    .bacon-ops-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: oklch(0 0 0 / 0.85);
+        backdrop-filter: blur(8px);
+        z-index: 20;
+        border-radius: 12px;
+    }
+
+    .bacon-ops-overlay-content {
+        background: oklch(var(--bacon-ops-surface) / 0.95);
+        border: 2px solid oklch(var(--bacon-ops-accent) / 0.4);
+        border-radius: 24px;
+        padding: 3rem;
+        text-align: center;
+        max-width: 500px;
+        box-shadow: 0 20px 60px oklch(0 0 0 / 0.5);
+    }
+
+    .bacon-ops-overlay-icon {
+        margin-bottom: 1.5rem;
+        display: flex;
+        justify-content: center;
+    }
+
+    .bacon-ops-overlay-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: oklch(var(--bacon-ops-text));
+        margin-bottom: 1.5rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .bacon-ops-overlay-score {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .bacon-ops-overlay-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .bacon-ops-virtual-controls {
+        position: absolute;
+        bottom: 2rem;
+        left: 0;
+        right: 0;
+        display: flex;
+        justify-content: space-between;
+        padding: 0 2rem;
+        pointer-events: none;
+        z-index: 15;
+    }
+
+    .bacon-ops-joystick {
+        width: 120px;
+        height: 120px;
+        background: oklch(var(--bacon-ops-surface) / 0.6);
+        border: 3px solid oklch(var(--bacon-ops-accent) / 0.4);
+        border-radius: 50%;
+        position: relative;
+        pointer-events: auto;
+        box-shadow: 0 4px 16px oklch(0 0 0 / 0.4);
+    }
+
+    .bacon-ops-joystick-stick {
+        width: 50px;
+        height: 50px;
+        background: oklch(var(--bacon-ops-accent));
+        border: 2px solid oklch(var(--bacon-ops-text) / 0.3);
+        border-radius: 50%;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        transition: transform 0.05s ease;
+        box-shadow: 0 2px 8px oklch(0 0 0 / 0.3);
+    }
+
+    .bacon-ops-fire-button {
+        width: 100px;
+        height: 100px;
+        background: oklch(var(--bacon-ops-accent));
+        border: 3px solid oklch(var(--bacon-ops-text) / 0.3);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: oklch(var(--bacon-ops-text));
+        pointer-events: auto;
+        box-shadow: 0 4px 16px oklch(0 0 0 / 0.4);
+        transition: transform 0.1s ease, background 0.1s ease;
+    }
+
+    .bacon-ops-fire-button:active {
+        transform: scale(0.95);
+        background: oklch(0.75 0.28 25);
+    }
+
+    @media (max-width: 768px) {
+        .bacon-ops-container {
+            padding: 1rem;
+        }
+
+        .bacon-ops-menu-content {
+            padding: 2rem 1.5rem;
+        }
+
+        .bacon-ops-logo {
+            max-width: 300px;
+        }
+
+        .bacon-ops-tagline {
+            font-size: 1rem;
+        }
+
+        .bacon-ops-mode-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .bacon-ops-start-btn {
+            font-size: 1rem;
+            padding: 1rem 2rem;
+        }
+
+        .bacon-ops-hud {
+            top: 0.5rem;
+            left: 0.5rem;
+            right: 0.5rem;
+        }
+
+        .bacon-ops-hud-item {
+            padding: 0.5rem 0.75rem;
+            font-size: 0.875rem;
+        }
+
+        .bacon-ops-health-bar {
+            width: 80px;
+            height: 10px;
+        }
+
+        .bacon-ops-overlay-content {
+            padding: 2rem 1.5rem;
+            margin: 1rem;
+        }
+
+        .bacon-ops-overlay-title {
+            font-size: 1.75rem;
+        }
+
+        .bacon-ops-virtual-controls {
+            bottom: 1rem;
+            padding: 0 1rem;
+        }
+
+        .bacon-ops-joystick {
+            width: 100px;
+            height: 100px;
+        }
+
+        .bacon-ops-joystick-stick {
+            width: 40px;
+            height: 40px;
+        }
+
+        .bacon-ops-fire-button {
+            width: 80px;
+            height: 80px;
+        }
+    }
+}

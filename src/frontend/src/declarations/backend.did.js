@@ -32,11 +32,16 @@ export const BaconCashRequest = IDL.Record({
   'amount' : IDL.Nat,
 });
 export const Category = IDL.Variant({
+  'djs' : IDL.Null,
+  'irl' : IDL.Null,
   'music' : IDL.Null,
   'adult' : IDL.Null,
   'gaming' : IDL.Null,
+  'audio_video_podcasts' : IDL.Null,
   'sports' : IDL.Null,
   'horror' : IDL.Null,
+  'ppv_events' : IDL.Null,
+  'radio' : IDL.Null,
 });
 export const Channel = IDL.Record({
   'id' : IDL.Text,
@@ -45,11 +50,14 @@ export const Channel = IDL.Record({
   'owner' : IDL.Principal,
   'description' : IDL.Text,
   'category' : Category,
+  'streamKey' : IDL.Text,
   'streamUrl' : IDL.Text,
+  'ingestUrl' : IDL.Text,
 });
 export const UserProfile = IDL.Record({
   'baconCashBalance' : IDL.Nat,
   'name' : IDL.Text,
+  'bestScore' : IDL.Nat,
 });
 
 export const idlService = IDL.Service({
@@ -82,7 +90,16 @@ export const idlService = IDL.Service({
   '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
   'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
   'createChannel' : IDL.Func(
-      [IDL.Text, IDL.Text, IDL.Text, IDL.Text, ExternalBlob, IDL.Text],
+      [
+        IDL.Text,
+        IDL.Text,
+        IDL.Text,
+        IDL.Text,
+        ExternalBlob,
+        IDL.Text,
+        IDL.Text,
+        IDL.Text,
+      ],
       [],
       [],
     ),
@@ -95,6 +112,7 @@ export const idlService = IDL.Service({
     ),
   'getAllChannels' : IDL.Func([], [IDL.Vec(Channel)], ['query']),
   'getBalance' : IDL.Func([], [IDL.Nat], ['query']),
+  'getBestScore' : IDL.Func([], [IDL.Nat], ['query']),
   'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
   'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
   'getChannel' : IDL.Func([IDL.Text], [IDL.Opt(Channel)], ['query']),
@@ -112,8 +130,18 @@ export const idlService = IDL.Service({
   'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
   'requestBaconCash' : IDL.Func([IDL.Nat], [IDL.Text], []),
   'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
+  'updateBestScore' : IDL.Func([IDL.Nat], [], []),
   'updateChannel' : IDL.Func(
-      [IDL.Text, IDL.Text, IDL.Text, IDL.Text, ExternalBlob, IDL.Text],
+      [
+        IDL.Text,
+        IDL.Text,
+        IDL.Text,
+        IDL.Text,
+        ExternalBlob,
+        IDL.Text,
+        IDL.Text,
+        IDL.Text,
+      ],
       [],
       [],
     ),
@@ -146,11 +174,16 @@ export const idlFactory = ({ IDL }) => {
     'amount' : IDL.Nat,
   });
   const Category = IDL.Variant({
+    'djs' : IDL.Null,
+    'irl' : IDL.Null,
     'music' : IDL.Null,
     'adult' : IDL.Null,
     'gaming' : IDL.Null,
+    'audio_video_podcasts' : IDL.Null,
     'sports' : IDL.Null,
     'horror' : IDL.Null,
+    'ppv_events' : IDL.Null,
+    'radio' : IDL.Null,
   });
   const Channel = IDL.Record({
     'id' : IDL.Text,
@@ -159,11 +192,14 @@ export const idlFactory = ({ IDL }) => {
     'owner' : IDL.Principal,
     'description' : IDL.Text,
     'category' : Category,
+    'streamKey' : IDL.Text,
     'streamUrl' : IDL.Text,
+    'ingestUrl' : IDL.Text,
   });
   const UserProfile = IDL.Record({
     'baconCashBalance' : IDL.Nat,
     'name' : IDL.Text,
+    'bestScore' : IDL.Nat,
   });
   
   return IDL.Service({
@@ -196,7 +232,16 @@ export const idlFactory = ({ IDL }) => {
     '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
     'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
     'createChannel' : IDL.Func(
-        [IDL.Text, IDL.Text, IDL.Text, IDL.Text, ExternalBlob, IDL.Text],
+        [
+          IDL.Text,
+          IDL.Text,
+          IDL.Text,
+          IDL.Text,
+          ExternalBlob,
+          IDL.Text,
+          IDL.Text,
+          IDL.Text,
+        ],
         [],
         [],
       ),
@@ -209,6 +254,7 @@ export const idlFactory = ({ IDL }) => {
       ),
     'getAllChannels' : IDL.Func([], [IDL.Vec(Channel)], ['query']),
     'getBalance' : IDL.Func([], [IDL.Nat], ['query']),
+    'getBestScore' : IDL.Func([], [IDL.Nat], ['query']),
     'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
     'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
     'getChannel' : IDL.Func([IDL.Text], [IDL.Opt(Channel)], ['query']),
@@ -226,8 +272,18 @@ export const idlFactory = ({ IDL }) => {
     'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
     'requestBaconCash' : IDL.Func([IDL.Nat], [IDL.Text], []),
     'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
+    'updateBestScore' : IDL.Func([IDL.Nat], [], []),
     'updateChannel' : IDL.Func(
-        [IDL.Text, IDL.Text, IDL.Text, IDL.Text, ExternalBlob, IDL.Text],
+        [
+          IDL.Text,
+          IDL.Text,
+          IDL.Text,
+          IDL.Text,
+          ExternalBlob,
+          IDL.Text,
+          IDL.Text,
+          IDL.Text,
+        ],
         [],
         [],
       ),

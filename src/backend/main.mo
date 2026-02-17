@@ -3,12 +3,14 @@ import Map "mo:core/Map";
 import Array "mo:core/Array";
 import Iter "mo:core/Iter";
 import Runtime "mo:core/Runtime";
+import Migration "migration";
 import Principal "mo:core/Principal";
 import MixinAuthorization "authorization/MixinAuthorization";
 import AccessControl "authorization/access-control";
 import MixinStorage "blob-storage/Mixin";
 import Storage "blob-storage/Storage";
 
+(with migration = Migration.run)
 actor {
   include MixinStorage();
 
@@ -21,6 +23,11 @@ actor {
     #sports;
     #horror;
     #adult;
+    #radio;
+    #djs;
+    #irl;
+    #audio_video_podcasts;
+    #ppv_events;
   };
 
   module Category {
@@ -31,6 +38,11 @@ actor {
         case (#sports) { "Sports" };
         case (#horror) { "Horror" };
         case (#adult) { "Adult" };
+        case (#radio) { "Radio" };
+        case (#djs) { "DJs" };
+        case (#irl) { "IRL" };
+        case (#audio_video_podcasts) { "Audio & Video Podcasts" };
+        case (#ppv_events) { "PPV Events" };
       };
     };
 
@@ -51,6 +63,13 @@ actor {
         case ("adult") { #adult };
         case ("Adult") { #adult };
         case ("ADULT") { #adult };
+        case ("****") { #adult };
+        case ("Radio") { #radio };
+        case ("DJs") { #djs };
+        case ("IRL") { #irl };
+        case ("Audio & Video Podcasts") { #audio_video_podcasts };
+        case ("Audio and Video Podcasts") { #audio_video_podcasts };
+        case ("PPV Events") { #ppv_events };
         case (_) { #music };
       };
     };
@@ -65,6 +84,8 @@ actor {
     description : Text;
     thumbnail : Storage.ExternalBlob;
     streamUrl : Text;
+    ingestUrl : Text;
+    streamKey : Text;
   };
 
   public type BaconCashRequest = {
@@ -77,6 +98,7 @@ actor {
   public type UserProfile = {
     name : Text;
     baconCashBalance : Nat;
+    bestScore : Nat;
   };
 
   // Persistent storage using Text keys
@@ -107,6 +129,41 @@ actor {
     userProfiles.add(caller, profile);
   };
 
+  // Game Stat Management
+  public shared ({ caller }) func updateBestScore(score : Nat) : async () {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
+      Runtime.trap("Unauthorized: Only users can update game stats");
+    };
+    let currentProfile = switch (userProfiles.get(caller)) {
+      case (null) {
+        {
+          name = "";
+          baconCashBalance = 0;
+          bestScore = 0;
+        };
+      };
+      case (?profile) {
+        profile;
+      };
+    };
+    if (score > currentProfile.bestScore) {
+      let updatedProfile : UserProfile = {
+        name = currentProfile.name;
+        baconCashBalance = currentProfile.baconCashBalance;
+        bestScore = score;
+      };
+      userProfiles.add(caller, updatedProfile);
+    };
+  };
+
+  public query ({ caller }) func getBestScore() : async Nat {
+    // Anyone can query their best score (guests will get 0, users get their saved score)
+    switch (userProfiles.get(caller)) {
+      case (null) { 0 };
+      case (?profile) { profile.bestScore };
+    };
+  };
+
   // Channel Management
   public query ({ caller }) func getChannel(id : Text) : async ?Channel {
     // Anyone can view channels (including guests)
@@ -134,6 +191,8 @@ actor {
     description : Text,
     thumbnail : Storage.ExternalBlob,
     streamUrl : Text,
+    ingestUrl : Text,
+    streamKey : Text,
   ) : async () {
     // Creators (users) can create their own channels
     if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
@@ -156,6 +215,8 @@ actor {
       description;
       thumbnail;
       streamUrl;
+      ingestUrl;
+      streamKey;
     };
 
     channels.add(id, newChannel);
@@ -168,6 +229,8 @@ actor {
     description : Text,
     thumbnail : Storage.ExternalBlob,
     streamUrl : Text,
+    ingestUrl : Text,
+    streamKey : Text,
   ) : async () {
     if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
       Runtime.trap("Unauthorized: Only users can update channels");
@@ -191,6 +254,8 @@ actor {
           description;
           thumbnail;
           streamUrl;
+          ingestUrl;
+          streamKey;
         };
 
         channels.add(id, updatedChannel);
@@ -292,3 +357,4 @@ actor {
     };
   };
 };
+

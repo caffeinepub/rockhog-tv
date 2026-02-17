@@ -27,18 +27,26 @@ export interface Channel {
     owner: Principal;
     description: string;
     category: Category;
+    streamKey: string;
     streamUrl: string;
+    ingestUrl: string;
 }
 export interface UserProfile {
     baconCashBalance: bigint;
     name: string;
+    bestScore: bigint;
 }
 export enum Category {
+    djs = "djs",
+    irl = "irl",
     music = "music",
     adult = "adult",
     gaming = "gaming",
+    audio_video_podcasts = "audio_video_podcasts",
     sports = "sports",
-    horror = "horror"
+    horror = "horror",
+    ppv_events = "ppv_events",
+    radio = "radio"
 }
 export enum UserRole {
     admin = "admin",
@@ -47,12 +55,13 @@ export enum UserRole {
 }
 export interface backendInterface {
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
-    createChannel(id: string, title: string, category: string, description: string, thumbnail: ExternalBlob, streamUrl: string): Promise<void>;
+    createChannel(id: string, title: string, category: string, description: string, thumbnail: ExternalBlob, streamUrl: string, ingestUrl: string, streamKey: string): Promise<void>;
     deleteChannel(id: string): Promise<void>;
     fulfillBaconCashRequest(requestId: string): Promise<void>;
     getAllBaconCashRequests(): Promise<Array<BaconCashRequest>>;
     getAllChannels(): Promise<Array<Channel>>;
     getBalance(): Promise<bigint>;
+    getBestScore(): Promise<bigint>;
     getCallerUserProfile(): Promise<UserProfile | null>;
     getCallerUserRole(): Promise<UserRole>;
     getChannel(id: string): Promise<Channel | null>;
@@ -62,5 +71,6 @@ export interface backendInterface {
     isCallerAdmin(): Promise<boolean>;
     requestBaconCash(amount: bigint): Promise<string>;
     saveCallerUserProfile(profile: UserProfile): Promise<void>;
-    updateChannel(id: string, title: string, category: string, description: string, thumbnail: ExternalBlob, streamUrl: string): Promise<void>;
+    updateBestScore(score: bigint): Promise<void>;
+    updateChannel(id: string, title: string, category: string, description: string, thumbnail: ExternalBlob, streamUrl: string, ingestUrl: string, streamKey: string): Promise<void>;
 }

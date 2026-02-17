@@ -3,6 +3,7 @@ import { useGetAllChannels } from '../hooks/useQueries';
 import CategoryIcon from '../components/branding/CategoryIcon';
 import ChannelGrid from '../components/channels/ChannelGrid';
 import AdultRouteGuard from '../components/adult/AdultRouteGuard';
+import { getCategoryLabel } from '../utils/category';
 
 function CategoryPageContent() {
   const { categoryName } = useParams({ strict: false });
@@ -12,7 +13,7 @@ function CategoryPageContent() {
     (channel) => channel.category.toLowerCase() === categoryName?.toLowerCase()
   );
 
-  const displayName = categoryName ? categoryName.charAt(0).toUpperCase() + categoryName.slice(1) : 'Category';
+  const displayName = categoryName ? getCategoryLabel(categoryName) : 'Category';
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -48,4 +49,3 @@ export default function CategoryPage() {
 
   return <CategoryPageContent />;
 }
-

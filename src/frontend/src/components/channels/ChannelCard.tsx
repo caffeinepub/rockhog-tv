@@ -3,6 +3,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import type { Channel } from '../../backend';
 import { Play } from 'lucide-react';
+import { getCategoryLabel } from '../../utils/category';
 
 interface ChannelCardProps {
   channel: Channel;
@@ -32,7 +33,7 @@ export default function ChannelCard({ channel }: ChannelCardProps) {
         <div className="flex items-start justify-between gap-2 mb-2">
           <h3 className="font-semibold line-clamp-2 flex-1">{channel.title}</h3>
           <Badge variant="secondary" className="shrink-0">
-            {channel.category}
+            {getCategoryLabel(channel.category)}
           </Badge>
         </div>
         <p className="text-sm text-muted-foreground line-clamp-2">{channel.description}</p>
@@ -40,4 +41,3 @@ export default function ChannelCard({ channel }: ChannelCardProps) {
     </Card>
   );
 }
-
