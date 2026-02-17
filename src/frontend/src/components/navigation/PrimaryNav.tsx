@@ -1,7 +1,7 @@
 import { useNavigate, useRouterState } from '@tanstack/react-router';
 import { useInternetIdentity } from '../../hooks/useInternetIdentity';
 import { Button } from '@/components/ui/button';
-import { Music, Gamepad2, Trophy, Ghost, Lock, Video, Crosshair } from 'lucide-react';
+import { Music, Gamepad2, Trophy, Ghost, Lock, Video } from 'lucide-react';
 
 const categories = [
   { name: 'Music', path: '/category/music', icon: Music },
@@ -36,15 +36,6 @@ export default function PrimaryNav() {
           </Button>
         );
       })}
-      <Button
-        variant={currentPath === '/bacon-ops-arena' ? 'default' : 'ghost'}
-        size="sm"
-        onClick={() => navigate({ to: '/bacon-ops-arena' })}
-        className="gap-2 ml-2"
-      >
-        <Crosshair className="w-4 h-4" />
-        Bacon Ops
-      </Button>
       {identity && (
         <Button
           variant={currentPath === '/creator-studio' ? 'default' : 'ghost'}

@@ -3,14 +3,13 @@ import Map "mo:core/Map";
 import Array "mo:core/Array";
 import Iter "mo:core/Iter";
 import Runtime "mo:core/Runtime";
-import Migration "migration";
+
 import Principal "mo:core/Principal";
 import MixinAuthorization "authorization/MixinAuthorization";
 import AccessControl "authorization/access-control";
 import MixinStorage "blob-storage/Mixin";
 import Storage "blob-storage/Storage";
 
-(with migration = Migration.run)
 actor {
   include MixinStorage();
 
@@ -357,4 +356,3 @@ actor {
     };
   };
 };
-

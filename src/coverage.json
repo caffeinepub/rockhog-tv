@@ -1,119 +1,40 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-17T22:16:21.229Z",
+  "generatedAt": "2026-02-17T22:22:53.238Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 5,
-    "implemented": 5,
-    "items": [
-      {
-        "id": "REQ-34",
-        "summary": "Extend the channel category system to support the following new categories end-to-end (creation/editing, storage, and retrieval): Radio, DJs, IRL, Audio & Video Podcasts, and PPV Events.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/utils/category.ts",
-          "frontend/src/components/channels/ChannelEditorDialog.tsx",
-          "frontend/src/pages/CategoryPage.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/utils/category.ts",
-          "frontend/src/components/channels/ChannelEditorDialog.tsx",
-          "frontend/src/pages/CategoryPage.tsx"
-        ]
-      },
-      {
-        "id": "REQ-35",
-        "summary": "Update the main (home) page category browsing section to include clickable entries for Radio, DJs, IRL, Audio & Video Podcasts, and PPV Events, alongside the existing categories.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/pages/BrowseHomePage.tsx",
-          "frontend/src/utils/category.ts"
-        ],
-        "matchedFiles": [
-          "frontend/src/pages/BrowseHomePage.tsx",
-          "frontend/src/utils/category.ts"
-        ]
-      },
-      {
-        "id": "REQ-36",
-        "summary": "Update the Creator channel editor category dropdown to include Radio, DJs, IRL, Audio & Video Podcasts, and PPV Events as selectable options, using clear English labels (e.g., \"IRL\", \"DJs\", \"PPV Events\", \"Audio & Video Podcasts\").",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/components/channels/ChannelEditorDialog.tsx",
-          "frontend/src/utils/category.ts"
-        ],
-        "matchedFiles": [
-          "frontend/src/components/channels/ChannelEditorDialog.tsx",
-          "frontend/src/utils/category.ts"
-        ]
-      },
-      {
-        "id": "REQ-37",
-        "summary": "Update category display naming so that category pages and UI badges show appropriate English capitalization for the new categories (e.g., \"IRL\" not \"Irl\", \"DJs\" not \"Djs\", \"PPV Events\" not \"Ppv\").",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/utils/category.ts",
-          "frontend/src/pages/CategoryPage.tsx",
-          "frontend/src/components/channels/ChannelCard.tsx",
-          "frontend/src/pages/StreamDetailPage.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/utils/category.ts",
-          "frontend/src/pages/CategoryPage.tsx",
-          "frontend/src/components/channels/ChannelCard.tsx",
-          "frontend/src/pages/StreamDetailPage.tsx"
-        ]
-      },
-      {
-        "id": "REQ-38",
-        "summary": "Add new static category icon assets for Radio, DJs, IRL, Audio & Video Podcasts, and PPV Events, and render them via the existing CategoryIcon component mapping (served from frontend/public/assets/generated).",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/public/assets/generated/rockhog-cat-radio.dim_256x256.png",
-          "frontend/public/assets/generated/rockhog-cat-djs.dim_256x256.png",
-          "frontend/public/assets/generated/rockhog-cat-irl.dim_256x256.png",
-          "frontend/public/assets/generated/rockhog-cat-podcasts.dim_256x256.png",
-          "frontend/public/assets/generated/rockhog-cat-ppv.dim_256x256.png",
-          "frontend/src/components/branding/CategoryIcon.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/public/assets/generated/rockhog-cat-radio.dim_256x256.png",
-          "frontend/public/assets/generated/rockhog-cat-djs.dim_256x256.png",
-          "frontend/public/assets/generated/rockhog-cat-irl.dim_256x256.png",
-          "frontend/public/assets/generated/rockhog-cat-podcasts.dim_256x256.png",
-          "frontend/public/assets/generated/rockhog-cat-ppv.dim_256x256.png",
-          "frontend/src/components/branding/CategoryIcon.tsx"
-        ]
-      }
-    ]
+    "total": 0,
+    "implemented": 0,
+    "items": []
   },
   "changedFiles": [
     "backend/main.mo",
-    "backend/migration.mo",
     "build-request.json",
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/public/assets/generated/rockhog-cat-djs.dim_256x256.png",
-    "frontend/public/assets/generated/rockhog-cat-irl.dim_256x256.png",
-    "frontend/public/assets/generated/rockhog-cat-podcasts.dim_256x256.png",
-    "frontend/public/assets/generated/rockhog-cat-ppv.dim_256x256.png",
-    "frontend/public/assets/generated/rockhog-cat-radio.dim_256x256.png",
-    "frontend/src/backend.d.ts",
-    "frontend/src/backend.ts",
-    "frontend/src/components/branding/CategoryIcon.tsx",
-    "frontend/src/components/channels/ChannelCard.tsx",
-    "frontend/src/components/channels/ChannelEditorDialog.tsx",
-    "frontend/src/declarations/backend.did.d.ts",
-    "frontend/src/declarations/backend.did.js",
-    "frontend/src/pages/BrowseHomePage.tsx",
-    "frontend/src/pages/CategoryPage.tsx",
-    "frontend/src/pages/StreamDetailPage.tsx",
-    "frontend/src/utils/category.ts",
+    "frontend/src/App.tsx",
+    "frontend/src/components/navigation/PrimaryNav.tsx",
+    "frontend/src/game/baconOps/engine/ai.ts",
+    "frontend/src/game/baconOps/engine/constants.ts",
+    "frontend/src/game/baconOps/engine/gameLoop.ts",
+    "frontend/src/game/baconOps/engine/gameState.ts",
+    "frontend/src/game/baconOps/engine/renderer.ts",
+    "frontend/src/game/baconOps/engine/systems.ts",
+    "frontend/src/game/baconOps/engine/types.ts",
+    "frontend/src/game/baconOps/input/VirtualControls.tsx",
+    "frontend/src/game/baconOps/input/useDesktopControls.ts",
+    "frontend/src/game/baconOps/input/useTouchControls.ts",
+    "frontend/src/game/baconOps/ui/BaconOpsMainMenu.tsx",
+    "frontend/src/game/baconOps/ui/Hud.tsx",
+    "frontend/src/game/baconOps/ui/RoundOverlay.tsx",
+    "frontend/src/game/baconOps/ui/StatsPanel.tsx",
+    "frontend/src/hooks/useQueries.ts",
+    "frontend/src/pages/BaconOpsArenaPage.tsx",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

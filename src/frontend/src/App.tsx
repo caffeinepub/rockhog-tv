@@ -8,7 +8,6 @@ import CreatorStudioPage from './pages/CreatorStudioPage';
 import BuyBaconCashPage from './pages/BuyBaconCashPage';
 import AdminBaconCashRequestsPage from './pages/AdminBaconCashRequestsPage';
 import ContactPage from './pages/ContactPage';
-import BaconOpsArenaPage from './pages/BaconOpsArenaPage';
 import { Toaster } from '@/components/ui/sonner';
 
 const rootRoute = createRootRoute({
@@ -61,12 +60,6 @@ const contactRoute = createRoute({
   component: ContactPage,
 });
 
-const baconOpsArenaRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/bacon-ops-arena',
-  component: BaconOpsArenaPage,
-});
-
 const routeTree = rootRoute.addChildren([
   indexRoute,
   categoryRoute,
@@ -75,7 +68,6 @@ const routeTree = rootRoute.addChildren([
   buyBaconCashRoute,
   adminBaconCashRoute,
   contactRoute,
-  baconOpsArenaRoute,
 ]);
 
 const router = createRouter({ routeTree });
