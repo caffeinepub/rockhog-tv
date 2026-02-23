@@ -1,33 +1,16 @@
 import Map "mo:core/Map";
+import List "mo:core/List";
+import Nat "mo:core/Nat";
+import Text "mo:core/Text";
 import Principal "mo:core/Principal";
+import Iter "mo:core/Iter";
+import Runtime "mo:core/Runtime";
+import Time "mo:core/Time";
 import Storage "blob-storage/Storage";
+import AccessControl "authorization/access-control";
 
 module {
-  type OldCategory = {
-    #music;
-    #gaming;
-    #sports;
-    #horror;
-    #adult;
-  };
-
-  type OldChannel = {
-    id : Text;
-    owner : Principal.Principal;
-    title : Text;
-    category : OldCategory;
-    description : Text;
-    thumbnail : Storage.ExternalBlob;
-    streamUrl : Text;
-    ingestUrl : Text;
-    streamKey : Text;
-  };
-
-  type OldActor = {
-    channels : Map.Map<Text, OldChannel>;
-  };
-
-  type NewCategory = {
+  type Category = {
     #music;
     #gaming;
     #sports;
@@ -40,11 +23,11 @@ module {
     #ppv_events;
   };
 
-  type NewChannel = {
+  type Channel = {
     id : Text;
-    owner : Principal.Principal;
+    owner : Principal;
     title : Text;
-    category : NewCategory;
+    category : Category;
     description : Text;
     thumbnail : Storage.ExternalBlob;
     streamUrl : Text;
@@ -52,26 +35,88 @@ module {
     streamKey : Text;
   };
 
+  type BaconCashRequest = {
+    id : Text;
+    user : Principal;
+    amount : Nat;
+    completed : Bool;
+  };
+
+  type UserProfile = {
+    name : Text;
+    baconCashBalance : Nat;
+    bestScore : Nat;
+  };
+
+  type AIMessage = {
+    isAI : Bool;
+    text : Text;
+  };
+
+  type Conversation = {
+    id : Text;
+    owner : Principal;
+    messages : [AIMessage];
+  };
+
+  type AIRequest = {
+    prompt : Text;
+    previousConversation : ?Text;
+  };
+
+  type AIResponse = {
+    botReply : Text;
+    conversation : ?Conversation;
+  };
+
+  // Chat Room Types
+  type ChatMessage = {
+    id : Nat;
+    sender : Principal;
+    senderName : Text;
+    message : Text;
+    timestamp : Int;
+  };
+
+  type ChatRoom = {
+    id : Text;
+    name : Text;
+    createdAt : Int;
+    messages : List.List<ChatMessage>;
+  };
+
+  type OldActor = {
+    channels : Map.Map<Text, Channel>;
+    baconCashBalances : Map.Map<Principal, Nat>;
+    baconCashRequests : Map.Map<Text, BaconCashRequest>;
+    userProfiles : Map.Map<Principal, UserProfile>;
+    conversations : Map.Map<Text, Conversation>;
+  };
+
   type NewActor = {
-    channels : Map.Map<Text, NewChannel>;
+    channels : Map.Map<Text, Channel>;
+    baconCashBalances : Map.Map<Principal, Nat>;
+    baconCashRequests : Map.Map<Text, BaconCashRequest>;
+    userProfiles : Map.Map<Principal, UserProfile>;
+    conversations : Map.Map<Text, Conversation>;
+    chatRooms : Map.Map<Text, ChatRoom>;
   };
 
   public func run(old : OldActor) : NewActor {
-    let newChannels = old.channels.map<Text, OldChannel, NewChannel>(
-      func(_id, oldChannel) {
-        { oldChannel with category = upgradeCategory(oldChannel.category) };
-      }
-    );
-    { channels = newChannels };
-  };
+    let chatRooms = Map.empty<Text, ChatRoom>();
 
-  func upgradeCategory(oldCategory : OldCategory) : NewCategory {
-    switch (oldCategory) {
-      case (#music) { #music };
-      case (#gaming) { #gaming };
-      case (#sports) { #sports };
-      case (#horror) { #horror };
-      case (#adult) { #adult };
+    let defaultRoom : ChatRoom = {
+      id = "default-rockhog-lounge";
+      name = "RockHog Lounge";
+      createdAt = Time.now();
+      messages = List.empty<ChatMessage>();
+    };
+
+    chatRooms.add(defaultRoom.id, defaultRoom);
+
+    {
+      old with
+      chatRooms
     };
   };
 };

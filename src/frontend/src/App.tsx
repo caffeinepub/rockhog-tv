@@ -8,6 +8,9 @@ import CreatorStudioPage from './pages/CreatorStudioPage';
 import BuyBaconCashPage from './pages/BuyBaconCashPage';
 import AdminBaconCashRequestsPage from './pages/AdminBaconCashRequestsPage';
 import ContactPage from './pages/ContactPage';
+import SignUpPage from './pages/SignUpPage';
+import AIChatPage from './pages/AIChatPage';
+import ChatRoomPage from './pages/ChatRoomPage';
 import { Toaster } from '@/components/ui/sonner';
 
 const rootRoute = createRootRoute({
@@ -60,6 +63,24 @@ const contactRoute = createRoute({
   component: ContactPage,
 });
 
+const signUpRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/sign-up',
+  component: SignUpPage,
+});
+
+const aiChatRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/ai-chat',
+  component: AIChatPage,
+});
+
+const chatRoomRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/chat-room',
+  component: ChatRoomPage,
+});
+
 const routeTree = rootRoute.addChildren([
   indexRoute,
   categoryRoute,
@@ -68,6 +89,9 @@ const routeTree = rootRoute.addChildren([
   buyBaconCashRoute,
   adminBaconCashRoute,
   contactRoute,
+  signUpRoute,
+  aiChatRoute,
+  chatRoomRoute,
 ]);
 
 const router = createRouter({ routeTree });

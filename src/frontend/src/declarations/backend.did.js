@@ -59,6 +59,19 @@ export const UserProfile = IDL.Record({
   'name' : IDL.Text,
   'bestScore' : IDL.Nat,
 });
+export const ChatMessage = IDL.Record({
+  'id' : IDL.Nat,
+  'sender' : IDL.Principal,
+  'message' : IDL.Text,
+  'timestamp' : IDL.Int,
+  'senderName' : IDL.Text,
+});
+export const AIMessage = IDL.Record({ 'isAI' : IDL.Bool, 'text' : IDL.Text });
+export const Conversation = IDL.Record({
+  'id' : IDL.Text,
+  'messages' : IDL.Vec(AIMessage),
+  'owner' : IDL.Principal,
+});
 
 export const idlService = IDL.Service({
   '_caffeineStorageBlobIsLive' : IDL.Func(
@@ -103,6 +116,8 @@ export const idlService = IDL.Service({
       [],
       [],
     ),
+  'createChatRoom' : IDL.Func([IDL.Text], [IDL.Text], []),
+  'createDefaultChatRoom' : IDL.Func([], [IDL.Text], []),
   'deleteChannel' : IDL.Func([IDL.Text], [], []),
   'fulfillBaconCashRequest' : IDL.Func([IDL.Text], [], []),
   'getAllBaconCashRequests' : IDL.Func(
@@ -111,11 +126,23 @@ export const idlService = IDL.Service({
       ['query'],
     ),
   'getAllChannels' : IDL.Func([], [IDL.Vec(Channel)], ['query']),
+  'getAllChatRooms' : IDL.Func(
+      [],
+      [IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))],
+      ['query'],
+    ),
   'getBalance' : IDL.Func([], [IDL.Nat], ['query']),
   'getBestScore' : IDL.Func([], [IDL.Nat], ['query']),
   'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
   'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
   'getChannel' : IDL.Func([IDL.Text], [IDL.Opt(Channel)], ['query']),
+  'getChatRoomMessages' : IDL.Func(
+      [IDL.Text],
+      [IDL.Vec(ChatMessage)],
+      ['query'],
+    ),
+  'getConversation' : IDL.Func([IDL.Text], [IDL.Opt(Conversation)], ['query']),
+  'getConversations' : IDL.Func([], [IDL.Vec(Conversation)], ['query']),
   'getMyBaconCashRequests' : IDL.Func(
       [],
       [IDL.Vec(BaconCashRequest)],
@@ -128,8 +155,10 @@ export const idlService = IDL.Service({
       ['query'],
     ),
   'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
+  'postMessage' : IDL.Func([IDL.Text, IDL.Text, IDL.Text], [], []),
   'requestBaconCash' : IDL.Func([IDL.Nat], [IDL.Text], []),
   'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
+  'storeConversation' : IDL.Func([IDL.Text, Conversation], [], []),
   'updateBestScore' : IDL.Func([IDL.Nat], [], []),
   'updateChannel' : IDL.Func(
       [
@@ -201,6 +230,19 @@ export const idlFactory = ({ IDL }) => {
     'name' : IDL.Text,
     'bestScore' : IDL.Nat,
   });
+  const ChatMessage = IDL.Record({
+    'id' : IDL.Nat,
+    'sender' : IDL.Principal,
+    'message' : IDL.Text,
+    'timestamp' : IDL.Int,
+    'senderName' : IDL.Text,
+  });
+  const AIMessage = IDL.Record({ 'isAI' : IDL.Bool, 'text' : IDL.Text });
+  const Conversation = IDL.Record({
+    'id' : IDL.Text,
+    'messages' : IDL.Vec(AIMessage),
+    'owner' : IDL.Principal,
+  });
   
   return IDL.Service({
     '_caffeineStorageBlobIsLive' : IDL.Func(
@@ -245,6 +287,8 @@ export const idlFactory = ({ IDL }) => {
         [],
         [],
       ),
+    'createChatRoom' : IDL.Func([IDL.Text], [IDL.Text], []),
+    'createDefaultChatRoom' : IDL.Func([], [IDL.Text], []),
     'deleteChannel' : IDL.Func([IDL.Text], [], []),
     'fulfillBaconCashRequest' : IDL.Func([IDL.Text], [], []),
     'getAllBaconCashRequests' : IDL.Func(
@@ -253,11 +297,27 @@ export const idlFactory = ({ IDL }) => {
         ['query'],
       ),
     'getAllChannels' : IDL.Func([], [IDL.Vec(Channel)], ['query']),
+    'getAllChatRooms' : IDL.Func(
+        [],
+        [IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))],
+        ['query'],
+      ),
     'getBalance' : IDL.Func([], [IDL.Nat], ['query']),
     'getBestScore' : IDL.Func([], [IDL.Nat], ['query']),
     'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
     'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
     'getChannel' : IDL.Func([IDL.Text], [IDL.Opt(Channel)], ['query']),
+    'getChatRoomMessages' : IDL.Func(
+        [IDL.Text],
+        [IDL.Vec(ChatMessage)],
+        ['query'],
+      ),
+    'getConversation' : IDL.Func(
+        [IDL.Text],
+        [IDL.Opt(Conversation)],
+        ['query'],
+      ),
+    'getConversations' : IDL.Func([], [IDL.Vec(Conversation)], ['query']),
     'getMyBaconCashRequests' : IDL.Func(
         [],
         [IDL.Vec(BaconCashRequest)],
@@ -270,8 +330,10 @@ export const idlFactory = ({ IDL }) => {
         ['query'],
       ),
     'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
+    'postMessage' : IDL.Func([IDL.Text, IDL.Text, IDL.Text], [], []),
     'requestBaconCash' : IDL.Func([IDL.Nat], [IDL.Text], []),
     'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
+    'storeConversation' : IDL.Func([IDL.Text, Conversation], [], []),
     'updateBestScore' : IDL.Func([IDL.Nat], [], []),
     'updateChannel' : IDL.Func(
         [

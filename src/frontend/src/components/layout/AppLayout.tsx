@@ -8,6 +8,8 @@ import ProfileSetupDialog from '../auth/ProfileSetupDialog';
 import AccountSummary from '../account/AccountSummary';
 import ShareButton from '../share/ShareButton';
 import { SiX, SiFacebook, SiInstagram } from 'react-icons/si';
+import { Button } from '@/components/ui/button';
+import { UserPlus } from 'lucide-react';
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const { identity } = useInternetIdentity();
@@ -28,6 +30,14 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             <div className="flex items-center gap-2">
               <ShareButton />
               {isAuthenticated && <AccountSummary />}
+              {!isAuthenticated && (
+                <Button asChild variant="outline" size="sm" className="gap-2 hidden md:flex">
+                  <Link to="/sign-up">
+                    <UserPlus className="w-4 h-4" />
+                    Sign Up
+                  </Link>
+                </Button>
+              )}
               <LoginButton />
             </div>
           </div>

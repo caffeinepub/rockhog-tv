@@ -89,14 +89,19 @@ export class ExternalBlob {
         return this;
     }
 }
+export interface AIMessage {
+    isAI: boolean;
+    text: string;
+}
 export interface _CaffeineStorageRefillInformation {
     proposed_top_up_amount?: bigint;
 }
-export interface BaconCashRequest {
-    id: string;
-    user: Principal;
-    completed: boolean;
-    amount: bigint;
+export interface ChatMessage {
+    id: bigint;
+    sender: Principal;
+    message: string;
+    timestamp: bigint;
+    senderName: string;
 }
 export interface Channel {
     id: string;
@@ -112,6 +117,17 @@ export interface Channel {
 export interface _CaffeineStorageCreateCertificateResult {
     method: string;
     blob_hash: string;
+}
+export interface BaconCashRequest {
+    id: string;
+    user: Principal;
+    completed: boolean;
+    amount: bigint;
+}
+export interface Conversation {
+    id: string;
+    messages: Array<AIMessage>;
+    owner: Principal;
 }
 export interface UserProfile {
     baconCashBalance: bigint;
@@ -149,25 +165,33 @@ export interface backendInterface {
     _initializeAccessControlWithSecret(userSecret: string): Promise<void>;
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
     createChannel(id: string, title: string, category: string, description: string, thumbnail: ExternalBlob, streamUrl: string, ingestUrl: string, streamKey: string): Promise<void>;
+    createChatRoom(name: string): Promise<string>;
+    createDefaultChatRoom(): Promise<string>;
     deleteChannel(id: string): Promise<void>;
     fulfillBaconCashRequest(requestId: string): Promise<void>;
     getAllBaconCashRequests(): Promise<Array<BaconCashRequest>>;
     getAllChannels(): Promise<Array<Channel>>;
+    getAllChatRooms(): Promise<Array<[string, string]>>;
     getBalance(): Promise<bigint>;
     getBestScore(): Promise<bigint>;
     getCallerUserProfile(): Promise<UserProfile | null>;
     getCallerUserRole(): Promise<UserRole>;
     getChannel(id: string): Promise<Channel | null>;
+    getChatRoomMessages(roomId: string): Promise<Array<ChatMessage>>;
+    getConversation(conversationId: string): Promise<Conversation | null>;
+    getConversations(): Promise<Array<Conversation>>;
     getMyBaconCashRequests(): Promise<Array<BaconCashRequest>>;
     getMyChannels(): Promise<Array<Channel>>;
     getUserProfile(user: Principal): Promise<UserProfile | null>;
     isCallerAdmin(): Promise<boolean>;
+    postMessage(roomId: string, senderName: string, message: string): Promise<void>;
     requestBaconCash(amount: bigint): Promise<string>;
     saveCallerUserProfile(profile: UserProfile): Promise<void>;
+    storeConversation(conversationId: string, conversation: Conversation): Promise<void>;
     updateBestScore(score: bigint): Promise<void>;
     updateChannel(id: string, title: string, category: string, description: string, thumbnail: ExternalBlob, streamUrl: string, ingestUrl: string, streamKey: string): Promise<void>;
 }
-import type { Category as _Category, Channel as _Channel, ExternalBlob as _ExternalBlob, UserProfile as _UserProfile, UserRole as _UserRole, _CaffeineStorageRefillInformation as __CaffeineStorageRefillInformation, _CaffeineStorageRefillResult as __CaffeineStorageRefillResult } from "./declarations/backend.did.d.ts";
+import type { Category as _Category, Channel as _Channel, Conversation as _Conversation, ExternalBlob as _ExternalBlob, UserProfile as _UserProfile, UserRole as _UserRole, _CaffeineStorageRefillInformation as __CaffeineStorageRefillInformation, _CaffeineStorageRefillResult as __CaffeineStorageRefillResult } from "./declarations/backend.did.d.ts";
 export class Backend implements backendInterface {
     constructor(private actor: ActorSubclass<_SERVICE>, private _uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, private _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, private processError?: (error: unknown) => never){}
     async _caffeineStorageBlobIsLive(arg0: Uint8Array): Promise<boolean> {
@@ -296,6 +320,34 @@ export class Backend implements backendInterface {
             return result;
         }
     }
+    async createChatRoom(arg0: string): Promise<string> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.createChatRoom(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.createChatRoom(arg0);
+            return result;
+        }
+    }
+    async createDefaultChatRoom(): Promise<string> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.createDefaultChatRoom();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.createDefaultChatRoom();
+            return result;
+        }
+    }
     async deleteChannel(arg0: string): Promise<void> {
         if (this.processError) {
             try {
@@ -350,6 +402,20 @@ export class Backend implements backendInterface {
         } else {
             const result = await this.actor.getAllChannels();
             return from_candid_vec_n11(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async getAllChatRooms(): Promise<Array<[string, string]>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getAllChatRooms();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getAllChatRooms();
+            return result;
         }
     }
     async getBalance(): Promise<bigint> {
@@ -422,6 +488,48 @@ export class Backend implements backendInterface {
             return from_candid_opt_n20(this._uploadFile, this._downloadFile, result);
         }
     }
+    async getChatRoomMessages(arg0: string): Promise<Array<ChatMessage>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getChatRoomMessages(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getChatRoomMessages(arg0);
+            return result;
+        }
+    }
+    async getConversation(arg0: string): Promise<Conversation | null> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getConversation(arg0);
+                return from_candid_opt_n21(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getConversation(arg0);
+            return from_candid_opt_n21(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async getConversations(): Promise<Array<Conversation>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getConversations();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getConversations();
+            return result;
+        }
+    }
     async getMyBaconCashRequests(): Promise<Array<BaconCashRequest>> {
         if (this.processError) {
             try {
@@ -478,6 +586,20 @@ export class Backend implements backendInterface {
             return result;
         }
     }
+    async postMessage(arg0: string, arg1: string, arg2: string): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.postMessage(arg0, arg1, arg2);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.postMessage(arg0, arg1, arg2);
+            return result;
+        }
+    }
     async requestBaconCash(arg0: bigint): Promise<string> {
         if (this.processError) {
             try {
@@ -503,6 +625,20 @@ export class Backend implements backendInterface {
             }
         } else {
             const result = await this.actor.saveCallerUserProfile(arg0);
+            return result;
+        }
+    }
+    async storeConversation(arg0: string, arg1: Conversation): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.storeConversation(arg0, arg1);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.storeConversation(arg0, arg1);
             return result;
         }
     }
@@ -555,6 +691,9 @@ function from_candid_opt_n17(_uploadFile: (file: ExternalBlob) => Promise<Uint8A
 }
 async function from_candid_opt_n20(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_Channel]): Promise<Channel | null> {
     return value.length === 0 ? null : await from_candid_Channel_n12(_uploadFile, _downloadFile, value[0]);
+}
+function from_candid_opt_n21(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_Conversation]): Conversation | null {
+    return value.length === 0 ? null : value[0];
 }
 function from_candid_opt_n6(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [boolean]): boolean | null {
     return value.length === 0 ? null : value[0];

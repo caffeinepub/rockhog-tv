@@ -1,4 +1,88 @@
 {
   "kind": "feature_evidence_report",
-  "features": []
+  "features": [
+    {
+      "featureId": "feature-create-react-query-hooks-for-chat-room-operations-usegetchatrooms-to-fetch-all-chat-rooms-usegetchatroommessages-to-fetch-messages-for-a-specific-room-with-polling-enabled-for-real-time-updates-and-usepostmessage-mutation-to-send-new-messages",
+      "featureTitle": "Create React Query hooks for chat room operations: useGetChatRooms to fetch all chat rooms, useGetChatRoomMessages to fetch messages for a specific room with polling enabled for real-time updates, and usePostMessage mutation to send new messages",
+      "files": [
+        "frontend/src/hooks/useChatRooms.ts"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-48"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-create-a-chatroompage-component-that-displays-a-list-of-available-chat-rooms-in-a-sidebar-shows-the-selected-room-s-message-history-in-the-main-area-with-sender-names-and-timestamps-and-includes-a-chatinput-component-at-the-bottom-for-sending-messages",
+      "featureTitle": "Create a ChatRoomPage component that displays a list of available chat rooms in a sidebar, shows the selected room's message history in the main area with sender names and timestamps, and includes a ChatInput component at the bottom for sending messages",
+      "files": [
+        "frontend/src/components/chat/ChatRoomList.tsx",
+        "frontend/src/components/chat/MessageList.tsx",
+        "frontend/src/pages/ChatRoomPage.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-49"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-a-route-for-the-chat-room-page-at-chat-room-in-the-application-router-and-add-a-primary-navigation-entry-point-labeled-chat-room-in-the-primarynav-component-so-users-can-access-it-from-anywhere-in-the-app",
+      "featureTitle": "Add a route for the chat room page at /chat-room in the application router and add a primary navigation entry point labeled 'Chat Room' in the PrimaryNav component so users can access it from anywhere in the app",
+      "files": [
+        "frontend/src/App.tsx",
+        "frontend/src/components/navigation/PrimaryNav.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-50"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-create-a-cohesive-visual-theme-for-the-chat-room-interface-that-emphasizes-real-time-communication-and-community-interaction-using-distinct-colors-and-styling-from-both-the-rockhog-tv-streaming-experience-and-the-ai-chat-interface",
+      "featureTitle": "Create a cohesive visual theme for the chat room interface that emphasizes real-time communication and community interaction, using distinct colors and styling from both the RockHog TV streaming experience and the AI Chat interface",
+      "files": [
+        "frontend/src/index.css"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-51"
+      ],
+      "confidence": "high"
+    }
+  ]
 }

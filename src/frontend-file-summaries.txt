@@ -1,11 +1,11 @@
 {
-  "frontend/src/index.css": "Global styles with OKLCH color system and Bacon Ops styling including new mode selection card styles with hover and selected states.",
-  "frontend/src/App.tsx": "Root application component with TanStack Router setup, ThemeProvider, and routes for browse, categories, streams, creator studio, admin, and contact pages.",
+  "frontend/src/index.css": "Global styles with OKLCH color system, Bacon Ops styling, AI chat theme, and new chat room theme with unique purple-blue accent colors for community interaction.",
+  "frontend/src/App.tsx": "Root application component with TanStack Router setup, ThemeProvider, and routes for browse, categories, streams, creator studio, admin, contact, sign-up, AI chat, and chat room pages.",
   "frontend/src/hooks/useQueries.ts": "React Query hooks for all backend operations including channels, user profiles, and Bacon Cash with proper authentication checks and invalidation.",
   "frontend/src/hooks/useAuthz.ts": "Authorization hooks to fetch caller role and admin status from the backend for UI permission gating.",
   "frontend/src/hooks/useAdultGate.ts": "Session-persisted adult content consent state management using sessionStorage.",
-  "frontend/src/components/layout/AppLayout.tsx": "Main layout component with header, navigation, footer with branding/attribution and Contact link, login button, account summary, profile setup dialog, and share button in the header actions area.",
-  "frontend/src/components/navigation/PrimaryNav.tsx": "Primary navigation bar with category links (Music, Gaming, Sports, Horror, Adult) and Creator Studio link for authenticated users.",
+  "frontend/src/components/layout/AppLayout.tsx": "Main layout component with header, navigation, footer with branding/attribution and Contact link, login button, account summary, profile setup dialog, share button, and desktop-only Sign Up button (hidden on mobile and when authenticated) in the header actions area.",
+  "frontend/src/components/navigation/PrimaryNav.tsx": "Primary navigation bar with category links (Music, Gaming, Sports, Horror, Adult), AI Chat link, Chat Room link for all users, and Creator Studio link for authenticated users.",
   "frontend/src/components/branding/BrandLogo.tsx": "RockHog TV logo component rendering the generated logo image with gradient text.",
   "frontend/src/components/branding/CategoryIcon.tsx": "Category icon mapper component that displays the appropriate generated icon for each content category including the 5 new categories.",
   "frontend/src/components/branding/HeroBanner.tsx": "Hero banner component with generated hero image and tagline for the home page.",
@@ -45,5 +45,15 @@
   "frontend/src/game/baconOps/input/useTouchControls.ts": "React hook that manages touch input state for mobile gameplay with callbacks for virtual joystick and fire button.",
   "frontend/src/game/baconOps/input/VirtualControls.tsx": "Mobile touch control overlay with a draggable virtual joystick for movement and a fire button for shooting.",
   "frontend/src/game/baconOps/ui/BaconOpsMainMenu.tsx": "Mode selection menu component with Arena and Practice mode cards, Start button, and integrated StatsPanel for authenticated users.",
-  "frontend/src/utils/category.ts": "Shared category utilities providing canonical category values, display label mappings, and helper functions for consistent category handling across the app."
+  "frontend/src/utils/category.ts": "Shared category utilities providing canonical category values, display label mappings, and helper functions for consistent category handling across the app.",
+  "frontend/src/pages/SignUpPage.tsx": "Desktop-focused sign-up page that explains Internet Identity authentication, displays benefits of joining RockHog TV, and initiates the login flow with a primary CTA; shows an \"already signed in\" state with redirect for authenticated users.",
+  "frontend/src/pages/AIChatPage.tsx": "AI chat page with conversational interface, message history, conversation management for authenticated users, and rule-based AI response generation without external APIs.",
+  "frontend/src/components/chat/MessageBubble.tsx": "Reusable message bubble component that visually differentiates user and AI messages with distinct styling, avatars, and alignment.",
+  "frontend/src/components/chat/ChatInput.tsx": "Chat input component with textarea, send button, keyboard shortcuts (Enter to send, Shift+Enter for new line), and disabled state handling.",
+  "frontend/src/components/chat/ConversationList.tsx": "Conversation list component displaying previous chat sessions with preview text, message count, and loading/empty states.",
+  "frontend/src/hooks/useConversations.ts": "React Query hooks for managing AI conversations including fetching conversation history and storing new conversations with proper authentication checks.",
+  "frontend/src/hooks/useChatRooms.ts": "React Query hooks for chat room operations including fetching all chat rooms, polling messages every 2.5 seconds for real-time updates, and posting messages with proper invalidation.",
+  "frontend/src/components/chat/ChatRoomList.tsx": "Sidebar component displaying a list of available chat rooms with clickable selection, loading states, and visual indication of the currently selected room.",
+  "frontend/src/components/chat/MessageList.tsx": "Scrollable message list component that displays chat messages with sender name, text, and formatted timestamp, with auto-scroll to newest messages.",
+  "frontend/src/pages/ChatRoomPage.tsx": "Main chat room page with two-column layout featuring sidebar with room list and main area with message list and chat input; shows login prompt for unauthenticated users."
 }

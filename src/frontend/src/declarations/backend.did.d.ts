@@ -10,6 +10,7 @@ import type { ActorMethod } from '@icp-sdk/core/agent';
 import type { IDL } from '@icp-sdk/core/candid';
 import type { Principal } from '@icp-sdk/core/principal';
 
+export interface AIMessage { 'isAI' : boolean, 'text' : string }
 export interface BaconCashRequest {
   'id' : string,
   'user' : Principal,
@@ -36,6 +37,18 @@ export interface Channel {
   'streamKey' : string,
   'streamUrl' : string,
   'ingestUrl' : string,
+}
+export interface ChatMessage {
+  'id' : bigint,
+  'sender' : Principal,
+  'message' : string,
+  'timestamp' : bigint,
+  'senderName' : string,
+}
+export interface Conversation {
+  'id' : string,
+  'messages' : Array<AIMessage>,
+  'owner' : Principal,
 }
 export type ExternalBlob = Uint8Array;
 export interface UserProfile {
@@ -79,21 +92,29 @@ export interface _SERVICE {
     [string, string, string, string, ExternalBlob, string, string, string],
     undefined
   >,
+  'createChatRoom' : ActorMethod<[string], string>,
+  'createDefaultChatRoom' : ActorMethod<[], string>,
   'deleteChannel' : ActorMethod<[string], undefined>,
   'fulfillBaconCashRequest' : ActorMethod<[string], undefined>,
   'getAllBaconCashRequests' : ActorMethod<[], Array<BaconCashRequest>>,
   'getAllChannels' : ActorMethod<[], Array<Channel>>,
+  'getAllChatRooms' : ActorMethod<[], Array<[string, string]>>,
   'getBalance' : ActorMethod<[], bigint>,
   'getBestScore' : ActorMethod<[], bigint>,
   'getCallerUserProfile' : ActorMethod<[], [] | [UserProfile]>,
   'getCallerUserRole' : ActorMethod<[], UserRole>,
   'getChannel' : ActorMethod<[string], [] | [Channel]>,
+  'getChatRoomMessages' : ActorMethod<[string], Array<ChatMessage>>,
+  'getConversation' : ActorMethod<[string], [] | [Conversation]>,
+  'getConversations' : ActorMethod<[], Array<Conversation>>,
   'getMyBaconCashRequests' : ActorMethod<[], Array<BaconCashRequest>>,
   'getMyChannels' : ActorMethod<[], Array<Channel>>,
   'getUserProfile' : ActorMethod<[Principal], [] | [UserProfile]>,
   'isCallerAdmin' : ActorMethod<[], boolean>,
+  'postMessage' : ActorMethod<[string, string, string], undefined>,
   'requestBaconCash' : ActorMethod<[bigint], string>,
   'saveCallerUserProfile' : ActorMethod<[UserProfile], undefined>,
+  'storeConversation' : ActorMethod<[string, Conversation], undefined>,
   'updateBestScore' : ActorMethod<[bigint], undefined>,
   'updateChannel' : ActorMethod<
     [string, string, string, string, ExternalBlob, string, string, string],

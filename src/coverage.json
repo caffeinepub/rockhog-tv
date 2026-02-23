@@ -1,20 +1,106 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-17T22:30:06.051Z",
+  "generatedAt": "2026-02-23T21:40:50.290Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 0,
-    "implemented": 0,
-    "items": []
+    "total": 7,
+    "implemented": 4,
+    "items": [
+      {
+        "id": "REQ-46",
+        "summary": "Create a new ChatRoom data type in the backend that stores chat room metadata (room ID, room name, creation timestamp) and an array of chat messages (message ID, sender principal, sender display name, message text, timestamp)",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-47",
+        "summary": "Add backend methods to create a new chat room, retrieve all chat rooms, retrieve messages for a specific chat room by ID, and post a new message to a chat room (authenticated users only)",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-48",
+        "summary": "Create React Query hooks for chat room operations: useGetChatRooms to fetch all chat rooms, useGetChatRoomMessages to fetch messages for a specific room with polling enabled for real-time updates, and usePostMessage mutation to send new messages",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/hooks/useChatRooms.ts"
+        ],
+        "matchedFiles": [
+          "frontend/src/hooks/useChatRooms.ts"
+        ]
+      },
+      {
+        "id": "REQ-49",
+        "summary": "Create a ChatRoomPage component that displays a list of available chat rooms in a sidebar, shows the selected room's message history in the main area with sender names and timestamps, and includes a ChatInput component at the bottom for sending messages",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/chat/ChatRoomList.tsx",
+          "frontend/src/components/chat/MessageList.tsx",
+          "frontend/src/pages/ChatRoomPage.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/chat/ChatRoomList.tsx",
+          "frontend/src/components/chat/MessageList.tsx",
+          "frontend/src/pages/ChatRoomPage.tsx"
+        ]
+      },
+      {
+        "id": "REQ-50",
+        "summary": "Add a route for the chat room page at /chat-room in the application router and add a primary navigation entry point labeled 'Chat Room' in the PrimaryNav component so users can access it from anywhere in the app",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/App.tsx",
+          "frontend/src/components/navigation/PrimaryNav.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/App.tsx",
+          "frontend/src/components/navigation/PrimaryNav.tsx"
+        ]
+      },
+      {
+        "id": "REQ-51",
+        "summary": "Create a cohesive visual theme for the chat room interface that emphasizes real-time communication and community interaction, using distinct colors and styling from both the RockHog TV streaming experience and the AI Chat interface",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/index.css"
+        ],
+        "matchedFiles": [
+          "frontend/src/index.css"
+        ]
+      },
+      {
+        "id": "REQ-52",
+        "summary": "Initialize at least one default chat room (e.g., 'General Chat' or 'RockHog Lounge') during backend initialization so users have a place to chat immediately after the feature is deployed",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
+      }
+    ]
   },
   "changedFiles": [
+    "backend/main.mo",
+    "backend/migration.mo",
     "build-request.json",
     "feature_evidence.json",
+    "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
+    "frontend/src/App.tsx",
+    "frontend/src/backend.d.ts",
+    "frontend/src/backend.ts",
+    "frontend/src/components/chat/ChatRoomList.tsx",
+    "frontend/src/components/chat/MessageList.tsx",
+    "frontend/src/components/navigation/PrimaryNav.tsx",
+    "frontend/src/declarations/backend.did.d.ts",
+    "frontend/src/declarations/backend.did.js",
+    "frontend/src/hooks/useChatRooms.ts",
+    "frontend/src/index.css",
+    "frontend/src/pages/ChatRoomPage.tsx",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

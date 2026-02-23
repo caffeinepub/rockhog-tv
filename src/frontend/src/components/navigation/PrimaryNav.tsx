@@ -1,7 +1,7 @@
 import { useNavigate, useRouterState } from '@tanstack/react-router';
 import { useInternetIdentity } from '../../hooks/useInternetIdentity';
 import { Button } from '@/components/ui/button';
-import { Music, Gamepad2, Trophy, Ghost, Lock, Video } from 'lucide-react';
+import { Music, Gamepad2, Trophy, Ghost, Lock, Video, Sparkles, MessageCircle } from 'lucide-react';
 
 const categories = [
   { name: 'Music', path: '/category/music', icon: Music },
@@ -36,6 +36,24 @@ export default function PrimaryNav() {
           </Button>
         );
       })}
+      <Button
+        variant={currentPath === '/ai-chat' ? 'default' : 'ghost'}
+        size="sm"
+        onClick={() => navigate({ to: '/ai-chat' })}
+        className="gap-2"
+      >
+        <Sparkles className="w-4 h-4" />
+        AI Chat
+      </Button>
+      <Button
+        variant={currentPath === '/chat-room' ? 'default' : 'ghost'}
+        size="sm"
+        onClick={() => navigate({ to: '/chat-room' })}
+        className="gap-2"
+      >
+        <MessageCircle className="w-4 h-4" />
+        Chat Room
+      </Button>
       {identity && (
         <Button
           variant={currentPath === '/creator-studio' ? 'default' : 'ghost'}

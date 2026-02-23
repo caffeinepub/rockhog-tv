@@ -1,6 +1,91 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Add new categories to the home page browse grid",
-  "requirements": []
+  "title": "Add live chat room for real-time user communication",
+  "requirements": [
+    {
+      "id": "REQ-48",
+      "summary": "Create React Query hooks for chat room operations with polling for real-time updates",
+      "acceptanceCriteria": [
+        "useGetChatRooms hook fetches and caches all available chat rooms",
+        "useGetChatRoomMessages hook fetches messages for a room and polls every 2-3 seconds for updates",
+        "usePostMessage mutation sends messages and invalidates the messages query on success",
+        "All hooks properly handle loading and error states"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/hooks/useChatRooms.ts",
+          "operation": "create",
+          "description": "Create React Query hooks for chat room operations. Include useGetChatRooms to fetch all chat rooms using the getAllChatRooms backend method. Include useGetChatRoomMessages(roomId: string) that fetches messages via getChatRoomMessages and enables polling with refetchInterval set to 2000-3000ms for real-time updates. Include usePostMessage mutation that calls the postMessage backend method with roomId, senderName (from user profile), and message text, then invalidates the messages query on success. All hooks must use the actor from useActor and handle loading/error states appropriately. The authorization component requires authentication for posting messages; handle unauthorized errors gracefully."
+        }
+      ]
+    },
+    {
+      "id": "REQ-49",
+      "summary": "Create ChatRoomPage component with sidebar, message area, and chat input",
+      "acceptanceCriteria": [
+        "Page layout includes a sidebar with clickable chat room list and a main message area",
+        "Messages display sender name, text content, and formatted timestamp",
+        "ChatInput component is positioned at the bottom of the message area",
+        "Page auto-scrolls to newest messages when they arrive",
+        "Anonymous users see a prompt to log in before accessing chat"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/chat/ChatRoomList.tsx",
+          "operation": "create",
+          "description": "Create a sidebar component that displays a list of available chat rooms using useGetChatRooms. Each room should be clickable to select it, with visual indication of the currently selected room. Include loading and error states. Style consistently with the chat room theme defined in the global CSS."
+        },
+        {
+          "path": "frontend/src/components/chat/MessageList.tsx",
+          "operation": "create",
+          "description": "Create a scrollable message list component that displays chat messages from useGetChatRoomMessages. Each message should show sender name, message text, and a formatted timestamp. Implement auto-scroll to the bottom when new messages arrive using useEffect with a ref. Include loading spinner for initial load and empty state when no messages exist. Style message bubbles distinctly from the AI chat message bubbles to match the community chat theme."
+        },
+        {
+          "path": "frontend/src/pages/ChatRoomPage.tsx",
+          "operation": "create",
+          "description": "Create the main chat room page component with a two-column layout: left sidebar with ChatRoomList and right main area with MessageList and ChatInput at the bottom. Manage selected room state and pass it to child components. Use the authorization component's authentication check: if the user is not authenticated (identity is null), display a centered prompt with LoginButton encouraging them to log in to participate in chat. If authenticated, show the full chat interface. Include the reused ChatInput component from frontend/src/components/chat/ChatInput.tsx at the bottom of the message area, wired to usePostMessage with the selected room ID and current user's profile name. Style with the unique chat room theme colors from the global CSS."
+        }
+      ]
+    },
+    {
+      "id": "REQ-50",
+      "summary": "Add chat room route and navigation entry in PrimaryNav",
+      "acceptanceCriteria": [
+        "Route /chat-room is registered in the router and renders ChatRoomPage",
+        "PrimaryNav includes a 'Chat Room' link that navigates to /chat-room",
+        "Navigation entry is visible to all users (authenticated and anonymous)",
+        "Active route highlighting works for the chat room link"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Add a new route for /chat-room that renders the ChatRoomPage component. Import ChatRoomPage and register it in the TanStack Router configuration alongside existing routes (browse, categories, streams, creator-studio, admin, contact, sign-up, ai-chat)."
+        },
+        {
+          "path": "frontend/src/components/navigation/PrimaryNav.tsx",
+          "operation": "modify",
+          "description": "Add a 'Chat Room' navigation link that routes to /chat-room. Position it in the primary navigation bar alongside existing links (Music, Gaming, Sports, Horror, Adult, AI Chat, Creator Studio). The link should be visible to all users regardless of authentication status. Ensure active route highlighting works using the router's active state matching."
+        }
+      ]
+    },
+    {
+      "id": "REQ-51",
+      "summary": "Create cohesive visual theme for chat room interface emphasizing real-time communication",
+      "acceptanceCriteria": [
+        "Chat room interface has a unique color scheme defined in the theme system",
+        "Message bubbles, room list, and input area follow consistent styling",
+        "Theme emphasizes community and real-time interaction through visual design",
+        "Layout is responsive and works well on both desktop and mobile devices"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/index.css",
+          "operation": "modify",
+          "description": "Add CSS custom properties for a new chat-room theme in the :root selector (light mode) and .dark selector (dark mode). Define unique color variables distinct from both the default streaming UI and the ai-chat theme (e.g., --chat-room-bg, --chat-room-message, --chat-room-accent, --chat-room-text). Create utility classes for chat room styling such as .chat-room-bubble, .chat-room-sidebar, .chat-room-input that use these variables. Ensure the theme emphasizes community interaction with warm, inviting colors and clear visual hierarchy. Verify responsive design with mobile-friendly layouts."
+        }
+      ]
+    }
+  ]
 }

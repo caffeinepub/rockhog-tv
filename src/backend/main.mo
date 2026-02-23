@@ -2,14 +2,19 @@ import Text "mo:core/Text";
 import Map "mo:core/Map";
 import Array "mo:core/Array";
 import Iter "mo:core/Iter";
+import List "mo:core/List";
+import Time "mo:core/Time";
 import Runtime "mo:core/Runtime";
-
+import Nat "mo:core/Nat";
 import Principal "mo:core/Principal";
 import MixinAuthorization "authorization/MixinAuthorization";
 import AccessControl "authorization/access-control";
 import MixinStorage "blob-storage/Mixin";
 import Storage "blob-storage/Storage";
+import Migration "migration";
 
+// Reference migration from separate file (no with clause)
+(with migration = Migration.run)
 actor {
   include MixinStorage();
 
@@ -100,11 +105,50 @@ actor {
     bestScore : Nat;
   };
 
+  public type AIMessage = {
+    isAI : Bool;
+    text : Text;
+  };
+
+  public type Conversation = {
+    id : Text;
+    owner : Principal;
+    messages : [AIMessage];
+  };
+
+  public type AIRequest = {
+    prompt : Text;
+    previousConversation : ?Text;
+  };
+
+  public type AIResponse = {
+    botReply : Text;
+    conversation : ?Conversation;
+  };
+
+  // Chat Room Types
+  public type ChatMessage = {
+    id : Nat;
+    sender : Principal;
+    senderName : Text;
+    message : Text;
+    timestamp : Int;
+  };
+
+  public type ChatRoom = {
+    id : Text;
+    name : Text;
+    createdAt : Int;
+    messages : List.List<ChatMessage>;
+  };
+
   // Persistent storage using Text keys
   let channels = Map.empty<Text, Channel>();
   let baconCashBalances = Map.empty<Principal, Nat>();
   let baconCashRequests = Map.empty<Text, BaconCashRequest>();
   let userProfiles = Map.empty<Principal, UserProfile>();
+  let conversations = Map.empty<Text, Conversation>();
+  let chatRooms = Map.empty<Text, ChatRoom>();
 
   // User Profile Management
   public query ({ caller }) func getCallerUserProfile() : async ?UserProfile {
@@ -352,6 +396,132 @@ actor {
         let newBalance = currentBalance + request.amount;
         baconCashBalances.add(user, newBalance);
         baconCashRequests.add(requestId, { request with completed = true });
+      };
+    };
+  };
+
+  // AI Conversation Management
+  public shared ({ caller }) func storeConversation(conversationId : Text, conversation : Conversation) : async () {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
+      Runtime.trap("Unauthorized: Only users can store conversations");
+    };
+
+    // Verify ownership: the conversation owner must match the caller
+    if (conversation.owner != caller) {
+      Runtime.trap("Unauthorized: Can only store your own conversations");
+    };
+
+    conversations.add(conversationId, conversation);
+  };
+
+  public query ({ caller }) func getConversations() : async [Conversation] {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
+      Runtime.trap("Unauthorized: Only users can view conversations");
+    };
+
+    let conversationArray = conversations.values().toArray();
+    conversationArray.filter(
+      func(conversation) {
+        conversation.owner == caller;
+      }
+    );
+  };
+
+  public query ({ caller }) func getConversation(conversationId : Text) : async ?Conversation {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
+      Runtime.trap("Unauthorized: Only users can view conversations");
+    };
+
+    switch (conversations.get(conversationId)) {
+      case (null) { null };
+      case (?conversation) {
+        // Verify ownership: only the owner or admin can view the conversation
+        if (conversation.owner != caller and not AccessControl.isAdmin(accessControlState, caller)) {
+          Runtime.trap("Unauthorized: Can only view your own conversations");
+        };
+        ?conversation;
+      };
+    };
+  };
+
+  // Chat Room Management
+
+  public shared ({ caller }) func createChatRoom(name : Text) : async Text {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
+      Runtime.trap("Only registered users can create chat rooms");
+    };
+
+    let roomId = name.trim(#char ' ').toLower();
+
+    switch (chatRooms.get(roomId)) {
+      case (?_) { Runtime.trap("Chat room already exists") };
+      case (null) {
+        let newRoom : ChatRoom = {
+          id = roomId;
+          name;
+          createdAt = Time.now();
+          messages = List.empty<ChatMessage>();
+        };
+        chatRooms.add(roomId, newRoom);
+        roomId;
+      };
+    };
+  };
+
+  public query ({ caller }) func getAllChatRooms() : async [(Text, Text)] {
+    chatRooms.toArray().map(func((_, room)) { (room.id, room.name) });
+  };
+
+  public query ({ caller }) func getChatRoomMessages(roomId : Text) : async [ChatMessage] {
+    switch (chatRooms.get(roomId)) {
+      case (null) { Runtime.trap("Chat room not found") };
+      case (?room) { room.messages.toArray() };
+    };
+  };
+
+  public shared ({ caller }) func postMessage(roomId : Text, senderName : Text, message : Text) : async () {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
+      Runtime.trap("Only registered users can post messages");
+    };
+
+    switch (chatRooms.get(roomId)) {
+      case (null) { Runtime.trap("Chat room not found") };
+      case (?room) {
+        let messageId = room.messages.size();
+
+        let newMessage : ChatMessage = {
+          id = messageId;
+          sender = caller;
+          senderName;
+          message;
+          timestamp = Time.now();
+        };
+
+        room.messages.add(newMessage);
+      };
+    };
+  };
+
+  public shared ({ caller }) func createDefaultChatRoom() : async Text {
+    // Only allow admins to create default chat rooms
+    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
+      Runtime.trap("Only admins can create default chat rooms");
+    };
+
+    let roomId = "default-rockhog-lounge";
+
+    // Check if the default chat room already exists
+    switch (chatRooms.get(roomId)) {
+      case (?_) { Runtime.trap("Default chat room already exists") };
+      case (null) {
+        let newRoom : ChatRoom = {
+          id = roomId;
+          name = "RockHog Lounge";
+          createdAt = Time.now();
+          messages = List.empty<ChatMessage>();
+        };
+        chatRooms.add(roomId, newRoom);
+        roomId;
       };
     };
   };
