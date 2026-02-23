@@ -33,6 +33,7 @@ export interface Channel {
   'thumbnail' : ExternalBlob,
   'owner' : Principal,
   'description' : string,
+  'chatRoomId' : [] | [string],
   'category' : Category,
   'streamKey' : string,
   'streamUrl' : string,
@@ -51,6 +52,15 @@ export interface Conversation {
   'owner' : Principal,
 }
 export type ExternalBlob = Uint8Array;
+export interface StreamerPayment {
+  'id' : string,
+  'channelId' : string,
+  'recipient' : Principal,
+  'sender' : Principal,
+  'message' : [] | [string],
+  'timestamp' : bigint,
+  'amount' : bigint,
+}
 export interface UserProfile {
   'baconCashBalance' : bigint,
   'name' : string,
@@ -90,7 +100,7 @@ export interface _SERVICE {
   'assignCallerUserRole' : ActorMethod<[Principal, UserRole], undefined>,
   'createChannel' : ActorMethod<
     [string, string, string, string, ExternalBlob, string, string, string],
-    undefined
+    string
   >,
   'createChatRoom' : ActorMethod<[string], string>,
   'createDefaultChatRoom' : ActorMethod<[], string>,
@@ -109,11 +119,17 @@ export interface _SERVICE {
   'getConversations' : ActorMethod<[], Array<Conversation>>,
   'getMyBaconCashRequests' : ActorMethod<[], Array<BaconCashRequest>>,
   'getMyChannels' : ActorMethod<[], Array<Channel>>,
+  'getPaymentsReceived' : ActorMethod<[Principal], Array<StreamerPayment>>,
+  'getPaymentsSent' : ActorMethod<[Principal], Array<StreamerPayment>>,
   'getUserProfile' : ActorMethod<[Principal], [] | [UserProfile]>,
   'isCallerAdmin' : ActorMethod<[], boolean>,
   'postMessage' : ActorMethod<[string, string, string], undefined>,
   'requestBaconCash' : ActorMethod<[bigint], string>,
   'saveCallerUserProfile' : ActorMethod<[UserProfile], undefined>,
+  'sendTip' : ActorMethod<
+    [Principal, Principal, string, bigint, [] | [string]],
+    string
+  >,
   'storeConversation' : ActorMethod<[string, Conversation], undefined>,
   'updateBestScore' : ActorMethod<[bigint], undefined>,
   'updateChannel' : ActorMethod<

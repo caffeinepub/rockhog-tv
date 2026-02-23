@@ -11,6 +11,7 @@ import ContactPage from './pages/ContactPage';
 import SignUpPage from './pages/SignUpPage';
 import AIChatPage from './pages/AIChatPage';
 import ChatRoomPage from './pages/ChatRoomPage';
+import PaymentHistoryPage from './pages/PaymentHistoryPage';
 import { Toaster } from '@/components/ui/sonner';
 
 const rootRoute = createRootRoute({
@@ -81,6 +82,12 @@ const chatRoomRoute = createRoute({
   component: ChatRoomPage,
 });
 
+const paymentHistoryRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/payment-history',
+  component: PaymentHistoryPage,
+});
+
 const routeTree = rootRoute.addChildren([
   indexRoute,
   categoryRoute,
@@ -92,6 +99,7 @@ const routeTree = rootRoute.addChildren([
   signUpRoute,
   aiChatRoute,
   chatRoomRoute,
+  paymentHistoryRoute,
 ]);
 
 const router = createRouter({ routeTree });
@@ -104,7 +112,7 @@ declare module '@tanstack/react-router' {
 
 export default function App() {
   return (
-    <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
       <RouterProvider router={router} />
       <Toaster />
     </ThemeProvider>

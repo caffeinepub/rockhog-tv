@@ -1,15 +1,31 @@
 import Map "mo:core/Map";
 import List "mo:core/List";
-import Nat "mo:core/Nat";
-import Text "mo:core/Text";
 import Principal "mo:core/Principal";
-import Iter "mo:core/Iter";
-import Runtime "mo:core/Runtime";
-import Time "mo:core/Time";
 import Storage "blob-storage/Storage";
-import AccessControl "authorization/access-control";
 
 module {
+  type OldActor = {
+    channels : Map.Map<Text, OldChannel>;
+    baconCashBalances : Map.Map<Principal, Nat>;
+    baconCashRequests : Map.Map<Text, BaconCashRequest>;
+    userProfiles : Map.Map<Principal, UserProfile>;
+    conversations : Map.Map<Text, Conversation>;
+    chatRooms : Map.Map<Text, ChatRoom>;
+  };
+
+  // Type definitions
+  type OldChannel = {
+    id : Text;
+    owner : Principal;
+    title : Text;
+    category : Category;
+    description : Text;
+    thumbnail : Storage.ExternalBlob;
+    streamUrl : Text;
+    ingestUrl : Text;
+    streamKey : Text;
+  };
+
   type Category = {
     #music;
     #gaming;
@@ -21,18 +37,6 @@ module {
     #irl;
     #audio_video_podcasts;
     #ppv_events;
-  };
-
-  type Channel = {
-    id : Text;
-    owner : Principal;
-    title : Text;
-    category : Category;
-    description : Text;
-    thumbnail : Storage.ExternalBlob;
-    streamUrl : Text;
-    ingestUrl : Text;
-    streamKey : Text;
   };
 
   type BaconCashRequest = {
@@ -59,17 +63,15 @@ module {
     messages : [AIMessage];
   };
 
-  type AIRequest = {
-    prompt : Text;
-    previousConversation : ?Text;
+  type StreamerPayment = {
+    id : Text;
+    sender : Principal;
+    recipient : Principal;
+    amount : Nat;
+    timestamp : Int;
+    message : ?Text;
   };
 
-  type AIResponse = {
-    botReply : Text;
-    conversation : ?Conversation;
-  };
-
-  // Chat Room Types
   type ChatMessage = {
     id : Nat;
     sender : Principal;
@@ -85,16 +87,8 @@ module {
     messages : List.List<ChatMessage>;
   };
 
-  type OldActor = {
-    channels : Map.Map<Text, Channel>;
-    baconCashBalances : Map.Map<Principal, Nat>;
-    baconCashRequests : Map.Map<Text, BaconCashRequest>;
-    userProfiles : Map.Map<Principal, UserProfile>;
-    conversations : Map.Map<Text, Conversation>;
-  };
-
   type NewActor = {
-    channels : Map.Map<Text, Channel>;
+    channels : Map.Map<Text, NewChannel>;
     baconCashBalances : Map.Map<Principal, Nat>;
     baconCashRequests : Map.Map<Text, BaconCashRequest>;
     userProfiles : Map.Map<Principal, UserProfile>;
@@ -102,21 +96,25 @@ module {
     chatRooms : Map.Map<Text, ChatRoom>;
   };
 
+  type NewChannel = {
+    id : Text;
+    owner : Principal;
+    title : Text;
+    category : Category;
+    description : Text;
+    thumbnail : Storage.ExternalBlob;
+    streamUrl : Text;
+    ingestUrl : Text;
+    streamKey : Text;
+    chatRoomId : ?Text;
+  };
+
   public func run(old : OldActor) : NewActor {
-    let chatRooms = Map.empty<Text, ChatRoom>();
-
-    let defaultRoom : ChatRoom = {
-      id = "default-rockhog-lounge";
-      name = "RockHog Lounge";
-      createdAt = Time.now();
-      messages = List.empty<ChatMessage>();
-    };
-
-    chatRooms.add(defaultRoom.id, defaultRoom);
-
-    {
-      old with
-      chatRooms
-    };
+    let channels = old.channels.map<Text, OldChannel, NewChannel>(
+      func(_id, oldChannel) {
+        { oldChannel with chatRoomId = ?oldChannel.id };
+      }
+    );
+    { old with channels };
   };
 };

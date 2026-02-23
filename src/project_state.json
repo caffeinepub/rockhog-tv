@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 29,
+  "projectStateVersion": 31,
   "summary": "Build an AI application that can perform any task or function requested by the user.",
   "architectural_notes": [
     "Public share URL is rockhogtv.caffeine.xyz (use as canonical link for share/copy actions)."
@@ -360,6 +360,70 @@
         "REQ-51"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-add-a-streamchatpanel-component-that-embeds-a-live-chat-interface-on-the-stream-detail-page-displaying-messages-from-the-channel-s-dedicated-chat-room-and-allowing-authenticated-users-to-post-messages",
+      "title": "Add a StreamChatPanel component that embeds a live chat interface on the stream detail page, displaying messages from the channel's dedicated chat room and allowing authenticated users to post messages",
+      "reqIds": [
+        "REQ-55"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-integrate-the-streamchatpanel-component-into-the-streamdetailpage-so-it-appears-alongside-the-embedded-stream-player-creating-a-unified-watch-and-chat-experience",
+      "title": "Integrate the StreamChatPanel component into the StreamDetailPage so it appears alongside the embedded stream player, creating a unified watch-and-chat experience",
+      "reqIds": [
+        "REQ-56"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-a-react-query-hook-usesendtip-that-wraps-the-backend-sendtip-method-and-invalidates-relevant-queries-user-balance-payment-history-on-success",
+      "title": "Create a React Query hook useSendTip that wraps the backend sendTip method and invalidates relevant queries (user balance, payment history) on success",
+      "reqIds": [
+        "REQ-60"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-a-react-query-hook-usepaymenthistory-that-fetches-both-received-and-sent-payments-for-the-authenticated-user",
+      "title": "Create a React Query hook usePaymentHistory that fetches both received and sent payments for the authenticated user",
+      "reqIds": [
+        "REQ-61"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-tipdialog-component-that-displays-a-modal-form-allowing-viewers-to-send-bacon-cash-tips-to-streamers-including-amount-input-optional-message-field-and-current-balance-display",
+      "title": "Add a TipDialog component that displays a modal form allowing viewers to send Bacon Cash tips to streamers, including amount input, optional message field, and current balance display",
+      "reqIds": [
+        "REQ-62"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-visible-send-tip-button-to-the-streamdetailpage-that-opens-the-tipdialog-for-authenticated-viewers-watching-a-stream",
+      "title": "Add a visible 'Send Tip' button to the StreamDetailPage that opens the TipDialog for authenticated viewers watching a stream",
+      "reqIds": [
+        "REQ-63"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-a-paymenthistorypage-that-displays-the-authenticated-user-s-payment-history-in-two-tabs-tips-received-and-tips-sent-showing-transaction-details-including-amount-channel-message-and-timestamp",
+      "title": "Create a PaymentHistoryPage that displays the authenticated user's payment history in two tabs: 'Tips Received' and 'Tips Sent', showing transaction details including amount, channel, message, and timestamp",
+      "reqIds": [
+        "REQ-64"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-route-for-the-payment-history-page-at-payment-history-in-the-application-router-and-add-a-navigation-entry-point-in-the-user-account-menu-or-creator-studio-area",
+      "title": "Add a route for the payment history page at /payment-history in the application router and add a navigation entry point in the user account menu or Creator Studio area",
+      "reqIds": [
+        "REQ-65"
+      ],
+      "version": 1
     }
   ],
   "new_feature_requests": [
@@ -476,6 +540,58 @@
       "summary": "Initialize at least one default chat room (e.g., 'General Chat' or 'RockHog Lounge') during backend initialization so users have a place to chat immediately after the feature is deployed",
       "reqIds": [
         "REQ-52"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-31",
+      "summary": "Add a live chatroom component to each stream detail/watch page so viewers can chat while watching a live stream",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-32",
+      "summary": "Add payment options for live streamers to receive payments from viewers (e.g., tips, donations, subscriptions)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-33",
+      "summary": "Extend the backend Channel data type to include a dedicated chatRoomId field that associates each channel with its own chat room for live stream discussions",
+      "reqIds": [
+        "REQ-53"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-34",
+      "summary": "Update the backend createChannel method to automatically create a dedicated chat room for each new channel and store the chat room ID in the channel record",
+      "reqIds": [
+        "REQ-54"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-37",
+      "summary": "Add a StreamerPayment data type to the backend that stores payment transactions from viewers to streamers, including: payment ID, channel ID, sender principal, recipient principal, amount (in Bacon Cash), timestamp, and optional message",
+      "reqIds": [
+        "REQ-57"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-38",
+      "summary": "Implement a backend sendTip method that transfers Bacon Cash from a viewer's balance to a streamer's balance, creates a payment record, and validates that the sender has sufficient funds",
+      "reqIds": [
+        "REQ-58"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-39",
+      "summary": "Add backend methods getPaymentsReceived and getPaymentsSent that allow users to query their payment history as either recipients or senders",
+      "reqIds": [
+        "REQ-59"
       ],
       "status": "pending"
     }

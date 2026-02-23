@@ -14,6 +14,12 @@ export class ExternalBlob {
     static fromBytes(blob: Uint8Array<ArrayBuffer>): ExternalBlob;
     withUploadProgress(onProgress: (percentage: number) => void): ExternalBlob;
 }
+export interface BaconCashRequest {
+    id: string;
+    user: Principal;
+    completed: boolean;
+    amount: bigint;
+}
 export interface AIMessage {
     isAI: boolean;
     text: string;
@@ -25,22 +31,26 @@ export interface ChatMessage {
     timestamp: bigint;
     senderName: string;
 }
+export interface StreamerPayment {
+    id: string;
+    channelId: string;
+    recipient: Principal;
+    sender: Principal;
+    message?: string;
+    timestamp: bigint;
+    amount: bigint;
+}
 export interface Channel {
     id: string;
     title: string;
     thumbnail: ExternalBlob;
     owner: Principal;
     description: string;
+    chatRoomId?: string;
     category: Category;
     streamKey: string;
     streamUrl: string;
     ingestUrl: string;
-}
-export interface BaconCashRequest {
-    id: string;
-    user: Principal;
-    completed: boolean;
-    amount: bigint;
 }
 export interface Conversation {
     id: string;
@@ -71,7 +81,7 @@ export enum UserRole {
 }
 export interface backendInterface {
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
-    createChannel(id: string, title: string, category: string, description: string, thumbnail: ExternalBlob, streamUrl: string, ingestUrl: string, streamKey: string): Promise<void>;
+    createChannel(id: string, title: string, category: string, description: string, thumbnail: ExternalBlob, streamUrl: string, ingestUrl: string, streamKey: string): Promise<string>;
     createChatRoom(name: string): Promise<string>;
     createDefaultChatRoom(): Promise<string>;
     deleteChannel(id: string): Promise<void>;
@@ -89,11 +99,14 @@ export interface backendInterface {
     getConversations(): Promise<Array<Conversation>>;
     getMyBaconCashRequests(): Promise<Array<BaconCashRequest>>;
     getMyChannels(): Promise<Array<Channel>>;
+    getPaymentsReceived(user: Principal): Promise<Array<StreamerPayment>>;
+    getPaymentsSent(user: Principal): Promise<Array<StreamerPayment>>;
     getUserProfile(user: Principal): Promise<UserProfile | null>;
     isCallerAdmin(): Promise<boolean>;
     postMessage(roomId: string, senderName: string, message: string): Promise<void>;
     requestBaconCash(amount: bigint): Promise<string>;
     saveCallerUserProfile(profile: UserProfile): Promise<void>;
+    sendTip(sender: Principal, recipient: Principal, channelId: string, amount: bigint, message: string | null): Promise<string>;
     storeConversation(conversationId: string, conversation: Conversation): Promise<void>;
     updateBestScore(score: bigint): Promise<void>;
     updateChannel(id: string, title: string, category: string, description: string, thumbnail: ExternalBlob, streamUrl: string, ingestUrl: string, streamKey: string): Promise<void>;

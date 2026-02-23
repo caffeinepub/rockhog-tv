@@ -1,15 +1,13 @@
 # Specification
 
 ## Summary
-**Goal:** Add a live chat room feature for real-time user communication within RockHog TV.
+**Goal:** Add live chat functionality to each stream and enable viewers to send Bacon Cash tips to streamers.
 
 **Planned changes:**
-- Create ChatRoom and ChatMessage data types in the backend to store room metadata and messages
-- Add backend methods to create rooms, retrieve rooms/messages, and post messages (authenticated users only)
-- Build React Query hooks for chat operations with polling for real-time message updates
-- Create ChatRoomPage component with room list sidebar, message display area, and message input
-- Add /chat-room route and "Chat Room" navigation link in PrimaryNav
-- Design a distinct visual theme for the chat interface emphasizing community interaction
-- Initialize a default chat room ("General Chat" or "RockHog Lounge") on backend startup
+- Add a dedicated chat room for each channel that appears on the stream detail page
+- Allow authenticated viewers to participate in live stream chat using existing chat components
+- Enable viewers to send Bacon Cash tips to streamers with optional messages
+- Add payment history tracking for both tips received and tips sent
+- Create a payment history page where users can view their transaction records
 
-**User-visible outcome:** Users can navigate to a new Chat Room section, see available chat rooms, view message history with real-time updates via polling, and send messages to communicate with other authenticated users.
+**User-visible outcome:** Viewers can chat live while watching streams and can tip streamers with Bacon Cash. Streamers can view their earnings history and viewers can see their tipping activity.

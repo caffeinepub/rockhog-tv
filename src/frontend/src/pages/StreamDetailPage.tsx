@@ -5,9 +5,11 @@ import { useIsAdmin } from '../hooks/useAuthz';
 import StreamEmbed from '../components/player/StreamEmbed';
 import AdultRouteGuard from '../components/adult/AdultRouteGuard';
 import RoleGate from '../components/auth/RoleGate';
+import StreamChatPanel from '../components/chat/StreamChatPanel';
+import TipDialog from '../components/channels/TipDialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, ArrowLeft, Edit, Trash2 } from 'lucide-react';
+import { Loader2, ArrowLeft, Edit, Trash2, Coins } from 'lucide-react';
 import { useState } from 'react';
 import ChannelEditorDialog from '../components/channels/ChannelEditorDialog';
 import { useDeleteChannel } from '../hooks/useQueries';
@@ -32,6 +34,7 @@ function StreamDetailContent() {
   const { data: channel, isLoading } = useGetChannel(streamId || '');
   const [showEditor, setShowEditor] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showTipDialog, setShowTipDialog] = useState(false);
   const deleteChannel = useDeleteChannel();
 
   if (isLoading) {
@@ -57,6 +60,7 @@ function StreamDetailContent() {
 
   const isOwner = identity && channel.owner.toString() === identity.getPrincipal().toString();
   const canEdit = isOwner || isAdmin;
+  const canTip = identity && !isOwner;
 
   const handleDelete = async () => {
     try {
@@ -80,38 +84,67 @@ function StreamDetailContent() {
         Back
       </Button>
 
-      <div className="max-w-6xl mx-auto space-y-6">
-        <StreamEmbed streamUrl={channel.streamUrl} title={channel.title} />
+      <div className="max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Main content area */}
+          <div className="lg:col-span-2 space-y-6">
+            <StreamEmbed streamUrl={channel.streamUrl} title={channel.title} />
 
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex-1">
-            <div className="flex items-center gap-3 mb-2">
-              <h1 className="text-3xl font-bold">{channel.title}</h1>
-              <Badge>{getCategoryLabel(channel.category)}</Badge>
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-2">
+                  <h1 className="text-3xl font-bold">{channel.title}</h1>
+                  <Badge>{getCategoryLabel(channel.category)}</Badge>
+                </div>
+                <p className="text-muted-foreground">{channel.description}</p>
+              </div>
+
+              <div className="flex gap-2">
+                {canTip && (
+                  <Button
+                    variant="default"
+                    size="sm"
+                    onClick={() => setShowTipDialog(true)}
+                    className="gap-2"
+                  >
+                    <Coins className="w-4 h-4" />
+                    Tip Streamer
+                  </Button>
+                )}
+                {canEdit && (
+                  <>
+                    <RoleGate channel={channel}>
+                      <Button variant="outline" size="sm" onClick={() => setShowEditor(true)}>
+                        <Edit className="w-4 h-4 mr-2" />
+                        Edit
+                      </Button>
+                    </RoleGate>
+                    <RoleGate channel={channel}>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => setShowDeleteDialog(true)}
+                      >
+                        <Trash2 className="w-4 h-4 mr-2" />
+                        Delete
+                      </Button>
+                    </RoleGate>
+                  </>
+                )}
+              </div>
             </div>
-            <p className="text-muted-foreground">{channel.description}</p>
           </div>
 
-          {canEdit && (
-            <div className="flex gap-2">
-              <RoleGate channel={channel}>
-                <Button variant="outline" size="sm" onClick={() => setShowEditor(true)}>
-                  <Edit className="w-4 h-4 mr-2" />
-                  Edit
-                </Button>
-              </RoleGate>
-              <RoleGate channel={channel}>
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  onClick={() => setShowDeleteDialog(true)}
-                >
-                  <Trash2 className="w-4 h-4 mr-2" />
-                  Delete
-                </Button>
-              </RoleGate>
-            </div>
-          )}
+          {/* Chat panel */}
+          <div className="lg:col-span-1">
+            {channel.chatRoomId ? (
+              <StreamChatPanel chatRoomId={channel.chatRoomId} />
+            ) : (
+              <div className="text-center py-12 text-muted-foreground">
+                <p>Chat is not available for this stream</p>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -120,6 +153,16 @@ function StreamDetailContent() {
           open={showEditor}
           onOpenChange={setShowEditor}
           channel={channel}
+        />
+      )}
+
+      {showTipDialog && (
+        <TipDialog
+          open={showTipDialog}
+          onOpenChange={setShowTipDialog}
+          channelId={channel.id}
+          channelTitle={channel.title}
+          channelOwner={channel.owner}
         />
       )}
 

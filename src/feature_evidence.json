@@ -2,10 +2,10 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-create-react-query-hooks-for-chat-room-operations-usegetchatrooms-to-fetch-all-chat-rooms-usegetchatroommessages-to-fetch-messages-for-a-specific-room-with-polling-enabled-for-real-time-updates-and-usepostmessage-mutation-to-send-new-messages",
-      "featureTitle": "Create React Query hooks for chat room operations: useGetChatRooms to fetch all chat rooms, useGetChatRoomMessages to fetch messages for a specific room with polling enabled for real-time updates, and usePostMessage mutation to send new messages",
+      "featureId": "feature-add-a-streamchatpanel-component-that-embeds-a-live-chat-interface-on-the-stream-detail-page-displaying-messages-from-the-channel-s-dedicated-chat-room-and-allowing-authenticated-users-to-post-messages",
+      "featureTitle": "Add a StreamChatPanel component that embeds a live chat interface on the stream detail page, displaying messages from the channel's dedicated chat room and allowing authenticated users to post messages",
       "files": [
-        "frontend/src/hooks/useChatRooms.ts"
+        "frontend/src/components/chat/StreamChatPanel.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -17,17 +17,15 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-48"
+        "REQ-55"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-create-a-chatroompage-component-that-displays-a-list-of-available-chat-rooms-in-a-sidebar-shows-the-selected-room-s-message-history-in-the-main-area-with-sender-names-and-timestamps-and-includes-a-chatinput-component-at-the-bottom-for-sending-messages",
-      "featureTitle": "Create a ChatRoomPage component that displays a list of available chat rooms in a sidebar, shows the selected room's message history in the main area with sender names and timestamps, and includes a ChatInput component at the bottom for sending messages",
+      "featureId": "feature-integrate-the-streamchatpanel-component-into-the-streamdetailpage-so-it-appears-alongside-the-embedded-stream-player-creating-a-unified-watch-and-chat-experience",
+      "featureTitle": "Integrate the StreamChatPanel component into the StreamDetailPage so it appears alongside the embedded stream player, creating a unified watch-and-chat experience",
       "files": [
-        "frontend/src/components/chat/ChatRoomList.tsx",
-        "frontend/src/components/chat/MessageList.tsx",
-        "frontend/src/pages/ChatRoomPage.tsx"
+        "frontend/src/pages/StreamDetailPage.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -39,13 +37,113 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-49"
+        "REQ-56"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-add-a-route-for-the-chat-room-page-at-chat-room-in-the-application-router-and-add-a-primary-navigation-entry-point-labeled-chat-room-in-the-primarynav-component-so-users-can-access-it-from-anywhere-in-the-app",
-      "featureTitle": "Add a route for the chat room page at /chat-room in the application router and add a primary navigation entry point labeled 'Chat Room' in the PrimaryNav component so users can access it from anywhere in the app",
+      "featureId": "feature-create-a-react-query-hook-usesendtip-that-wraps-the-backend-sendtip-method-and-invalidates-relevant-queries-user-balance-payment-history-on-success",
+      "featureTitle": "Create a React Query hook useSendTip that wraps the backend sendTip method and invalidates relevant queries (user balance, payment history) on success",
+      "files": [
+        "frontend/src/hooks/useQueries.ts"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-60"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-create-a-react-query-hook-usepaymenthistory-that-fetches-both-received-and-sent-payments-for-the-authenticated-user",
+      "featureTitle": "Create a React Query hook usePaymentHistory that fetches both received and sent payments for the authenticated user",
+      "files": [
+        "frontend/src/hooks/useQueries.ts"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-61"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-a-tipdialog-component-that-displays-a-modal-form-allowing-viewers-to-send-bacon-cash-tips-to-streamers-including-amount-input-optional-message-field-and-current-balance-display",
+      "featureTitle": "Add a TipDialog component that displays a modal form allowing viewers to send Bacon Cash tips to streamers, including amount input, optional message field, and current balance display",
+      "files": [
+        "frontend/src/components/channels/TipDialog.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-62"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-a-visible-send-tip-button-to-the-streamdetailpage-that-opens-the-tipdialog-for-authenticated-viewers-watching-a-stream",
+      "featureTitle": "Add a visible 'Send Tip' button to the StreamDetailPage that opens the TipDialog for authenticated viewers watching a stream",
+      "files": [
+        "frontend/src/pages/StreamDetailPage.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-63"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-create-a-paymenthistorypage-that-displays-the-authenticated-user-s-payment-history-in-two-tabs-tips-received-and-tips-sent-showing-transaction-details-including-amount-channel-message-and-timestamp",
+      "featureTitle": "Create a PaymentHistoryPage that displays the authenticated user's payment history in two tabs: 'Tips Received' and 'Tips Sent', showing transaction details including amount, channel, message, and timestamp",
+      "files": [
+        "frontend/src/pages/PaymentHistoryPage.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-64"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-a-route-for-the-payment-history-page-at-payment-history-in-the-application-router-and-add-a-navigation-entry-point-in-the-user-account-menu-or-creator-studio-area",
+      "featureTitle": "Add a route for the payment history page at /payment-history in the application router and add a navigation entry point in the user account menu or Creator Studio area",
       "files": [
         "frontend/src/App.tsx",
         "frontend/src/components/navigation/PrimaryNav.tsx"
@@ -60,27 +158,7 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-50"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-create-a-cohesive-visual-theme-for-the-chat-room-interface-that-emphasizes-real-time-communication-and-community-interaction-using-distinct-colors-and-styling-from-both-the-rockhog-tv-streaming-experience-and-the-ai-chat-interface",
-      "featureTitle": "Create a cohesive visual theme for the chat room interface that emphasizes real-time communication and community interaction, using distinct colors and styling from both the RockHog TV streaming experience and the AI Chat interface",
-      "files": [
-        "frontend/src/index.css"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "blob-storage@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-51"
+        "REQ-65"
       ],
       "confidence": "high"
     }

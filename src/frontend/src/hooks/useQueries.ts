@@ -1,7 +1,9 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient, useQueries } from '@tanstack/react-query';
 import { useActor } from './useActor';
-import type { Channel, BaconCashRequest, UserProfile } from '../backend';
+import { useInternetIdentity } from './useInternetIdentity';
+import type { Channel, BaconCashRequest, UserProfile, StreamerPayment } from '../backend';
 import { ExternalBlob } from '../backend';
+import type { Principal } from '@icp-sdk/core/principal';
 
 export function useGetAllChannels() {
   const { actor, isFetching } = useActor();
@@ -230,4 +232,66 @@ export function useFulfillBaconCashRequest() {
       queryClient.invalidateQueries({ queryKey: ['baconCashBalance'] });
     },
   });
+}
+
+export function useSendTip() {
+  const { actor } = useActor();
+  const { identity } = useInternetIdentity();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (data: {
+      channelId: string;
+      recipient: Principal;
+      amount: bigint;
+      message: string | null;
+    }) => {
+      if (!actor) throw new Error('Actor not available');
+      if (!identity) throw new Error('Not authenticated');
+
+      const sender = identity.getPrincipal();
+      return actor.sendTip(sender, data.recipient, data.channelId, data.amount, data.message);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['currentUserProfile'] });
+      queryClient.invalidateQueries({ queryKey: ['baconCashBalance'] });
+      queryClient.invalidateQueries({ queryKey: ['paymentsReceived'] });
+      queryClient.invalidateQueries({ queryKey: ['paymentsSent'] });
+    },
+  });
+}
+
+export function usePaymentHistory() {
+  const { actor, isFetching } = useActor();
+  const { identity } = useInternetIdentity();
+
+  const results = useQueries({
+    queries: [
+      {
+        queryKey: ['paymentsReceived'],
+        queryFn: async () => {
+          if (!actor || !identity) return [];
+          return actor.getPaymentsReceived(identity.getPrincipal());
+        },
+        enabled: !!actor && !isFetching && !!identity,
+      },
+      {
+        queryKey: ['paymentsSent'],
+        queryFn: async () => {
+          if (!actor || !identity) return [];
+          return actor.getPaymentsSent(identity.getPrincipal());
+        },
+        enabled: !!actor && !isFetching && !!identity,
+      },
+    ],
+  });
+
+  const [receivedQuery, sentQuery] = results;
+
+  return {
+    received: receivedQuery.data || [],
+    sent: sentQuery.data || [],
+    isLoading: receivedQuery.isLoading || sentQuery.isLoading,
+    error: receivedQuery.error || sentQuery.error,
+  };
 }

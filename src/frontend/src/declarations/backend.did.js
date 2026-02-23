@@ -49,6 +49,7 @@ export const Channel = IDL.Record({
   'thumbnail' : ExternalBlob,
   'owner' : IDL.Principal,
   'description' : IDL.Text,
+  'chatRoomId' : IDL.Opt(IDL.Text),
   'category' : Category,
   'streamKey' : IDL.Text,
   'streamUrl' : IDL.Text,
@@ -71,6 +72,15 @@ export const Conversation = IDL.Record({
   'id' : IDL.Text,
   'messages' : IDL.Vec(AIMessage),
   'owner' : IDL.Principal,
+});
+export const StreamerPayment = IDL.Record({
+  'id' : IDL.Text,
+  'channelId' : IDL.Text,
+  'recipient' : IDL.Principal,
+  'sender' : IDL.Principal,
+  'message' : IDL.Opt(IDL.Text),
+  'timestamp' : IDL.Int,
+  'amount' : IDL.Nat,
 });
 
 export const idlService = IDL.Service({
@@ -113,7 +123,7 @@ export const idlService = IDL.Service({
         IDL.Text,
         IDL.Text,
       ],
-      [],
+      [IDL.Text],
       [],
     ),
   'createChatRoom' : IDL.Func([IDL.Text], [IDL.Text], []),
@@ -149,6 +159,16 @@ export const idlService = IDL.Service({
       ['query'],
     ),
   'getMyChannels' : IDL.Func([], [IDL.Vec(Channel)], ['query']),
+  'getPaymentsReceived' : IDL.Func(
+      [IDL.Principal],
+      [IDL.Vec(StreamerPayment)],
+      ['query'],
+    ),
+  'getPaymentsSent' : IDL.Func(
+      [IDL.Principal],
+      [IDL.Vec(StreamerPayment)],
+      ['query'],
+    ),
   'getUserProfile' : IDL.Func(
       [IDL.Principal],
       [IDL.Opt(UserProfile)],
@@ -158,6 +178,11 @@ export const idlService = IDL.Service({
   'postMessage' : IDL.Func([IDL.Text, IDL.Text, IDL.Text], [], []),
   'requestBaconCash' : IDL.Func([IDL.Nat], [IDL.Text], []),
   'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
+  'sendTip' : IDL.Func(
+      [IDL.Principal, IDL.Principal, IDL.Text, IDL.Nat, IDL.Opt(IDL.Text)],
+      [IDL.Text],
+      [],
+    ),
   'storeConversation' : IDL.Func([IDL.Text, Conversation], [], []),
   'updateBestScore' : IDL.Func([IDL.Nat], [], []),
   'updateChannel' : IDL.Func(
@@ -220,6 +245,7 @@ export const idlFactory = ({ IDL }) => {
     'thumbnail' : ExternalBlob,
     'owner' : IDL.Principal,
     'description' : IDL.Text,
+    'chatRoomId' : IDL.Opt(IDL.Text),
     'category' : Category,
     'streamKey' : IDL.Text,
     'streamUrl' : IDL.Text,
@@ -242,6 +268,15 @@ export const idlFactory = ({ IDL }) => {
     'id' : IDL.Text,
     'messages' : IDL.Vec(AIMessage),
     'owner' : IDL.Principal,
+  });
+  const StreamerPayment = IDL.Record({
+    'id' : IDL.Text,
+    'channelId' : IDL.Text,
+    'recipient' : IDL.Principal,
+    'sender' : IDL.Principal,
+    'message' : IDL.Opt(IDL.Text),
+    'timestamp' : IDL.Int,
+    'amount' : IDL.Nat,
   });
   
   return IDL.Service({
@@ -284,7 +319,7 @@ export const idlFactory = ({ IDL }) => {
           IDL.Text,
           IDL.Text,
         ],
-        [],
+        [IDL.Text],
         [],
       ),
     'createChatRoom' : IDL.Func([IDL.Text], [IDL.Text], []),
@@ -324,6 +359,16 @@ export const idlFactory = ({ IDL }) => {
         ['query'],
       ),
     'getMyChannels' : IDL.Func([], [IDL.Vec(Channel)], ['query']),
+    'getPaymentsReceived' : IDL.Func(
+        [IDL.Principal],
+        [IDL.Vec(StreamerPayment)],
+        ['query'],
+      ),
+    'getPaymentsSent' : IDL.Func(
+        [IDL.Principal],
+        [IDL.Vec(StreamerPayment)],
+        ['query'],
+      ),
     'getUserProfile' : IDL.Func(
         [IDL.Principal],
         [IDL.Opt(UserProfile)],
@@ -333,6 +378,11 @@ export const idlFactory = ({ IDL }) => {
     'postMessage' : IDL.Func([IDL.Text, IDL.Text, IDL.Text], [], []),
     'requestBaconCash' : IDL.Func([IDL.Nat], [IDL.Text], []),
     'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
+    'sendTip' : IDL.Func(
+        [IDL.Principal, IDL.Principal, IDL.Text, IDL.Nat, IDL.Opt(IDL.Text)],
+        [IDL.Text],
+        [],
+      ),
     'storeConversation' : IDL.Func([IDL.Text, Conversation], [], []),
     'updateBestScore' : IDL.Func([IDL.Nat], [], []),
     'updateChannel' : IDL.Func(

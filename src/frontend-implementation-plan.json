@@ -1,89 +1,153 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Add live chat room for real-time user communication",
+  "title": "Add per-stream live chat and viewer payment options for streamers",
   "requirements": [
     {
-      "id": "REQ-48",
-      "summary": "Create React Query hooks for chat room operations with polling for real-time updates",
+      "id": "REQ-55",
+      "summary": "Add StreamChatPanel component that embeds live chat on stream detail pages",
       "acceptanceCriteria": [
-        "useGetChatRooms hook fetches and caches all available chat rooms",
-        "useGetChatRoomMessages hook fetches messages for a room and polls every 2-3 seconds for updates",
-        "usePostMessage mutation sends messages and invalidates the messages query on success",
-        "All hooks properly handle loading and error states"
+        "StreamChatPanel component is created and accepts a chatRoomId prop",
+        "Component reuses existing MessageList and ChatInput components for consistency",
+        "Component fetches and displays messages for the specific chat room using useGetChatRoomMessages with polling enabled",
+        "Authenticated users can post messages to the stream's chat room",
+        "Component shows appropriate loading and error states"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/hooks/useChatRooms.ts",
+          "path": "frontend/src/components/chat/StreamChatPanel.tsx",
           "operation": "create",
-          "description": "Create React Query hooks for chat room operations. Include useGetChatRooms to fetch all chat rooms using the getAllChatRooms backend method. Include useGetChatRoomMessages(roomId: string) that fetches messages via getChatRoomMessages and enables polling with refetchInterval set to 2000-3000ms for real-time updates. Include usePostMessage mutation that calls the postMessage backend method with roomId, senderName (from user profile), and message text, then invalidates the messages query on success. All hooks must use the actor from useActor and handle loading/error states appropriately. The authorization component requires authentication for posting messages; handle unauthorized errors gracefully."
+          "description": "Create StreamChatPanel component that accepts chatRoomId prop and composes MessageList and ChatInput. Use useGetChatRoomMessages hook with polling enabled (2.5s interval) to fetch messages. Use usePostMessage mutation for sending messages. Include authentication checks and show login prompt for unauthenticated users. Handle loading, error, and empty states appropriately."
         }
       ]
     },
     {
-      "id": "REQ-49",
-      "summary": "Create ChatRoomPage component with sidebar, message area, and chat input",
+      "id": "REQ-56",
+      "summary": "Integrate StreamChatPanel into StreamDetailPage for unified watch-and-chat experience",
       "acceptanceCriteria": [
-        "Page layout includes a sidebar with clickable chat room list and a main message area",
-        "Messages display sender name, text content, and formatted timestamp",
-        "ChatInput component is positioned at the bottom of the message area",
-        "Page auto-scrolls to newest messages when they arrive",
-        "Anonymous users see a prompt to log in before accessing chat"
+        "StreamChatPanel is rendered on the StreamDetailPage below or beside the StreamEmbed component",
+        "The panel receives the channel's chatRoomId from the channel data",
+        "Layout is responsive and works on both desktop and mobile viewports",
+        "If the channel has no associated chat room, a fallback message is displayed"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/chat/ChatRoomList.tsx",
-          "operation": "create",
-          "description": "Create a sidebar component that displays a list of available chat rooms using useGetChatRooms. Each room should be clickable to select it, with visual indication of the currently selected room. Include loading and error states. Style consistently with the chat room theme defined in the global CSS."
-        },
-        {
-          "path": "frontend/src/components/chat/MessageList.tsx",
-          "operation": "create",
-          "description": "Create a scrollable message list component that displays chat messages from useGetChatRoomMessages. Each message should show sender name, message text, and a formatted timestamp. Implement auto-scroll to the bottom when new messages arrive using useEffect with a ref. Include loading spinner for initial load and empty state when no messages exist. Style message bubbles distinctly from the AI chat message bubbles to match the community chat theme."
-        },
-        {
-          "path": "frontend/src/pages/ChatRoomPage.tsx",
-          "operation": "create",
-          "description": "Create the main chat room page component with a two-column layout: left sidebar with ChatRoomList and right main area with MessageList and ChatInput at the bottom. Manage selected room state and pass it to child components. Use the authorization component's authentication check: if the user is not authenticated (identity is null), display a centered prompt with LoginButton encouraging them to log in to participate in chat. If authenticated, show the full chat interface. Include the reused ChatInput component from frontend/src/components/chat/ChatInput.tsx at the bottom of the message area, wired to usePostMessage with the selected room ID and current user's profile name. Style with the unique chat room theme colors from the global CSS."
+          "path": "frontend/src/pages/StreamDetailPage.tsx",
+          "operation": "modify",
+          "description": "Import and render StreamChatPanel component below the StreamEmbed component. Pass channel.chatRoomId to the panel. Add responsive layout using flex or grid to position chat beside or below the player depending on viewport size. Show fallback message if channel.chatRoomId is null or undefined. Ensure the integration works within the existing AdultRouteGuard wrapper."
         }
       ]
     },
     {
-      "id": "REQ-50",
-      "summary": "Add chat room route and navigation entry in PrimaryNav",
+      "id": "REQ-60",
+      "summary": "Create useSendTip mutation hook for sending Bacon Cash tips to streamers",
       "acceptanceCriteria": [
-        "Route /chat-room is registered in the router and renders ChatRoomPage",
-        "PrimaryNav includes a 'Chat Room' link that navigates to /chat-room",
-        "Navigation entry is visible to all users (authenticated and anonymous)",
-        "Active route highlighting works for the chat room link"
+        "useSendTip mutation hook is created in frontend/src/hooks/useQueries.ts",
+        "Hook accepts channelId, amount, and optional message as parameters",
+        "On success, invalidates user profile and payment history queries",
+        "Hook returns loading, error, and success states"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Add useSendTip mutation hook using useMutation from React Query. Hook should call actor.sendTip with sender (from identity), recipient (derived from channel owner), channelId, amount, and optional message. On success, invalidate 'currentUserProfile' and payment history queries. Return standard mutation states (isPending, isError, isSuccess, error, mutate, mutateAsync)."
+        }
+      ]
+    },
+    {
+      "id": "REQ-61",
+      "summary": "Create usePaymentHistory hook for fetching received and sent payments",
+      "acceptanceCriteria": [
+        "usePaymentHistory hook is created in frontend/src/hooks/useQueries.ts",
+        "Hook fetches both getPaymentsReceived and getPaymentsSent",
+        "Hook is only enabled when user is authenticated",
+        "Hook returns loading, error, and data states for both payment types"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Add usePaymentHistory hook that uses useQueries to fetch both actor.getPaymentsReceived and actor.getPaymentsSent in parallel. Both queries should be enabled only when actor is available and user is authenticated (identity exists). Return combined state with received and sent payment arrays, loading states, and error states."
+        }
+      ]
+    },
+    {
+      "id": "REQ-62",
+      "summary": "Add TipDialog component for sending Bacon Cash tips with amount input and message field",
+      "acceptanceCriteria": [
+        "TipDialog component is created with shadcn Dialog composition",
+        "Form includes a number input for tip amount (positive integers only)",
+        "Form includes an optional textarea for a message to the streamer",
+        "Current Bacon Cash balance is displayed prominently",
+        "Form validates that amount does not exceed available balance",
+        "Submit button triggers useSendTip mutation",
+        "Success shows a toast notification and closes the dialog",
+        "Error shows an error toast with the failure reason"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/channels/TipDialog.tsx",
+          "operation": "create",
+          "description": "Create TipDialog component using shadcn Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription. Accept props: open, onOpenChange, channelId, channelTitle, channelOwner. Display user's current Bacon Cash balance from useGetCallerUserProfile. Include number input for amount (min 1, validate against balance), textarea for optional message. Use useSendTip mutation hook. On success, show toast notification ('Tip sent successfully!'), close dialog, and reset form. On error, show toast with error message. Use Button with loading state during mutation."
+        }
+      ]
+    },
+    {
+      "id": "REQ-63",
+      "summary": "Add 'Send Tip' button to StreamDetailPage that opens TipDialog for authenticated viewers",
+      "acceptanceCriteria": [
+        "A 'Send Tip' or 'Tip Streamer' button is added to the StreamDetailPage near the channel metadata or chat panel",
+        "Button is only visible to authenticated users who are not the channel owner",
+        "Clicking the button opens the TipDialog with the current channel ID",
+        "Button uses appropriate icon (e.g., DollarSign, Coins) and styling"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/StreamDetailPage.tsx",
+          "operation": "modify",
+          "description": "Import TipDialog component and manage its open state with useState. Add a 'Tip Streamer' button with Coins or DollarSign icon from lucide-react positioned near channel metadata or above the chat panel. Only show button if user is authenticated (identity exists) and is not the channel owner (compare identity.getPrincipal() with channel.owner). Button onClick sets dialog open state to true. Render TipDialog with controlled open state, passing channelId, channel.title, and channel.owner as props."
+        }
+      ]
+    },
+    {
+      "id": "REQ-64",
+      "summary": "Create PaymentHistoryPage displaying received and sent tips in tabs",
+      "acceptanceCriteria": [
+        "PaymentHistoryPage component is created with tabs for received and sent payments",
+        "Each tab displays a list or table of payments with all relevant details",
+        "Payment amounts are clearly displayed with Bacon Cash formatting",
+        "Timestamps are formatted in a user-friendly way",
+        "Empty state is shown when no payments exist in a tab",
+        "Loading and error states are handled appropriately"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/PaymentHistoryPage.tsx",
+          "operation": "create",
+          "description": "Create PaymentHistoryPage component using shadcn Tabs, TabsList, TabsTrigger, TabsContent for 'Tips Received' and 'Tips Sent' tabs. Use usePaymentHistory hook to fetch payment data. Display payments in a Card or Table with columns: timestamp (formatted with Intl.DateTimeFormat or date-fns), channel ID/title, sender/recipient name (fetch using getUserProfile if needed), amount (formatted as 'X Bacon Cash'), and optional message. Show loading spinner during fetch. Show error alert if fetch fails. Show empty state message ('No tips received/sent yet') when payment arrays are empty. Wrap in AppLayout."
+        }
+      ]
+    },
+    {
+      "id": "REQ-65",
+      "summary": "Add route for payment history page and navigation entry point in user menu",
+      "acceptanceCriteria": [
+        "Route /payment-history is added to the router configuration",
+        "Route is protected and requires authentication",
+        "A navigation link to 'Payment History' or 'Earnings' is added in an appropriate location (account menu, Creator Studio, or footer)",
+        "Link is only visible to authenticated users"
       ],
       "file_operations": [
         {
           "path": "frontend/src/App.tsx",
           "operation": "modify",
-          "description": "Add a new route for /chat-room that renders the ChatRoomPage component. Import ChatRoomPage and register it in the TanStack Router configuration alongside existing routes (browse, categories, streams, creator-studio, admin, contact, sign-up, ai-chat)."
+          "description": "Import PaymentHistoryPage component. Add a new Route with path '/payment-history' and component={PaymentHistoryPage}. No authentication guard is needed in the route itself since the page will handle showing appropriate content based on auth state."
         },
         {
           "path": "frontend/src/components/navigation/PrimaryNav.tsx",
           "operation": "modify",
-          "description": "Add a 'Chat Room' navigation link that routes to /chat-room. Position it in the primary navigation bar alongside existing links (Music, Gaming, Sports, Horror, Adult, AI Chat, Creator Studio). The link should be visible to all users regardless of authentication status. Ensure active route highlighting works using the router's active state matching."
-        }
-      ]
-    },
-    {
-      "id": "REQ-51",
-      "summary": "Create cohesive visual theme for chat room interface emphasizing real-time communication",
-      "acceptanceCriteria": [
-        "Chat room interface has a unique color scheme defined in the theme system",
-        "Message bubbles, room list, and input area follow consistent styling",
-        "Theme emphasizes community and real-time interaction through visual design",
-        "Layout is responsive and works well on both desktop and mobile devices"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/index.css",
-          "operation": "modify",
-          "description": "Add CSS custom properties for a new chat-room theme in the :root selector (light mode) and .dark selector (dark mode). Define unique color variables distinct from both the default streaming UI and the ai-chat theme (e.g., --chat-room-bg, --chat-room-message, --chat-room-accent, --chat-room-text). Create utility classes for chat room styling such as .chat-room-bubble, .chat-room-sidebar, .chat-room-input that use these variables. Ensure the theme emphasizes community interaction with warm, inviting colors and clear visual hierarchy. Verify responsive design with mobile-friendly layouts."
+          "description": "Add a navigation button or link for 'Payment History' or 'Earnings' that navigates to '/payment-history'. Only show this link when user is authenticated (check identity from useInternetIdentity). Position it logically near other user-specific navigation items (e.g., after Creator Studio or in a user menu dropdown if one exists)."
         }
       ]
     }

@@ -1,17 +1,17 @@
 import Text "mo:core/Text";
 import Map "mo:core/Map";
 import Array "mo:core/Array";
-import Iter "mo:core/Iter";
 import List "mo:core/List";
 import Time "mo:core/Time";
 import Runtime "mo:core/Runtime";
 import Nat "mo:core/Nat";
 import Principal "mo:core/Principal";
+import Migration "migration";
+
 import MixinAuthorization "authorization/MixinAuthorization";
 import AccessControl "authorization/access-control";
 import MixinStorage "blob-storage/Mixin";
 import Storage "blob-storage/Storage";
-import Migration "migration";
 
 // Reference migration from separate file (no with clause)
 (with migration = Migration.run)
@@ -90,6 +90,7 @@ actor {
     streamUrl : Text;
     ingestUrl : Text;
     streamKey : Text;
+    chatRoomId : ?Text;
   };
 
   public type BaconCashRequest = {
@@ -142,6 +143,16 @@ actor {
     messages : List.List<ChatMessage>;
   };
 
+  public type StreamerPayment = {
+    id : Text;
+    channelId : Text;
+    sender : Principal;
+    recipient : Principal;
+    amount : Nat;
+    timestamp : Int;
+    message : ?Text;
+  };
+
   // Persistent storage using Text keys
   let channels = Map.empty<Text, Channel>();
   let baconCashBalances = Map.empty<Principal, Nat>();
@@ -149,6 +160,93 @@ actor {
   let userProfiles = Map.empty<Principal, UserProfile>();
   let conversations = Map.empty<Text, Conversation>();
   let chatRooms = Map.empty<Text, ChatRoom>();
+  let payments = Map.empty<Text, StreamerPayment>();
+
+  public shared ({ caller }) func sendTip(sender : Principal, recipient : Principal, channelId : Text, amount : Nat, message : ?Text) : async Text {
+    // Only registered users can send funds
+    // (sender must match the currently logged-in principal)
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
+      Runtime.trap("Only registered users can send tips");
+    };
+
+    if (sender != caller) {
+      Runtime.trap("Caller principal does not match sender principal");
+    };
+
+    // Disallow stripping system initialization for upgrades!
+    if (recipient.isAnonymous()) {
+      Runtime.trap("Anonymous principal not allowed as recipient");
+    };
+
+    // Validate amount
+    if (amount == 0) {
+      Runtime.trap("Amount must be greater than zero");
+    };
+
+    // Validate channel exists
+    switch (channels.get(channelId)) {
+      case (null) {
+        Runtime.trap("Channel not found");
+      };
+      case (_channel) {};
+    };
+
+    // Validate sufficient funds
+    let balance = switch (baconCashBalances.get(caller)) {
+      case (null) {
+        Runtime.trap("User not found");
+      };
+      case (?balance) { balance };
+    };
+
+    if (amount > balance) {
+      Runtime.trap("Insufficient balance");
+    };
+
+    let newBalance = balance - amount;
+    baconCashBalances.add(caller, newBalance);
+
+    // Update recipient's balance
+    let recipientBalance = switch (baconCashBalances.get(recipient)) {
+      case (null) { 0 };
+      case (?balance) { balance };
+    };
+
+    let newRecipientBalance = recipientBalance + amount;
+    baconCashBalances.add(recipient, newRecipientBalance);
+
+    // Store payment record
+    let paymentId = sender.toText() # "_" # recipient.toText() # "_" # channelId # "_" # Time.now().toText();
+
+    let paymentRecord : StreamerPayment = {
+      id = paymentId;
+      channelId;
+      sender;
+      recipient;
+      amount;
+      timestamp = Time.now();
+      message;
+    };
+
+    payments.add(paymentId, paymentRecord);
+    paymentId;
+  };
+
+  public query ({ caller }) func getPaymentsReceived(user : Principal) : async [StreamerPayment] {
+    payments.values().toArray().filter(
+      func(payment) {
+        payment.recipient == user;
+      }
+    );
+  };
+
+  public query ({ caller }) func getPaymentsSent(user : Principal) : async [StreamerPayment] {
+    payments.values().toArray().filter(
+      func(payment) {
+        payment.sender == user;
+      }
+    );
+  };
 
   // User Profile Management
   public query ({ caller }) func getCallerUserProfile() : async ?UserProfile {
@@ -236,7 +334,7 @@ actor {
     streamUrl : Text,
     ingestUrl : Text,
     streamKey : Text,
-  ) : async () {
+  ) : async Text {
     // Creators (users) can create their own channels
     if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
       Runtime.trap("Unauthorized: Only users can create channels");
@@ -260,9 +358,11 @@ actor {
       streamUrl;
       ingestUrl;
       streamKey;
+      chatRoomId = ?id;
     };
 
     channels.add(id, newChannel);
+    await createChatRoom(id);
   };
 
   public shared ({ caller }) func updateChannel(
@@ -299,6 +399,7 @@ actor {
           streamUrl;
           ingestUrl;
           streamKey;
+          chatRoomId = ?id;
         };
 
         channels.add(id, updatedChannel);
