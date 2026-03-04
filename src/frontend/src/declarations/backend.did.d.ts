@@ -52,6 +52,9 @@ export interface Conversation {
   'owner' : Principal,
 }
 export type ExternalBlob = Uint8Array;
+export type RequestStatus = { 'pending' : null } |
+  { 'approved' : null } |
+  { 'rejected' : null };
 export interface StreamerPayment {
   'id' : string,
   'channelId' : string,
@@ -69,6 +72,15 @@ export interface UserProfile {
 export type UserRole = { 'admin' : null } |
   { 'user' : null } |
   { 'guest' : null };
+export interface WithdrawalRequest {
+  'id' : string,
+  'status' : RequestStatus,
+  'requester' : Principal,
+  'creatorNotes' : [] | [string],
+  'timestamp' : bigint,
+  'amount' : bigint,
+  'adminNotes' : [] | [string],
+}
 export interface _CaffeineStorageCreateCertificateResult {
   'method' : string,
   'blob_hash' : string,
@@ -104,11 +116,13 @@ export interface _SERVICE {
   >,
   'createChatRoom' : ActorMethod<[string], string>,
   'createDefaultChatRoom' : ActorMethod<[], string>,
+  'createWithdrawalRequest' : ActorMethod<[bigint, [] | [string]], string>,
   'deleteChannel' : ActorMethod<[string], undefined>,
   'fulfillBaconCashRequest' : ActorMethod<[string], undefined>,
   'getAllBaconCashRequests' : ActorMethod<[], Array<BaconCashRequest>>,
   'getAllChannels' : ActorMethod<[], Array<Channel>>,
   'getAllChatRooms' : ActorMethod<[], Array<[string, string]>>,
+  'getAllWithdrawalRequests' : ActorMethod<[], Array<WithdrawalRequest>>,
   'getBalance' : ActorMethod<[], bigint>,
   'getBestScore' : ActorMethod<[], bigint>,
   'getCallerUserProfile' : ActorMethod<[], [] | [UserProfile]>,
@@ -119,11 +133,16 @@ export interface _SERVICE {
   'getConversations' : ActorMethod<[], Array<Conversation>>,
   'getMyBaconCashRequests' : ActorMethod<[], Array<BaconCashRequest>>,
   'getMyChannels' : ActorMethod<[], Array<Channel>>,
+  'getMyWithdrawalRequests' : ActorMethod<[], Array<WithdrawalRequest>>,
   'getPaymentsReceived' : ActorMethod<[Principal], Array<StreamerPayment>>,
   'getPaymentsSent' : ActorMethod<[Principal], Array<StreamerPayment>>,
   'getUserProfile' : ActorMethod<[Principal], [] | [UserProfile]>,
   'isCallerAdmin' : ActorMethod<[], boolean>,
   'postMessage' : ActorMethod<[string, string, string], undefined>,
+  'processWithdrawalRequest' : ActorMethod<
+    [string, RequestStatus, [] | [string]],
+    undefined
+  >,
   'requestBaconCash' : ActorMethod<[bigint], string>,
   'saveCallerUserProfile' : ActorMethod<[UserProfile], undefined>,
   'sendTip' : ActorMethod<

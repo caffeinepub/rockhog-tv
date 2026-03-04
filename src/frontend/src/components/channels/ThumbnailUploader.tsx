@@ -1,15 +1,18 @@
-import { useState, useRef } from 'react';
-import { Button } from '@/components/ui/button';
-import { ExternalBlob } from '../../backend';
-import { Upload, X } from 'lucide-react';
-import { Progress } from '@/components/ui/progress';
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+import { Upload, X } from "lucide-react";
+import { useRef, useState } from "react";
+import { ExternalBlob } from "../../backend";
 
 interface ThumbnailUploaderProps {
   thumbnail: ExternalBlob | null;
   onThumbnailChange: (thumbnail: ExternalBlob | null) => void;
 }
 
-export default function ThumbnailUploader({ thumbnail, onThumbnailChange }: ThumbnailUploaderProps) {
+export default function ThumbnailUploader({
+  thumbnail,
+  onThumbnailChange,
+}: ThumbnailUploaderProps) {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -18,8 +21,8 @@ export default function ThumbnailUploader({ thumbnail, onThumbnailChange }: Thum
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (!file.type.startsWith('image/')) {
-      alert('Please select an image file');
+    if (!file.type.startsWith("image/")) {
+      alert("Please select an image file");
       return;
     }
 
@@ -29,14 +32,16 @@ export default function ThumbnailUploader({ thumbnail, onThumbnailChange }: Thum
     try {
       const arrayBuffer = await file.arrayBuffer();
       const uint8Array = new Uint8Array(arrayBuffer);
-      const blob = ExternalBlob.fromBytes(uint8Array).withUploadProgress((percentage) => {
-        setUploadProgress(percentage);
-      });
+      const blob = ExternalBlob.fromBytes(uint8Array).withUploadProgress(
+        (percentage) => {
+          setUploadProgress(percentage);
+        },
+      );
 
       onThumbnailChange(blob);
     } catch (error) {
-      console.error('Upload error:', error);
-      alert('Failed to upload thumbnail');
+      console.error("Upload error:", error);
+      alert("Failed to upload thumbnail");
     } finally {
       setIsUploading(false);
       setUploadProgress(0);
@@ -46,7 +51,7 @@ export default function ThumbnailUploader({ thumbnail, onThumbnailChange }: Thum
   const handleRemove = () => {
     onThumbnailChange(null);
     if (fileInputRef.current) {
-      fileInputRef.current.value = '';
+      fileInputRef.current.value = "";
     }
   };
 
@@ -81,7 +86,7 @@ export default function ThumbnailUploader({ thumbnail, onThumbnailChange }: Thum
             onClick={() => fileInputRef.current?.click()}
             disabled={isUploading}
           >
-            {isUploading ? 'Uploading...' : 'Select Image'}
+            {isUploading ? "Uploading..." : "Select Image"}
           </Button>
         </div>
       )}
@@ -105,4 +110,3 @@ export default function ThumbnailUploader({ thumbnail, onThumbnailChange }: Thum
     </div>
   );
 }
-

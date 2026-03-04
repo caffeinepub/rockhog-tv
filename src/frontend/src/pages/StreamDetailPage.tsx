@@ -1,19 +1,3 @@
-import { useParams, useNavigate } from '@tanstack/react-router';
-import { useGetChannel } from '../hooks/useQueries';
-import { useInternetIdentity } from '../hooks/useInternetIdentity';
-import { useIsAdmin } from '../hooks/useAuthz';
-import StreamEmbed from '../components/player/StreamEmbed';
-import AdultRouteGuard from '../components/adult/AdultRouteGuard';
-import RoleGate from '../components/auth/RoleGate';
-import StreamChatPanel from '../components/chat/StreamChatPanel';
-import TipDialog from '../components/channels/TipDialog';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Loader2, ArrowLeft, Edit, Trash2, Coins } from 'lucide-react';
-import { useState } from 'react';
-import ChannelEditorDialog from '../components/channels/ChannelEditorDialog';
-import { useDeleteChannel } from '../hooks/useQueries';
-import { toast } from 'sonner';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -23,15 +7,31 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
-import { getCategoryLabel } from '../utils/category';
+} from "@/components/ui/alert-dialog";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { useNavigate, useParams } from "@tanstack/react-router";
+import { ArrowLeft, Coins, Edit, Loader2, Trash2 } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
+import AdultRouteGuard from "../components/adult/AdultRouteGuard";
+import RoleGate from "../components/auth/RoleGate";
+import ChannelEditorDialog from "../components/channels/ChannelEditorDialog";
+import TipDialog from "../components/channels/TipDialog";
+import StreamChatPanel from "../components/chat/StreamChatPanel";
+import StreamEmbed from "../components/player/StreamEmbed";
+import { useIsAdmin } from "../hooks/useAuthz";
+import { useInternetIdentity } from "../hooks/useInternetIdentity";
+import { useGetChannel } from "../hooks/useQueries";
+import { useDeleteChannel } from "../hooks/useQueries";
+import { getCategoryLabel } from "../utils/category";
 
 function StreamDetailContent() {
   const { streamId } = useParams({ strict: false });
   const navigate = useNavigate();
   const { identity } = useInternetIdentity();
   const { data: isAdmin } = useIsAdmin();
-  const { data: channel, isLoading } = useGetChannel(streamId || '');
+  const { data: channel, isLoading } = useGetChannel(streamId || "");
   const [showEditor, setShowEditor] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showTipDialog, setShowTipDialog] = useState(false);
@@ -49,8 +49,10 @@ function StreamDetailContent() {
     return (
       <div className="container mx-auto px-4 py-16 text-center">
         <h1 className="text-2xl font-bold mb-4">Channel Not Found</h1>
-        <p className="text-muted-foreground mb-6">The channel you're looking for doesn't exist.</p>
-        <Button onClick={() => navigate({ to: '/' })}>
+        <p className="text-muted-foreground mb-6">
+          The channel you're looking for doesn't exist.
+        </p>
+        <Button onClick={() => navigate({ to: "/" })}>
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back to Home
         </Button>
@@ -58,17 +60,18 @@ function StreamDetailContent() {
     );
   }
 
-  const isOwner = identity && channel.owner.toString() === identity.getPrincipal().toString();
+  const isOwner =
+    identity && channel.owner.toString() === identity.getPrincipal().toString();
   const canEdit = isOwner || isAdmin;
   const canTip = identity && !isOwner;
 
   const handleDelete = async () => {
     try {
       await deleteChannel.mutateAsync(channel.id);
-      toast.success('Channel deleted successfully');
-      navigate({ to: '/' });
+      toast.success("Channel deleted successfully");
+      navigate({ to: "/" });
     } catch (error: any) {
-      toast.error(error.message || 'Failed to delete channel');
+      toast.error(error.message || "Failed to delete channel");
     }
   };
 
@@ -77,7 +80,7 @@ function StreamDetailContent() {
       <Button
         variant="ghost"
         size="sm"
-        onClick={() => navigate({ to: '/' })}
+        onClick={() => navigate({ to: "/" })}
         className="mb-6"
       >
         <ArrowLeft className="w-4 h-4 mr-2" />
@@ -114,7 +117,11 @@ function StreamDetailContent() {
                 {canEdit && (
                   <>
                     <RoleGate channel={channel}>
-                      <Button variant="outline" size="sm" onClick={() => setShowEditor(true)}>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setShowEditor(true)}
+                      >
                         <Edit className="w-4 h-4 mr-2" />
                         Edit
                       </Button>
@@ -137,13 +144,7 @@ function StreamDetailContent() {
 
           {/* Chat panel */}
           <div className="lg:col-span-1">
-            {channel.chatRoomId ? (
-              <StreamChatPanel chatRoomId={channel.chatRoomId} />
-            ) : (
-              <div className="text-center py-12 text-muted-foreground">
-                <p>Chat is not available for this stream</p>
-              </div>
-            )}
+            <StreamChatPanel chatRoomId={channel.chatRoomId ?? channel.id} />
           </div>
         </div>
       </div>
@@ -171,12 +172,16 @@ function StreamDetailContent() {
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Channel</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete "{channel.title}"? This action cannot be undone.
+              Are you sure you want to delete "{channel.title}"? This action
+              cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+            <AlertDialogAction
+              onClick={handleDelete}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
               Delete
             </AlertDialogAction>
           </AlertDialogFooter>
@@ -188,9 +193,9 @@ function StreamDetailContent() {
 
 export default function StreamDetailPage() {
   const { streamId } = useParams({ strict: false });
-  const { data: channel } = useGetChannel(streamId || '');
+  const { data: channel } = useGetChannel(streamId || "");
 
-  if (channel?.category.toLowerCase() === 'adult') {
+  if (channel?.category.toLowerCase() === "adult") {
     return (
       <AdultRouteGuard>
         <StreamDetailContent />

@@ -1,7 +1,7 @@
-import { useIsAdmin } from '../../hooks/useAuthz';
-import { useInternetIdentity } from '../../hooks/useInternetIdentity';
-import AccessDeniedScreen from '../auth/AccessDeniedScreen';
-import { Loader2 } from 'lucide-react';
+import { Loader2 } from "lucide-react";
+import { useIsAdmin } from "../../hooks/useAuthz";
+import { useInternetIdentity } from "../../hooks/useInternetIdentity";
+import AccessDeniedScreen from "../auth/AccessDeniedScreen";
 
 interface AdminOnlyProps {
   children: React.ReactNode;
@@ -24,9 +24,10 @@ export default function AdminOnly({ children }: AdminOnlyProps) {
   }
 
   if (!isAdmin) {
-    return <AccessDeniedScreen message="This page is only accessible to administrators." />;
+    return (
+      <AccessDeniedScreen message="This page is only accessible to administrators." />
+    );
   }
 
   return <>{children}</>;
 }
-

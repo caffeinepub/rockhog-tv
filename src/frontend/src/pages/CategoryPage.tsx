@@ -1,28 +1,29 @@
-import { useParams } from '@tanstack/react-router';
-import { useGetAllChannels } from '../hooks/useQueries';
-import CategoryIcon from '../components/branding/CategoryIcon';
-import ChannelGrid from '../components/channels/ChannelGrid';
-import AdultRouteGuard from '../components/adult/AdultRouteGuard';
-import { getCategoryLabel } from '../utils/category';
+import { useParams } from "@tanstack/react-router";
+import AdultRouteGuard from "../components/adult/AdultRouteGuard";
+import CategoryIcon from "../components/branding/CategoryIcon";
+import ChannelGrid from "../components/channels/ChannelGrid";
+import { useGetAllChannels } from "../hooks/useQueries";
+import { getCategoryLabel } from "../utils/category";
 
 function CategoryPageContent() {
-  const { categoryName } = useParams({ strict: false });
+  const { categoryId } = useParams({ strict: false });
   const { data: allChannels = [], isLoading } = useGetAllChannels();
 
   const categoryChannels = allChannels.filter(
-    (channel) => channel.category.toLowerCase() === categoryName?.toLowerCase()
+    (channel) => channel.category.toLowerCase() === categoryId?.toLowerCase(),
   );
 
-  const displayName = categoryName ? getCategoryLabel(categoryName) : 'Category';
+  const displayName = categoryId ? getCategoryLabel(categoryId) : "Category";
 
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex items-center gap-4 mb-8">
-        <CategoryIcon category={categoryName || 'music'} className="w-16 h-16" />
+        <CategoryIcon category={categoryId || "music"} className="w-16 h-16" />
         <div>
           <h1 className="text-3xl font-bold">{displayName}</h1>
           <p className="text-muted-foreground">
-            {categoryChannels.length} {categoryChannels.length === 1 ? 'channel' : 'channels'}
+            {categoryChannels.length}{" "}
+            {categoryChannels.length === 1 ? "channel" : "channels"}
           </p>
         </div>
       </div>
@@ -37,9 +38,9 @@ function CategoryPageContent() {
 }
 
 export default function CategoryPage() {
-  const { categoryName } = useParams({ strict: false });
+  const { categoryId } = useParams({ strict: false });
 
-  if (categoryName?.toLowerCase() === 'adult') {
+  if (categoryId?.toLowerCase() === "adult") {
     return (
       <AdultRouteGuard>
         <CategoryPageContent />

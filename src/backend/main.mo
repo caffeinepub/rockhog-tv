@@ -6,15 +6,15 @@ import Time "mo:core/Time";
 import Runtime "mo:core/Runtime";
 import Nat "mo:core/Nat";
 import Principal "mo:core/Principal";
-import Migration "migration";
 
 import MixinAuthorization "authorization/MixinAuthorization";
 import AccessControl "authorization/access-control";
 import MixinStorage "blob-storage/Mixin";
 import Storage "blob-storage/Storage";
 
-// Reference migration from separate file (no with clause)
-(with migration = Migration.run)
+
+// Migration via with-clause
+
 actor {
   include MixinStorage();
 
@@ -153,6 +153,22 @@ actor {
     message : ?Text;
   };
 
+  public type RequestStatus = {
+    #pending;
+    #approved;
+    #rejected;
+  };
+
+  public type WithdrawalRequest = {
+    id : Text;
+    requester : Principal;
+    amount : Nat;
+    status : RequestStatus;
+    timestamp : Int;
+    creatorNotes : ?Text;
+    adminNotes : ?Text;
+  };
+
   // Persistent storage using Text keys
   let channels = Map.empty<Text, Channel>();
   let baconCashBalances = Map.empty<Principal, Nat>();
@@ -161,6 +177,7 @@ actor {
   let conversations = Map.empty<Text, Conversation>();
   let chatRooms = Map.empty<Text, ChatRoom>();
   let payments = Map.empty<Text, StreamerPayment>();
+  let withdrawalRequests = Map.empty<Text, WithdrawalRequest>();
 
   public shared ({ caller }) func sendTip(sender : Principal, recipient : Principal, channelId : Text, amount : Nat, message : ?Text) : async Text {
     // Only registered users can send funds
@@ -173,7 +190,6 @@ actor {
       Runtime.trap("Caller principal does not match sender principal");
     };
 
-    // Disallow stripping system initialization for upgrades!
     if (recipient.isAnonymous()) {
       Runtime.trap("Anonymous principal not allowed as recipient");
     };
@@ -203,7 +219,7 @@ actor {
       Runtime.trap("Insufficient balance");
     };
 
-    let newBalance = balance - amount;
+    let newBalance = balance - amount : Nat;
     baconCashBalances.add(caller, newBalance);
 
     // Update recipient's balance
@@ -497,6 +513,98 @@ actor {
         let newBalance = currentBalance + request.amount;
         baconCashBalances.add(user, newBalance);
         baconCashRequests.add(requestId, { request with completed = true });
+      };
+    };
+  };
+
+  public shared ({ caller }) func createWithdrawalRequest(amount : Nat, creatorNotes : ?Text) : async Text {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
+      Runtime.trap("Unauthorized: Only creators can request withdrawals");
+    };
+
+    if (amount == 0) {
+      Runtime.trap("Amount must be greater than zero");
+    };
+
+    let currentBalance = switch (baconCashBalances.get(caller)) {
+      case (null) { 0 };
+      case (?balance) { balance };
+    };
+
+    if (amount > currentBalance) {
+      Runtime.trap("Requested amount exceeds current balance");
+    };
+
+    let requestId = caller.toText() # "_" # amount.toText() # "_" # Time.now().toText();
+
+    let request : WithdrawalRequest = {
+      id = requestId;
+      requester = caller;
+      amount;
+      status = #pending;
+      timestamp = Time.now();
+      creatorNotes;
+      adminNotes = null;
+    };
+
+    withdrawalRequests.add(requestId, request);
+    requestId;
+  };
+
+  public query ({ caller }) func getMyWithdrawalRequests() : async [WithdrawalRequest] {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
+      Runtime.trap("Unauthorized: Only creators can view withdrawal requests");
+    };
+
+    let allRequests = withdrawalRequests.values().toArray();
+    allRequests.filter(func(request) { request.requester == caller });
+  };
+
+  public query ({ caller }) func getAllWithdrawalRequests() : async [WithdrawalRequest] {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
+      Runtime.trap("Unauthorized: Only admins can view all withdrawal requests");
+    };
+
+    withdrawalRequests.values().toArray();
+  };
+
+  public shared ({ caller }) func processWithdrawalRequest(requestId : Text, status : RequestStatus, adminNotes : ?Text) : async () {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
+      Runtime.trap("Unauthorized: Only admins can process withdrawal requests");
+    };
+
+    switch (withdrawalRequests.get(requestId)) {
+      case (null) {
+        Runtime.trap("Request not found");
+      };
+      case (?request) {
+        if (request.status != #pending) {
+          Runtime.trap("Request already processed");
+        };
+
+        // Only deduct balance if approved
+        if (status == #approved) {
+          let currentBalance = switch (baconCashBalances.get(request.requester)) {
+            case (null) { 0 };
+            case (?balance) { balance };
+          };
+
+          // Verify sufficient balance at approval time
+          if (request.amount > currentBalance) {
+            Runtime.trap("Insufficient balance: requester's balance is lower than requested amount");
+          };
+
+          let newBalance = currentBalance - request.amount : Nat;
+          baconCashBalances.add(request.requester, newBalance);
+        };
+
+        let updatedRequest = {
+          request with
+          status;
+          adminNotes;
+        };
+
+        withdrawalRequests.add(requestId, updatedRequest);
       };
     };
   };

@@ -1,16 +1,28 @@
-import { useState, useEffect } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Button } from '@/components/ui/button';
-import ThumbnailUploader from './ThumbnailUploader';
-import { useCreateChannel, useUpdateChannel } from '../../hooks/useQueries';
-import type { Channel } from '../../backend';
-import { ExternalBlob } from '../../backend';
-import { toast } from 'sonner';
-import { getAllCategories, getCategoryLabel } from '../../utils/category';
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import type { Channel } from "../../backend";
+import type { ExternalBlob } from "../../backend";
+import { useCreateChannel, useUpdateChannel } from "../../hooks/useQueries";
+import { getAllCategories, getCategoryLabel } from "../../utils/category";
+import ThumbnailUploader from "./ThumbnailUploader";
 
 interface ChannelEditorDialogProps {
   open: boolean;
@@ -18,17 +30,22 @@ interface ChannelEditorDialogProps {
   channel?: Channel;
 }
 
-export default function ChannelEditorDialog({ open, onOpenChange, channel }: ChannelEditorDialogProps) {
-  const [title, setTitle] = useState('');
-  const [category, setCategory] = useState('music');
-  const [description, setDescription] = useState('');
-  const [streamUrl, setStreamUrl] = useState('');
+export default function ChannelEditorDialog({
+  open,
+  onOpenChange,
+  channel,
+}: ChannelEditorDialogProps) {
+  const [title, setTitle] = useState("");
+  const [category, setCategory] = useState("music");
+  const [description, setDescription] = useState("");
+  const [streamUrl, setStreamUrl] = useState("");
   const [thumbnail, setThumbnail] = useState<ExternalBlob | null>(null);
 
   const createChannel = useCreateChannel();
   const updateChannel = useUpdateChannel();
   const categories = getAllCategories();
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: open resets form when dialog reopens
   useEffect(() => {
     if (channel) {
       setTitle(channel.title);
@@ -37,10 +54,10 @@ export default function ChannelEditorDialog({ open, onOpenChange, channel }: Cha
       setStreamUrl(channel.streamUrl);
       setThumbnail(channel.thumbnail);
     } else {
-      setTitle('');
-      setCategory('music');
-      setDescription('');
-      setStreamUrl('');
+      setTitle("");
+      setCategory("music");
+      setDescription("");
+      setStreamUrl("");
       setThumbnail(null);
     }
   }, [channel, open]);
@@ -48,14 +65,21 @@ export default function ChannelEditorDialog({ open, onOpenChange, channel }: Cha
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!title.trim() || !description.trim() || !streamUrl.trim() || !thumbnail) {
-      toast.error('Please fill in all fields and upload a thumbnail');
+    if (
+      !title.trim() ||
+      !description.trim() ||
+      !streamUrl.trim() ||
+      !thumbnail
+    ) {
+      toast.error("Please fill in all fields and upload a thumbnail");
       return;
     }
 
     try {
-      const channelId = channel?.id || `channel_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-      
+      const channelId =
+        channel?.id ||
+        `channel_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+
       const data = {
         id: channelId,
         title: title.trim(),
@@ -63,21 +87,24 @@ export default function ChannelEditorDialog({ open, onOpenChange, channel }: Cha
         description: description.trim(),
         streamUrl: streamUrl.trim(),
         thumbnail,
-        ingestUrl: channel?.ingestUrl || `rtmp://ingest.rockhog.tv/live/${channelId}`,
-        streamKey: channel?.streamKey || `sk_${Math.random().toString(36).substr(2, 16)}`,
+        ingestUrl:
+          channel?.ingestUrl || `rtmp://ingest.rockhog.tv/live/${channelId}`,
+        streamKey:
+          channel?.streamKey ||
+          `sk_${Math.random().toString(36).substr(2, 16)}`,
       };
 
       if (channel) {
         await updateChannel.mutateAsync(data);
-        toast.success('Channel updated successfully!');
+        toast.success("Channel updated successfully!");
       } else {
         await createChannel.mutateAsync(data);
-        toast.success('Channel created successfully!');
+        toast.success("Channel created successfully!");
       }
 
       onOpenChange(false);
     } catch (error: any) {
-      toast.error(error.message || 'Failed to save channel');
+      toast.error(error.message || "Failed to save channel");
     }
   };
 
@@ -87,7 +114,9 @@ export default function ChannelEditorDialog({ open, onOpenChange, channel }: Cha
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>{channel ? 'Edit Channel' : 'Create New Channel'}</DialogTitle>
+          <DialogTitle>
+            {channel ? "Edit Channel" : "Create New Channel"}
+          </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
@@ -140,15 +169,27 @@ export default function ChannelEditorDialog({ open, onOpenChange, channel }: Cha
 
           <div className="space-y-2">
             <Label>Thumbnail</Label>
-            <ThumbnailUploader thumbnail={thumbnail} onThumbnailChange={setThumbnail} />
+            <ThumbnailUploader
+              thumbnail={thumbnail}
+              onThumbnailChange={setThumbnail}
+            />
           </div>
 
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={isLoading}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+              disabled={isLoading}
+            >
               Cancel
             </Button>
             <Button type="submit" disabled={isLoading}>
-              {isLoading ? 'Saving...' : channel ? 'Update Channel' : 'Create Channel'}
+              {isLoading
+                ? "Saving..."
+                : channel
+                  ? "Update Channel"
+                  : "Create Channel"}
             </Button>
           </DialogFooter>
         </form>

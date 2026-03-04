@@ -1,22 +1,28 @@
-import { Link } from '@tanstack/react-router';
-import { useInternetIdentity } from '../../hooks/useInternetIdentity';
-import { useGetCallerUserProfile } from '../../hooks/useQueries';
-import BrandLogo from '../branding/BrandLogo';
-import PrimaryNav from '../navigation/PrimaryNav';
-import LoginButton from '../auth/LoginButton';
-import ProfileSetupDialog from '../auth/ProfileSetupDialog';
-import AccountSummary from '../account/AccountSummary';
-import ShareButton from '../share/ShareButton';
-import { SiX, SiFacebook, SiInstagram } from 'react-icons/si';
-import { Button } from '@/components/ui/button';
-import { UserPlus } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { Link } from "@tanstack/react-router";
+import { UserPlus } from "lucide-react";
+import { SiFacebook, SiInstagram, SiX } from "react-icons/si";
+import { useInternetIdentity } from "../../hooks/useInternetIdentity";
+import { useGetCallerUserProfile } from "../../hooks/useQueries";
+import AccountSummary from "../account/AccountSummary";
+import LoginButton from "../auth/LoginButton";
+import ProfileSetupDialog from "../auth/ProfileSetupDialog";
+import BrandLogo from "../branding/BrandLogo";
+import ChatWidget from "../chat/ChatWidget";
+import PrimaryNav from "../navigation/PrimaryNav";
+import ShareButton from "../share/ShareButton";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const { identity } = useInternetIdentity();
-  const { data: userProfile, isLoading: profileLoading, isFetched } = useGetCallerUserProfile();
+  const {
+    data: userProfile,
+    isLoading: profileLoading,
+    isFetched,
+  } = useGetCallerUserProfile();
   const isAuthenticated = !!identity;
 
-  const showProfileSetup = isAuthenticated && !profileLoading && isFetched && userProfile === null;
+  const showProfileSetup =
+    isAuthenticated && !profileLoading && isFetched && userProfile === null;
 
   return (
     <div className="min-h-screen flex flex-col streaming-gradient">
@@ -31,7 +37,12 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
               <ShareButton />
               {isAuthenticated && <AccountSummary />}
               {!isAuthenticated && (
-                <Button asChild variant="outline" size="sm" className="gap-2 hidden md:flex">
+                <Button
+                  asChild
+                  variant="outline"
+                  size="sm"
+                  className="gap-2 hidden md:flex"
+                >
                   <Link to="/sign-up">
                     <UserPlus className="w-4 h-4" />
                     Sign Up
@@ -44,9 +55,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         </div>
       </header>
 
-      <main className="flex-1">
-        {children}
-      </main>
+      <main className="flex-1">{children}</main>
 
       <footer className="border-t border-border/50 bg-card/30 backdrop-blur-sm mt-auto">
         <div className="container mx-auto px-4 py-8">
@@ -54,7 +63,10 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <span>© {new Date().getFullYear()} RockHog TV</span>
               <span>•</span>
-              <Link to="/contact" className="hover:text-foreground transition-colors">
+              <Link
+                to="/contact"
+                className="hover:text-foreground transition-colors"
+              >
                 Contact
               </Link>
               <span>•</span>
@@ -69,13 +81,28 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
               </a>
             </div>
             <div className="flex items-center gap-4">
-              <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
+              <a
+                href="https://x.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-foreground transition-colors"
+              >
                 <SiX className="w-5 h-5" />
               </a>
-              <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
+              <a
+                href="https://facebook.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-foreground transition-colors"
+              >
                 <SiFacebook className="w-5 h-5" />
               </a>
-              <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
+              <a
+                href="https://instagram.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-foreground transition-colors"
+              >
                 <SiInstagram className="w-5 h-5" />
               </a>
             </div>
@@ -84,6 +111,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       </footer>
 
       {showProfileSetup && <ProfileSetupDialog />}
+      <ChatWidget />
     </div>
   );
 }

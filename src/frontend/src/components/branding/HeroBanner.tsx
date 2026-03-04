@@ -12,11 +12,11 @@ export default function HeroBanner() {
             Stream Everything
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl">
-            Your all-in-one destination for music, gaming, sports, horror, and more. Join the RockHog community today.
+            Your all-in-one destination for music, gaming, sports, horror, and
+            more. Join the RockHog community today.
           </p>
         </div>
       </div>
     </div>
   );
 }
-

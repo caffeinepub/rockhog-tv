@@ -20,6 +20,18 @@ export interface BaconCashRequest {
     completed: boolean;
     amount: bigint;
 }
+export interface Channel {
+    id: string;
+    title: string;
+    thumbnail: ExternalBlob;
+    owner: Principal;
+    description: string;
+    chatRoomId?: string;
+    category: Category;
+    streamKey: string;
+    streamUrl: string;
+    ingestUrl: string;
+}
 export interface AIMessage {
     isAI: boolean;
     text: string;
@@ -40,17 +52,14 @@ export interface StreamerPayment {
     timestamp: bigint;
     amount: bigint;
 }
-export interface Channel {
+export interface WithdrawalRequest {
     id: string;
-    title: string;
-    thumbnail: ExternalBlob;
-    owner: Principal;
-    description: string;
-    chatRoomId?: string;
-    category: Category;
-    streamKey: string;
-    streamUrl: string;
-    ingestUrl: string;
+    status: RequestStatus;
+    requester: Principal;
+    creatorNotes?: string;
+    timestamp: bigint;
+    amount: bigint;
+    adminNotes?: string;
 }
 export interface Conversation {
     id: string;
@@ -74,6 +83,11 @@ export enum Category {
     ppv_events = "ppv_events",
     radio = "radio"
 }
+export enum RequestStatus {
+    pending = "pending",
+    approved = "approved",
+    rejected = "rejected"
+}
 export enum UserRole {
     admin = "admin",
     user = "user",
@@ -84,11 +98,13 @@ export interface backendInterface {
     createChannel(id: string, title: string, category: string, description: string, thumbnail: ExternalBlob, streamUrl: string, ingestUrl: string, streamKey: string): Promise<string>;
     createChatRoom(name: string): Promise<string>;
     createDefaultChatRoom(): Promise<string>;
+    createWithdrawalRequest(amount: bigint, creatorNotes: string | null): Promise<string>;
     deleteChannel(id: string): Promise<void>;
     fulfillBaconCashRequest(requestId: string): Promise<void>;
     getAllBaconCashRequests(): Promise<Array<BaconCashRequest>>;
     getAllChannels(): Promise<Array<Channel>>;
     getAllChatRooms(): Promise<Array<[string, string]>>;
+    getAllWithdrawalRequests(): Promise<Array<WithdrawalRequest>>;
     getBalance(): Promise<bigint>;
     getBestScore(): Promise<bigint>;
     getCallerUserProfile(): Promise<UserProfile | null>;
@@ -99,11 +115,13 @@ export interface backendInterface {
     getConversations(): Promise<Array<Conversation>>;
     getMyBaconCashRequests(): Promise<Array<BaconCashRequest>>;
     getMyChannels(): Promise<Array<Channel>>;
+    getMyWithdrawalRequests(): Promise<Array<WithdrawalRequest>>;
     getPaymentsReceived(user: Principal): Promise<Array<StreamerPayment>>;
     getPaymentsSent(user: Principal): Promise<Array<StreamerPayment>>;
     getUserProfile(user: Principal): Promise<UserProfile | null>;
     isCallerAdmin(): Promise<boolean>;
     postMessage(roomId: string, senderName: string, message: string): Promise<void>;
+    processWithdrawalRequest(requestId: string, status: RequestStatus, adminNotes: string | null): Promise<void>;
     requestBaconCash(amount: bigint): Promise<string>;
     saveCallerUserProfile(profile: UserProfile): Promise<void>;
     sendTip(sender: Principal, recipient: Principal, channelId: string, amount: bigint, message: string | null): Promise<string>;

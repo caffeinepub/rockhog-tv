@@ -1,18 +1,33 @@
-import { createRouter, createRoute, createRootRoute, RouterProvider, Outlet } from '@tanstack/react-router';
-import { ThemeProvider } from 'next-themes';
-import AppLayout from './components/layout/AppLayout';
-import BrowseHomePage from './pages/BrowseHomePage';
-import CategoryPage from './pages/CategoryPage';
-import StreamDetailPage from './pages/StreamDetailPage';
-import CreatorStudioPage from './pages/CreatorStudioPage';
-import BuyBaconCashPage from './pages/BuyBaconCashPage';
-import AdminBaconCashRequestsPage from './pages/AdminBaconCashRequestsPage';
-import ContactPage from './pages/ContactPage';
-import SignUpPage from './pages/SignUpPage';
-import AIChatPage from './pages/AIChatPage';
-import ChatRoomPage from './pages/ChatRoomPage';
-import PaymentHistoryPage from './pages/PaymentHistoryPage';
-import { Toaster } from '@/components/ui/sonner';
+import { Toaster } from "@/components/ui/sonner";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import {
+  Outlet,
+  RouterProvider,
+  createRootRoute,
+  createRoute,
+  createRouter,
+} from "@tanstack/react-router";
+import { ThemeProvider } from "next-themes";
+import AppLayout from "./components/layout/AppLayout";
+import AdminBaconCashRequestsPage from "./pages/AdminBaconCashRequestsPage";
+import AdminWithdrawalRequestsPage from "./pages/AdminWithdrawalRequestsPage";
+import BrowseHomePage from "./pages/BrowseHomePage";
+import BuyBaconCashPage from "./pages/BuyBaconCashPage";
+import CategoryPage from "./pages/CategoryPage";
+import ContactPage from "./pages/ContactPage";
+import CreatorStudioPage from "./pages/CreatorStudioPage";
+import PaymentHistoryPage from "./pages/PaymentHistoryPage";
+import SignUpPage from "./pages/SignUpPage";
+import StreamDetailPage from "./pages/StreamDetailPage";
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 const rootRoute = createRootRoute({
   component: () => (
@@ -24,67 +39,61 @@ const rootRoute = createRootRoute({
 
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/',
+  path: "/",
   component: BrowseHomePage,
 });
 
 const categoryRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/category/$categoryName',
+  path: "/category/$categoryId",
   component: CategoryPage,
 });
 
 const streamRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/stream/$streamId',
+  path: "/stream/$streamId",
   component: StreamDetailPage,
 });
 
 const creatorStudioRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/creator-studio',
+  path: "/creator-studio",
   component: CreatorStudioPage,
 });
 
 const buyBaconCashRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/buy-bacon-cash',
+  path: "/buy-bacon-cash",
   component: BuyBaconCashPage,
 });
 
-const adminBaconCashRoute = createRoute({
+const adminBaconCashRequestsRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/admin/bacon-cash-requests',
+  path: "/admin/bacon-cash-requests",
   component: AdminBaconCashRequestsPage,
+});
+
+const adminWithdrawalRequestsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/admin/withdrawals",
+  component: AdminWithdrawalRequestsPage,
 });
 
 const contactRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/contact',
+  path: "/contact",
   component: ContactPage,
 });
 
 const signUpRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/sign-up',
+  path: "/sign-up",
   component: SignUpPage,
-});
-
-const aiChatRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/ai-chat',
-  component: AIChatPage,
-});
-
-const chatRoomRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/chat-room',
-  component: ChatRoomPage,
 });
 
 const paymentHistoryRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/payment-history',
+  path: "/earnings",
   component: PaymentHistoryPage,
 });
 
@@ -94,17 +103,16 @@ const routeTree = rootRoute.addChildren([
   streamRoute,
   creatorStudioRoute,
   buyBaconCashRoute,
-  adminBaconCashRoute,
+  adminBaconCashRequestsRoute,
+  adminWithdrawalRequestsRoute,
   contactRoute,
   signUpRoute,
-  aiChatRoute,
-  chatRoomRoute,
   paymentHistoryRoute,
 ]);
 
 const router = createRouter({ routeTree });
 
-declare module '@tanstack/react-router' {
+declare module "@tanstack/react-router" {
   interface Register {
     router: typeof router;
   }
@@ -112,9 +120,11 @@ declare module '@tanstack/react-router' {
 
 export default function App() {
   return (
-    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-      <RouterProvider router={router} />
-      <Toaster />
-    </ThemeProvider>
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+        <RouterProvider router={router} />
+        <Toaster />
+      </ThemeProvider>
+    </QueryClientProvider>
   );
 }

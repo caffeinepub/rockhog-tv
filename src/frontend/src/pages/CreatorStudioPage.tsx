@@ -1,14 +1,3 @@
-import { useState } from 'react';
-import { useInternetIdentity } from '../hooks/useInternetIdentity';
-import { useGetMyChannels } from '../hooks/useQueries';
-import AccessDeniedScreen from '../components/auth/AccessDeniedScreen';
-import ChannelEditorDialog from '../components/channels/ChannelEditorDialog';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Plus, Edit, Trash2, Loader2, Copy, Check } from 'lucide-react';
-import { useDeleteChannel } from '../hooks/useQueries';
-import { toast } from 'sonner';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -18,21 +7,47 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
-import { Separator } from '@/components/ui/separator';
-import type { Channel } from '../backend';
+} from "@/components/ui/alert-dialog";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import {
+  Check,
+  Copy,
+  DollarSign,
+  Edit,
+  Loader2,
+  Plus,
+  Trash2,
+} from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
+import type { Channel } from "../backend";
+import AccessDeniedScreen from "../components/auth/AccessDeniedScreen";
+import ChannelEditorDialog from "../components/channels/ChannelEditorDialog";
+import WithdrawalRequestDialog from "../components/withdrawals/WithdrawalRequestDialog";
+import WithdrawalRequestsList from "../components/withdrawals/WithdrawalRequestsList";
+import { useInternetIdentity } from "../hooks/useInternetIdentity";
+import { useGetMyChannels } from "../hooks/useQueries";
+import { useDeleteChannel } from "../hooks/useQueries";
 
 export default function CreatorStudioPage() {
   const { identity } = useInternetIdentity();
   const { data: myChannels = [], isLoading } = useGetMyChannels();
   const [showEditor, setShowEditor] = useState(false);
-  const [editingChannel, setEditingChannel] = useState<Channel | undefined>(undefined);
+  const [editingChannel, setEditingChannel] = useState<Channel | undefined>(
+    undefined,
+  );
   const [deletingChannel, setDeletingChannel] = useState<Channel | null>(null);
   const [copiedField, setCopiedField] = useState<string | null>(null);
+  const [showWithdrawalDialog, setShowWithdrawalDialog] = useState(false);
   const deleteChannel = useDeleteChannel();
 
   if (!identity) {
-    return <AccessDeniedScreen message="Please log in to access the Creator Studio." />;
+    return (
+      <AccessDeniedScreen message="Please log in to access the Creator Studio." />
+    );
   }
 
   const handleCreateNew = () => {
@@ -50,36 +65,40 @@ export default function CreatorStudioPage() {
 
     try {
       await deleteChannel.mutateAsync(deletingChannel.id);
-      toast.success('Channel deleted successfully');
+      toast.success("Channel deleted successfully");
       setDeletingChannel(null);
     } catch (error: any) {
-      toast.error(error.message || 'Failed to delete channel');
+      toast.error(error.message || "Failed to delete channel");
     }
   };
 
-  const handleCopy = async (text: string, fieldName: string, channelId: string) => {
+  const handleCopy = async (
+    text: string,
+    fieldName: string,
+    channelId: string,
+  ) => {
     try {
       await navigator.clipboard.writeText(text);
       const fieldKey = `${channelId}-${fieldName}`;
       setCopiedField(fieldKey);
       toast.success(`${fieldName} copied to clipboard`);
       setTimeout(() => setCopiedField(null), 2000);
-    } catch (error) {
+    } catch (_error) {
       // Fallback for older browsers
-      const textArea = document.createElement('textarea');
+      const textArea = document.createElement("textarea");
       textArea.value = text;
-      textArea.style.position = 'fixed';
-      textArea.style.left = '-999999px';
+      textArea.style.position = "fixed";
+      textArea.style.left = "-999999px";
       document.body.appendChild(textArea);
       textArea.select();
       try {
-        document.execCommand('copy');
+        document.execCommand("copy");
         const fieldKey = `${channelId}-${fieldName}`;
         setCopiedField(fieldKey);
         toast.success(`${fieldName} copied to clipboard`);
         setTimeout(() => setCopiedField(null), 2000);
-      } catch (err) {
-        toast.error('Failed to copy to clipboard');
+      } catch (_err) {
+        toast.error("Failed to copy to clipboard");
       }
       document.body.removeChild(textArea);
     }
@@ -90,12 +109,23 @@ export default function CreatorStudioPage() {
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-3xl font-bold">Creator Studio</h1>
-          <p className="text-muted-foreground">Manage your channels and streams</p>
+          <p className="text-muted-foreground">
+            Manage your channels and streams
+          </p>
         </div>
-        <Button onClick={handleCreateNew}>
-          <Plus className="w-4 h-4 mr-2" />
-          Create Channel
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            onClick={() => setShowWithdrawalDialog(true)}
+          >
+            <DollarSign className="w-4 h-4 mr-2" />
+            Withdraw Earnings
+          </Button>
+          <Button onClick={handleCreateNew}>
+            <Plus className="w-4 h-4 mr-2" />
+            Create Channel
+          </Button>
+        </div>
       </div>
 
       {isLoading ? (
@@ -105,7 +135,9 @@ export default function CreatorStudioPage() {
       ) : myChannels.length === 0 ? (
         <Card>
           <CardContent className="py-16 text-center">
-            <p className="text-muted-foreground mb-4">You haven't created any channels yet.</p>
+            <p className="text-muted-foreground mb-4">
+              You haven't created any channels yet.
+            </p>
             <Button onClick={handleCreateNew}>
               <Plus className="w-4 h-4 mr-2" />
               Create Your First Channel
@@ -133,7 +165,9 @@ export default function CreatorStudioPage() {
                   <div className="flex flex-col">
                     <CardHeader>
                       <div className="flex items-start justify-between gap-2">
-                        <CardTitle className="line-clamp-1">{channel.title}</CardTitle>
+                        <CardTitle className="line-clamp-1">
+                          {channel.title}
+                        </CardTitle>
                         <Badge variant="secondary">{channel.category}</Badge>
                       </div>
                     </CardHeader>
@@ -145,10 +179,14 @@ export default function CreatorStudioPage() {
                       <Separator />
 
                       <div className="space-y-3">
-                        <h3 className="text-sm font-semibold">Live Streaming Connection Info</h3>
-                        
+                        <h3 className="text-sm font-semibold">
+                          Live Streaming Connection Info
+                        </h3>
+
                         <div className="space-y-2">
-                          <label className="text-xs font-medium text-muted-foreground">Ingest URL</label>
+                          <p className="text-xs font-medium text-muted-foreground">
+                            Ingest URL
+                          </p>
                           <div className="flex gap-2">
                             <div className="flex-1 px-3 py-2 bg-muted rounded-md text-sm font-mono break-all">
                               {channel.ingestUrl}
@@ -156,7 +194,13 @@ export default function CreatorStudioPage() {
                             <Button
                               variant="outline"
                               size="sm"
-                              onClick={() => handleCopy(channel.ingestUrl, 'Ingest URL', channel.id)}
+                              onClick={() =>
+                                handleCopy(
+                                  channel.ingestUrl,
+                                  "Ingest URL",
+                                  channel.id,
+                                )
+                              }
                               className="shrink-0"
                             >
                               {isIngestUrlCopied ? (
@@ -169,7 +213,9 @@ export default function CreatorStudioPage() {
                         </div>
 
                         <div className="space-y-2">
-                          <label className="text-xs font-medium text-muted-foreground">Stream Key</label>
+                          <p className="text-xs font-medium text-muted-foreground">
+                            Stream Key
+                          </p>
                           <div className="flex gap-2">
                             <div className="flex-1 px-3 py-2 bg-muted rounded-md text-sm font-mono break-all">
                               {channel.streamKey}
@@ -177,7 +223,13 @@ export default function CreatorStudioPage() {
                             <Button
                               variant="outline"
                               size="sm"
-                              onClick={() => handleCopy(channel.streamKey, 'Stream Key', channel.id)}
+                              onClick={() =>
+                                handleCopy(
+                                  channel.streamKey,
+                                  "Stream Key",
+                                  channel.id,
+                                )
+                              }
                               className="shrink-0"
                             >
                               {isStreamKeyCopied ? (
@@ -219,23 +271,40 @@ export default function CreatorStudioPage() {
         </div>
       )}
 
+      <div className="mt-12">
+        <h2 className="text-2xl font-bold mb-6">Earnings & Withdrawals</h2>
+        <WithdrawalRequestsList />
+      </div>
+
       <ChannelEditorDialog
         open={showEditor}
         onOpenChange={setShowEditor}
         channel={editingChannel}
       />
 
-      <AlertDialog open={!!deletingChannel} onOpenChange={(open) => !open && setDeletingChannel(null)}>
+      <WithdrawalRequestDialog
+        open={showWithdrawalDialog}
+        onOpenChange={setShowWithdrawalDialog}
+      />
+
+      <AlertDialog
+        open={!!deletingChannel}
+        onOpenChange={(open) => !open && setDeletingChannel(null)}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Channel</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete "{deletingChannel?.title}"? This action cannot be undone.
+              Are you sure you want to delete "{deletingChannel?.title}"? This
+              action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+            <AlertDialogAction
+              onClick={handleDelete}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
               Delete
             </AlertDialogAction>
           </AlertDialogFooter>

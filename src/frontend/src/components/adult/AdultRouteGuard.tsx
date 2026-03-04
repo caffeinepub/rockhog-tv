@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
-import { useAdultGate } from '../../hooks/useAdultGate';
-import AdultGateDialog from './AdultGateDialog';
-import { useNavigate } from '@tanstack/react-router';
+import { useNavigate } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { useAdultGate } from "../../hooks/useAdultGate";
+import AdultGateDialog from "./AdultGateDialog";
 
 interface AdultRouteGuardProps {
   children: React.ReactNode;
@@ -25,7 +25,7 @@ export default function AdultRouteGuard({ children }: AdultRouteGuardProps) {
 
   const handleCancel = () => {
     setShowDialog(false);
-    navigate({ to: '/' });
+    navigate({ to: "/" });
   };
 
   if (isLoading) {
@@ -33,9 +33,14 @@ export default function AdultRouteGuard({ children }: AdultRouteGuardProps) {
   }
 
   if (!hasConsent) {
-    return <AdultGateDialog open={showDialog} onConfirm={handleConfirm} onCancel={handleCancel} />;
+    return (
+      <AdultGateDialog
+        open={showDialog}
+        onConfirm={handleConfirm}
+        onCancel={handleCancel}
+      />
+    );
   }
 
   return <>{children}</>;
 }
-

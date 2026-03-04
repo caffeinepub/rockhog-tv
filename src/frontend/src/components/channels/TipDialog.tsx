@@ -1,19 +1,19 @@
-import { useState } from 'react';
-import { useGetCallerUserProfile, useSendTip } from '../../hooks/useQueries';
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import { Loader2, Coins } from 'lucide-react';
-import { toast } from 'sonner';
-import type { Principal } from '@icp-sdk/core/principal';
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import type { Principal } from "@icp-sdk/core/principal";
+import { Coins, Loader2 } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
+import { useGetCallerUserProfile, useSendTip } from "../../hooks/useQueries";
 
 interface TipDialogProps {
   open: boolean;
@@ -32,18 +32,18 @@ export default function TipDialog({
 }: TipDialogProps) {
   const { data: userProfile } = useGetCallerUserProfile();
   const sendTip = useSendTip();
-  const [amount, setAmount] = useState('');
-  const [message, setMessage] = useState('');
+  const [amount, setAmount] = useState("");
+  const [message, setMessage] = useState("");
 
   const balance = userProfile ? Number(userProfile.baconCashBalance) : 0;
-  const tipAmount = parseInt(amount) || 0;
+  const tipAmount = Number.parseInt(amount) || 0;
   const isValidAmount = tipAmount > 0 && tipAmount <= balance;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!isValidAmount) {
-      toast.error('Please enter a valid amount');
+      toast.error("Please enter a valid amount");
       return;
     }
 
@@ -55,12 +55,12 @@ export default function TipDialog({
         message: message.trim() || null,
       });
 
-      toast.success('Tip sent successfully!');
-      setAmount('');
-      setMessage('');
+      toast.success("Tip sent successfully!");
+      setAmount("");
+      setMessage("");
       onOpenChange(false);
     } catch (error: any) {
-      toast.error(error.message || 'Failed to send tip');
+      toast.error(error.message || "Failed to send tip");
     }
   };
 

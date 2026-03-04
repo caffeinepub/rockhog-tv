@@ -1,25 +1,43 @@
-import { useInternetIdentity } from '../hooks/useInternetIdentity';
-import { usePaymentHistory, useGetCallerUserProfile } from '../hooks/useQueries';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Loader2, ArrowDownLeft, ArrowUpRight, LogIn, Coins } from 'lucide-react';
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  ArrowDownLeft,
+  ArrowUpRight,
+  Coins,
+  Loader2,
+  LogIn,
+} from "lucide-react";
+import { useInternetIdentity } from "../hooks/useInternetIdentity";
+import { usePaymentHistory } from "../hooks/useQueries";
 
 export default function PaymentHistoryPage() {
   const { identity, login, loginStatus } = useInternetIdentity();
-  const { data: userProfile } = useGetCallerUserProfile();
   const { received, sent, isLoading, error } = usePaymentHistory();
 
   const formatTimestamp = (timestamp: bigint) => {
     const date = new Date(Number(timestamp) / 1000000);
-    return new Intl.DateTimeFormat('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
+    return new Intl.DateTimeFormat("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     }).format(date);
   };
 
@@ -33,16 +51,18 @@ export default function PaymentHistoryPage() {
         <Card className="max-w-md mx-auto text-center">
           <CardHeader>
             <CardTitle>Payment History</CardTitle>
-            <CardDescription>Log in to view your payment history</CardDescription>
+            <CardDescription>
+              Log in to view your payment history
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <Button
               onClick={login}
-              disabled={loginStatus === 'logging-in'}
+              disabled={loginStatus === "logging-in"}
               className="gap-2"
             >
               <LogIn className="w-4 h-4" />
-              {loginStatus === 'logging-in' ? 'Logging in...' : 'Log In'}
+              {loginStatus === "logging-in" ? "Logging in..." : "Log In"}
             </Button>
           </CardContent>
         </Card>
@@ -76,7 +96,9 @@ export default function PaymentHistoryPage() {
       <div className="max-w-6xl mx-auto">
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2">Payment History</h1>
-          <p className="text-muted-foreground">View your tips received and sent</p>
+          <p className="text-muted-foreground">
+            View your tips received and sent
+          </p>
         </div>
 
         <Tabs defaultValue="received" className="space-y-6">
@@ -139,7 +161,7 @@ export default function PaymentHistoryPage() {
                               </Badge>
                             </TableCell>
                             <TableCell className="max-w-xs truncate">
-                              {payment.message || '-'}
+                              {payment.message || "-"}
                             </TableCell>
                           </TableRow>
                         ))}
@@ -158,9 +180,7 @@ export default function PaymentHistoryPage() {
                   <ArrowUpRight className="w-5 h-5 text-blue-500" />
                   Tips Sent
                 </CardTitle>
-                <CardDescription>
-                  Tips you've sent to streamers
-                </CardDescription>
+                <CardDescription>Tips you've sent to streamers</CardDescription>
               </CardHeader>
               <CardContent>
                 {!sent || sent.length === 0 ? (
@@ -199,7 +219,7 @@ export default function PaymentHistoryPage() {
                               </Badge>
                             </TableCell>
                             <TableCell className="max-w-xs truncate">
-                              {payment.message || '-'}
+                              {payment.message || "-"}
                             </TableCell>
                           </TableRow>
                         ))}

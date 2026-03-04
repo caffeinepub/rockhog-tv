@@ -1,7 +1,7 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useActor } from './useActor';
-import { useInternetIdentity } from './useInternetIdentity';
-import type { Conversation } from '../backend';
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import type { Conversation } from "../backend";
+import { useActor } from "./useActor";
+import { useInternetIdentity } from "./useInternetIdentity";
 
 export function useGetConversations() {
   const { actor, isFetching } = useActor();
@@ -9,7 +9,7 @@ export function useGetConversations() {
   const isAuthenticated = !!identity;
 
   return useQuery<Conversation[]>({
-    queryKey: ['conversations'],
+    queryKey: ["conversations"],
     queryFn: async () => {
       if (!actor) return [];
       return actor.getConversations();
@@ -24,7 +24,7 @@ export function useGetConversation(conversationId: string) {
   const isAuthenticated = !!identity;
 
   return useQuery<Conversation | null>({
-    queryKey: ['conversation', conversationId],
+    queryKey: ["conversation", conversationId],
     queryFn: async () => {
       if (!actor) return null;
       return actor.getConversation(conversationId);
@@ -38,12 +38,15 @@ export function useStoreConversation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (data: { conversationId: string; conversation: Conversation }) => {
-      if (!actor) throw new Error('Actor not available');
+    mutationFn: async (data: {
+      conversationId: string;
+      conversation: Conversation;
+    }) => {
+      if (!actor) throw new Error("Actor not available");
       await actor.storeConversation(data.conversationId, data.conversation);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['conversations'] });
+      queryClient.invalidateQueries({ queryKey: ["conversations"] });
     },
   });
 }

@@ -1,14 +1,17 @@
-import { Loader2, MessageCircle } from 'lucide-react';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Button } from '@/components/ui/button';
-import { useGetChatRooms } from '../../hooks/useChatRooms';
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Loader2, MessageCircle } from "lucide-react";
+import { useGetChatRooms } from "../../hooks/useChatRooms";
 
 interface ChatRoomListProps {
   selectedRoomId: string | null;
   onSelectRoom: (roomId: string) => void;
 }
 
-export default function ChatRoomList({ selectedRoomId, onSelectRoom }: ChatRoomListProps) {
+export default function ChatRoomList({
+  selectedRoomId,
+  onSelectRoom,
+}: ChatRoomListProps) {
   const { data: rooms, isLoading, error } = useGetChatRooms();
 
   if (isLoading) {
@@ -38,15 +41,17 @@ export default function ChatRoomList({ selectedRoomId, onSelectRoom }: ChatRoomL
   return (
     <ScrollArea className="h-full">
       <div className="p-4 space-y-2">
-        <h2 className="text-lg font-semibold mb-4 text-chat-room-text">Chat Rooms</h2>
+        <h2 className="text-lg font-semibold mb-4 text-chat-room-text">
+          Chat Rooms
+        </h2>
         {rooms.map(([roomId, roomName]) => (
           <Button
             key={roomId}
-            variant={selectedRoomId === roomId ? 'default' : 'ghost'}
+            variant={selectedRoomId === roomId ? "default" : "ghost"}
             className={`w-full justify-start gap-2 ${
               selectedRoomId === roomId
-                ? 'bg-chat-room-accent text-white hover:bg-chat-room-accent/90'
-                : 'hover:bg-chat-room-message/50'
+                ? "bg-chat-room-accent text-white hover:bg-chat-room-accent/90"
+                : "hover:bg-chat-room-message/50"
             }`}
             onClick={() => onSelectRoom(roomId)}
           >

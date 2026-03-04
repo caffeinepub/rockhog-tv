@@ -1,7 +1,7 @@
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Button } from '@/components/ui/button';
-import { MessageSquare, Loader2 } from 'lucide-react';
-import type { Conversation } from '../../backend';
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Loader2, MessageSquare } from "lucide-react";
+import type { Conversation } from "../../backend";
 
 interface ConversationListProps {
   conversations: Conversation[];
@@ -41,14 +41,15 @@ export default function ConversationList({
       <div className="p-2 space-y-1">
         {conversations.map((conversation) => {
           const isActive = conversation.id === currentConversationId;
-          const firstUserMessage = conversation.messages.find(m => !m.isAI);
-          const preview = firstUserMessage?.text || 'New conversation';
-          const truncatedPreview = preview.length > 60 ? preview.slice(0, 60) + '...' : preview;
-          
+          const firstUserMessage = conversation.messages.find((m) => !m.isAI);
+          const preview = firstUserMessage?.text || "New conversation";
+          const truncatedPreview =
+            preview.length > 60 ? `${preview.slice(0, 60)}...` : preview;
+
           return (
             <Button
               key={conversation.id}
-              variant={isActive ? 'secondary' : 'ghost'}
+              variant={isActive ? "secondary" : "ghost"}
               className="w-full justify-start text-left h-auto py-3 px-3"
               onClick={() => onSelectConversation(conversation)}
             >

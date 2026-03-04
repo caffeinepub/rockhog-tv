@@ -1,7 +1,7 @@
-import { useGetCallerUserProfile, useGetBalance } from '../../hooks/useQueries';
-import { useNavigate } from '@tanstack/react-router';
-import { Button } from '@/components/ui/button';
-import { Coins } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "@tanstack/react-router";
+import { Coins } from "lucide-react";
+import { useGetBalance, useGetCallerUserProfile } from "../../hooks/useQueries";
 
 export default function AccountSummary() {
   const navigate = useNavigate();
@@ -15,13 +15,14 @@ export default function AccountSummary() {
       <div className="text-right hidden sm:block">
         <div className="text-sm font-medium">{profile.name}</div>
         <div className="text-xs text-muted-foreground">
-          {balance !== undefined ? Number(balance).toLocaleString() : '0'} Bacon Cash
+          {balance !== undefined ? Number(balance).toLocaleString() : "0"} Bacon
+          Cash
         </div>
       </div>
       <Button
         variant="outline"
         size="sm"
-        onClick={() => navigate({ to: '/buy-bacon-cash' })}
+        onClick={() => navigate({ to: "/buy-bacon-cash" })}
         className="gap-2"
       >
         <Coins className="w-4 h-4" />
@@ -30,4 +31,3 @@ export default function AccountSummary() {
     </div>
   );
 }
-

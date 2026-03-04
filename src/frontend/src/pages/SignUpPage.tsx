@@ -1,21 +1,27 @@
-import { useInternetIdentity } from '../hooks/useInternetIdentity';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Link, useNavigate } from '@tanstack/react-router';
-import { UserPlus, CheckCircle2, Shield, User } from 'lucide-react';
-import { useEffect } from 'react';
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Link, useNavigate } from "@tanstack/react-router";
+import { CheckCircle2, Shield, User, UserPlus } from "lucide-react";
+import { useEffect } from "react";
+import { useInternetIdentity } from "../hooks/useInternetIdentity";
 
 export default function SignUpPage() {
   const { login, loginStatus, identity } = useInternetIdentity();
   const navigate = useNavigate();
   const isAuthenticated = !!identity;
-  const isLoggingIn = loginStatus === 'logging-in';
+  const isLoggingIn = loginStatus === "logging-in";
 
   // Redirect authenticated users to home after a brief moment
   useEffect(() => {
     if (isAuthenticated) {
       const timer = setTimeout(() => {
-        navigate({ to: '/' });
+        navigate({ to: "/" });
       }, 2000);
       return () => clearTimeout(timer);
     }
@@ -25,9 +31,9 @@ export default function SignUpPage() {
     try {
       await login();
     } catch (error: any) {
-      console.error('Sign up error:', error);
-      if (error.message === 'User is already authenticated') {
-        navigate({ to: '/' });
+      console.error("Sign up error:", error);
+      if (error.message === "User is already authenticated") {
+        navigate({ to: "/" });
       }
     }
   };
@@ -41,7 +47,9 @@ export default function SignUpPage() {
               <div className="mx-auto w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4">
                 <CheckCircle2 className="w-8 h-8 text-primary" />
               </div>
-              <CardTitle className="text-2xl">You're Already Signed In!</CardTitle>
+              <CardTitle className="text-2xl">
+                You're Already Signed In!
+              </CardTitle>
               <CardDescription className="text-base">
                 You're all set and ready to explore RockHog TV.
               </CardDescription>
@@ -77,7 +85,9 @@ export default function SignUpPage() {
               </div>
               <CardTitle>Secure Authentication</CardTitle>
               <CardDescription>
-                RockHog TV uses Internet Identity, a secure blockchain-based authentication system that protects your privacy and keeps your account safe.
+                RockHog TV uses Internet Identity, a secure blockchain-based
+                authentication system that protects your privacy and keeps your
+                account safe.
               </CardDescription>
             </CardHeader>
           </Card>
@@ -89,7 +99,9 @@ export default function SignUpPage() {
               </div>
               <CardTitle>Personalized Profile</CardTitle>
               <CardDescription>
-                After signing up, you'll be prompted to create your display name and set up your profile. This helps personalize your RockHog TV experience.
+                After signing up, you'll be prompted to create your display name
+                and set up your profile. This helps personalize your RockHog TV
+                experience.
               </CardDescription>
             </CardHeader>
           </Card>
@@ -99,7 +111,8 @@ export default function SignUpPage() {
           <CardHeader className="text-center">
             <CardTitle className="text-2xl">Ready to Get Started?</CardTitle>
             <CardDescription className="text-base">
-              Click the button below to create your Internet Identity account. The process is quick, secure, and completely free.
+              Click the button below to create your Internet Identity account.
+              The process is quick, secure, and completely free.
             </CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col items-center gap-4">
@@ -110,10 +123,10 @@ export default function SignUpPage() {
               className="gap-2 min-w-[200px]"
             >
               <UserPlus className="w-5 h-5" />
-              {isLoggingIn ? 'Creating Account...' : 'Sign Up Now'}
+              {isLoggingIn ? "Creating Account..." : "Sign Up Now"}
             </Button>
             <p className="text-sm text-muted-foreground">
-              Already have an account?{' '}
+              Already have an account?{" "}
               <Link to="/" className="text-primary hover:underline font-medium">
                 Log in instead
               </Link>

@@ -1,9 +1,25 @@
-import { AlertCircle } from 'lucide-react';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AlertCircle } from "lucide-react";
+import { useEffect, useRef } from "react";
 
 interface StreamEmbedProps {
   streamUrl: string;
   title: string;
+}
+
+function EmbedCodePlayer({ html }: { html: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (ref.current) {
+      ref.current.innerHTML = html;
+    }
+  }, [html]);
+  return (
+    <div
+      ref={ref}
+      className="aspect-video w-full rounded-lg overflow-hidden bg-black"
+    />
+  );
 }
 
 export default function StreamEmbed({ streamUrl, title }: StreamEmbedProps) {
@@ -19,24 +35,23 @@ export default function StreamEmbed({ streamUrl, title }: StreamEmbedProps) {
     );
   }
 
-  const isEmbedCode = streamUrl.includes('<iframe') || streamUrl.includes('<embed');
-  
+  const isEmbedCode =
+    streamUrl.includes("<iframe") || streamUrl.includes("<embed");
+
   if (isEmbedCode) {
-    return (
-      <div
-        className="aspect-video w-full rounded-lg overflow-hidden bg-black"
-        dangerouslySetInnerHTML={{ __html: streamUrl }}
-      />
-    );
+    return <EmbedCodePlayer html={streamUrl} />;
   }
 
-  const isYouTube = streamUrl.includes('youtube.com') || streamUrl.includes('youtu.be');
-  const isTwitch = streamUrl.includes('twitch.tv');
+  const isYouTube =
+    streamUrl.includes("youtube.com") || streamUrl.includes("youtu.be");
+  const isTwitch = streamUrl.includes("twitch.tv");
 
   let embedUrl = streamUrl;
 
   if (isYouTube) {
-    const videoId = streamUrl.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/)?.[1];
+    const videoId = streamUrl.match(
+      /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/,
+    )?.[1];
     if (videoId) {
       embedUrl = `https://www.youtube.com/embed/${videoId}`;
     }
@@ -59,4 +74,3 @@ export default function StreamEmbed({ streamUrl, title }: StreamEmbedProps) {
     </div>
   );
 }
-

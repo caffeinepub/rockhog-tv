@@ -1,11 +1,12 @@
-import { useNavigate } from '@tanstack/react-router';
+import { useNavigate } from "@tanstack/react-router";
 
 export default function BrandLogo() {
   const navigate = useNavigate();
 
   return (
     <button
-      onClick={() => navigate({ to: '/' })}
+      type="button"
+      onClick={() => navigate({ to: "/" })}
       className="flex items-center gap-3 hover:opacity-80 transition-opacity"
     >
       <img
@@ -19,4 +20,3 @@ export default function BrandLogo() {
     </button>
   );
 }
-

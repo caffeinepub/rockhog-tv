@@ -1,9 +1,9 @@
-import { useNavigate } from '@tanstack/react-router';
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import type { Channel } from '../../backend';
-import { Play } from 'lucide-react';
-import { getCategoryLabel } from '../../utils/category';
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
+import { useNavigate } from "@tanstack/react-router";
+import { Play } from "lucide-react";
+import type { Channel } from "../../backend";
+import { getCategoryLabel } from "../../utils/category";
 
 interface ChannelCardProps {
   channel: Channel;
@@ -15,7 +15,9 @@ export default function ChannelCard({ channel }: ChannelCardProps) {
   return (
     <Card
       className="group cursor-pointer overflow-hidden hover:ring-2 hover:ring-primary transition-all"
-      onClick={() => navigate({ to: '/stream/$streamId', params: { streamId: channel.id } })}
+      onClick={() =>
+        navigate({ to: "/stream/$streamId", params: { streamId: channel.id } })
+      }
     >
       <div className="relative aspect-video overflow-hidden bg-muted">
         <img
@@ -25,7 +27,10 @@ export default function ChannelCard({ channel }: ChannelCardProps) {
         />
         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
           <div className="w-16 h-16 rounded-full bg-primary/90 flex items-center justify-center">
-            <Play className="w-8 h-8 text-primary-foreground ml-1" fill="currentColor" />
+            <Play
+              className="w-8 h-8 text-primary-foreground ml-1"
+              fill="currentColor"
+            />
           </div>
         </div>
       </div>
@@ -36,7 +41,9 @@ export default function ChannelCard({ channel }: ChannelCardProps) {
             {getCategoryLabel(channel.category)}
           </Badge>
         </div>
-        <p className="text-sm text-muted-foreground line-clamp-2">{channel.description}</p>
+        <p className="text-sm text-muted-foreground line-clamp-2">
+          {channel.description}
+        </p>
       </CardContent>
     </Card>
   );

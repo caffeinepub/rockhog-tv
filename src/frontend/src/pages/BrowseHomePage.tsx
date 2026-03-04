@@ -1,10 +1,10 @@
-import { useGetAllChannels } from '../hooks/useQueries';
-import HeroBanner from '../components/branding/HeroBanner';
-import CategoryIcon from '../components/branding/CategoryIcon';
-import ChannelGrid from '../components/channels/ChannelGrid';
-import { useNavigate } from '@tanstack/react-router';
-import { Card, CardContent } from '@/components/ui/card';
-import { getAllCategories } from '../utils/category';
+import { Card, CardContent } from "@/components/ui/card";
+import { useNavigate } from "@tanstack/react-router";
+import CategoryIcon from "../components/branding/CategoryIcon";
+import HeroBanner from "../components/branding/HeroBanner";
+import ChannelGrid from "../components/channels/ChannelGrid";
+import { useGetAllChannels } from "../hooks/useQueries";
+import { getAllCategories } from "../utils/category";
 
 export default function BrowseHomePage() {
   const navigate = useNavigate();
@@ -24,10 +24,18 @@ export default function BrowseHomePage() {
             <Card
               key={category.value}
               className="cursor-pointer hover:ring-2 hover:ring-primary transition-all group"
-              onClick={() => navigate({ to: '/category/$categoryName', params: { categoryName: category.value } })}
+              onClick={() =>
+                navigate({
+                  to: "/category/$categoryId",
+                  params: { categoryId: category.value },
+                })
+              }
             >
               <CardContent className="p-6 flex flex-col items-center gap-3">
-                <CategoryIcon category={category.value} className="w-20 h-20 group-hover:scale-110 transition-transform" />
+                <CategoryIcon
+                  category={category.value}
+                  className="w-20 h-20 group-hover:scale-110 transition-transform"
+                />
                 <h3 className="font-semibold text-center">{category.label}</h3>
               </CardContent>
             </Card>

@@ -1,25 +1,28 @@
-import { useState, KeyboardEvent } from 'react';
-import { Textarea } from '@/components/ui/textarea';
-import { Button } from '@/components/ui/button';
-import { Send } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Send } from "lucide-react";
+import { type KeyboardEvent, useState } from "react";
 
 interface ChatInputProps {
   onSendMessage: (message: string) => void;
   disabled?: boolean;
 }
 
-export default function ChatInput({ onSendMessage, disabled = false }: ChatInputProps) {
-  const [message, setMessage] = useState('');
+export default function ChatInput({
+  onSendMessage,
+  disabled = false,
+}: ChatInputProps) {
+  const [message, setMessage] = useState("");
 
   const handleSubmit = () => {
     if (message.trim() && !disabled) {
       onSendMessage(message);
-      setMessage('');
+      setMessage("");
     }
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSubmit();
     }

@@ -1,15 +1,25 @@
-import { useQuery, useMutation, useQueryClient, useQueries } from '@tanstack/react-query';
-import { useActor } from './useActor';
-import { useInternetIdentity } from './useInternetIdentity';
-import type { Channel, BaconCashRequest, UserProfile, StreamerPayment } from '../backend';
-import { ExternalBlob } from '../backend';
-import type { Principal } from '@icp-sdk/core/principal';
+import type { Principal } from "@icp-sdk/core/principal";
+import {
+  useMutation,
+  useQueries,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
+import type {
+  BaconCashRequest,
+  Channel,
+  StreamerPayment,
+  UserProfile,
+} from "../backend";
+import type { ExternalBlob } from "../backend";
+import { useActor } from "./useActor";
+import { useInternetIdentity } from "./useInternetIdentity";
 
 export function useGetAllChannels() {
   const { actor, isFetching } = useActor();
 
   return useQuery<Channel[]>({
-    queryKey: ['channels'],
+    queryKey: ["channels"],
     queryFn: async () => {
       if (!actor) return [];
       return actor.getAllChannels();
@@ -22,7 +32,7 @@ export function useGetMyChannels() {
   const { actor, isFetching } = useActor();
 
   return useQuery<Channel[]>({
-    queryKey: ['myChannels'],
+    queryKey: ["myChannels"],
     queryFn: async () => {
       if (!actor) return [];
       return actor.getMyChannels();
@@ -35,7 +45,7 @@ export function useGetChannel(id: string) {
   const { actor, isFetching } = useActor();
 
   return useQuery<Channel | null>({
-    queryKey: ['channel', id],
+    queryKey: ["channel", id],
     queryFn: async () => {
       if (!actor) return null;
       return actor.getChannel(id);
@@ -59,7 +69,7 @@ export function useCreateChannel() {
       ingestUrl: string;
       streamKey: string;
     }) => {
-      if (!actor) throw new Error('Actor not available');
+      if (!actor) throw new Error("Actor not available");
       await actor.createChannel(
         data.id,
         data.title,
@@ -68,12 +78,12 @@ export function useCreateChannel() {
         data.thumbnail,
         data.streamUrl,
         data.ingestUrl,
-        data.streamKey
+        data.streamKey,
       );
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['channels'] });
-      queryClient.invalidateQueries({ queryKey: ['myChannels'] });
+      queryClient.invalidateQueries({ queryKey: ["channels"] });
+      queryClient.invalidateQueries({ queryKey: ["myChannels"] });
     },
   });
 }
@@ -93,7 +103,7 @@ export function useUpdateChannel() {
       ingestUrl: string;
       streamKey: string;
     }) => {
-      if (!actor) throw new Error('Actor not available');
+      if (!actor) throw new Error("Actor not available");
       await actor.updateChannel(
         data.id,
         data.title,
@@ -102,13 +112,13 @@ export function useUpdateChannel() {
         data.thumbnail,
         data.streamUrl,
         data.ingestUrl,
-        data.streamKey
+        data.streamKey,
       );
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ['channels'] });
-      queryClient.invalidateQueries({ queryKey: ['myChannels'] });
-      queryClient.invalidateQueries({ queryKey: ['channel', variables.id] });
+      queryClient.invalidateQueries({ queryKey: ["channels"] });
+      queryClient.invalidateQueries({ queryKey: ["myChannels"] });
+      queryClient.invalidateQueries({ queryKey: ["channel", variables.id] });
     },
   });
 }
@@ -119,12 +129,12 @@ export function useDeleteChannel() {
 
   return useMutation({
     mutationFn: async (id: string) => {
-      if (!actor) throw new Error('Actor not available');
+      if (!actor) throw new Error("Actor not available");
       await actor.deleteChannel(id);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['channels'] });
-      queryClient.invalidateQueries({ queryKey: ['myChannels'] });
+      queryClient.invalidateQueries({ queryKey: ["channels"] });
+      queryClient.invalidateQueries({ queryKey: ["myChannels"] });
     },
   });
 }
@@ -133,9 +143,9 @@ export function useGetCallerUserProfile() {
   const { actor, isFetching: actorFetching } = useActor();
 
   const query = useQuery<UserProfile | null>({
-    queryKey: ['currentUserProfile'],
+    queryKey: ["currentUserProfile"],
     queryFn: async () => {
-      if (!actor) throw new Error('Actor not available');
+      if (!actor) throw new Error("Actor not available");
       return actor.getCallerUserProfile();
     },
     enabled: !!actor && !actorFetching,
@@ -155,11 +165,11 @@ export function useSaveCallerUserProfile() {
 
   return useMutation({
     mutationFn: async (profile: UserProfile) => {
-      if (!actor) throw new Error('Actor not available');
+      if (!actor) throw new Error("Actor not available");
       await actor.saveCallerUserProfile(profile);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['currentUserProfile'] });
+      queryClient.invalidateQueries({ queryKey: ["currentUserProfile"] });
     },
   });
 }
@@ -168,7 +178,7 @@ export function useGetBalance() {
   const { actor, isFetching } = useActor();
 
   return useQuery<bigint>({
-    queryKey: ['baconCashBalance'],
+    queryKey: ["baconCashBalance"],
     queryFn: async () => {
       if (!actor) return BigInt(0);
       return actor.getBalance();
@@ -183,11 +193,11 @@ export function useRequestBaconCash() {
 
   return useMutation({
     mutationFn: async (amount: bigint) => {
-      if (!actor) throw new Error('Actor not available');
+      if (!actor) throw new Error("Actor not available");
       return actor.requestBaconCash(amount);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['myBaconCashRequests'] });
+      queryClient.invalidateQueries({ queryKey: ["myBaconCashRequests"] });
     },
   });
 }
@@ -196,7 +206,7 @@ export function useGetMyBaconCashRequests() {
   const { actor, isFetching } = useActor();
 
   return useQuery<BaconCashRequest[]>({
-    queryKey: ['myBaconCashRequests'],
+    queryKey: ["myBaconCashRequests"],
     queryFn: async () => {
       if (!actor) return [];
       return actor.getMyBaconCashRequests();
@@ -209,7 +219,7 @@ export function useGetAllBaconCashRequests() {
   const { actor, isFetching } = useActor();
 
   return useQuery<BaconCashRequest[]>({
-    queryKey: ['allBaconCashRequests'],
+    queryKey: ["allBaconCashRequests"],
     queryFn: async () => {
       if (!actor) return [];
       return actor.getAllBaconCashRequests();
@@ -224,12 +234,12 @@ export function useFulfillBaconCashRequest() {
 
   return useMutation({
     mutationFn: async (requestId: string) => {
-      if (!actor) throw new Error('Actor not available');
+      if (!actor) throw new Error("Actor not available");
       await actor.fulfillBaconCashRequest(requestId);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['allBaconCashRequests'] });
-      queryClient.invalidateQueries({ queryKey: ['baconCashBalance'] });
+      queryClient.invalidateQueries({ queryKey: ["allBaconCashRequests"] });
+      queryClient.invalidateQueries({ queryKey: ["baconCashBalance"] });
     },
   });
 }
@@ -246,17 +256,23 @@ export function useSendTip() {
       amount: bigint;
       message: string | null;
     }) => {
-      if (!actor) throw new Error('Actor not available');
-      if (!identity) throw new Error('Not authenticated');
+      if (!actor) throw new Error("Actor not available");
+      if (!identity) throw new Error("Not authenticated");
 
       const sender = identity.getPrincipal();
-      return actor.sendTip(sender, data.recipient, data.channelId, data.amount, data.message);
+      return actor.sendTip(
+        sender,
+        data.recipient,
+        data.channelId,
+        data.amount,
+        data.message,
+      );
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['currentUserProfile'] });
-      queryClient.invalidateQueries({ queryKey: ['baconCashBalance'] });
-      queryClient.invalidateQueries({ queryKey: ['paymentsReceived'] });
-      queryClient.invalidateQueries({ queryKey: ['paymentsSent'] });
+      queryClient.invalidateQueries({ queryKey: ["currentUserProfile"] });
+      queryClient.invalidateQueries({ queryKey: ["baconCashBalance"] });
+      queryClient.invalidateQueries({ queryKey: ["paymentsReceived"] });
+      queryClient.invalidateQueries({ queryKey: ["paymentsSent"] });
     },
   });
 }
@@ -268,7 +284,7 @@ export function usePaymentHistory() {
   const results = useQueries({
     queries: [
       {
-        queryKey: ['paymentsReceived'],
+        queryKey: ["paymentsReceived"],
         queryFn: async () => {
           if (!actor || !identity) return [];
           return actor.getPaymentsReceived(identity.getPrincipal());
@@ -276,7 +292,7 @@ export function usePaymentHistory() {
         enabled: !!actor && !isFetching && !!identity,
       },
       {
-        queryKey: ['paymentsSent'],
+        queryKey: ["paymentsSent"],
         queryFn: async () => {
           if (!actor || !identity) return [];
           return actor.getPaymentsSent(identity.getPrincipal());

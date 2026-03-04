@@ -1,6 +1,6 @@
-import ChannelCard from './ChannelCard';
-import type { Channel } from '../../backend';
-import { Loader2 } from 'lucide-react';
+import { Loader2 } from "lucide-react";
+import type { Channel } from "../../backend";
+import ChannelCard from "./ChannelCard";
 
 interface ChannelGridProps {
   channels: Channel[];
@@ -8,7 +8,11 @@ interface ChannelGridProps {
   emptyMessage?: string;
 }
 
-export default function ChannelGrid({ channels, isLoading, emptyMessage = 'No channels found' }: ChannelGridProps) {
+export default function ChannelGrid({
+  channels,
+  isLoading,
+  emptyMessage = "No channels found",
+}: ChannelGridProps) {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-16">
@@ -33,4 +37,3 @@ export default function ChannelGrid({ channels, isLoading, emptyMessage = 'No ch
     </div>
   );
 }
-

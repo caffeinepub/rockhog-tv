@@ -1,11 +1,27 @@
-import { useGetAllBaconCashRequests, useFulfillBaconCashRequest } from '../hooks/useQueries';
-import AdminOnly from '../components/admin/AdminOnly';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Loader2, CheckCircle } from 'lucide-react';
-import { toast } from 'sonner';
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { CheckCircle, Loader2 } from "lucide-react";
+import { toast } from "sonner";
+import AdminOnly from "../components/admin/AdminOnly";
+import {
+  useFulfillBaconCashRequest,
+  useGetAllBaconCashRequests,
+} from "../hooks/useQueries";
 
 export default function AdminBaconCashRequestsPage() {
   const { data: requests = [], isLoading } = useGetAllBaconCashRequests();
@@ -14,9 +30,9 @@ export default function AdminBaconCashRequestsPage() {
   const handleFulfill = async (requestId: string) => {
     try {
       await fulfillRequest.mutateAsync(requestId);
-      toast.success('Request fulfilled successfully!');
+      toast.success("Request fulfilled successfully!");
     } catch (error: any) {
-      toast.error(error.message || 'Failed to fulfill request');
+      toast.error(error.message || "Failed to fulfill request");
     }
   };
 
@@ -25,14 +41,16 @@ export default function AdminBaconCashRequestsPage() {
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2">Bacon Cash Requests</h1>
-          <p className="text-muted-foreground">Manage and fulfill user purchase requests</p>
+          <p className="text-muted-foreground">
+            Manage and fulfill user purchase requests
+          </p>
         </div>
 
         <Card>
           <CardHeader>
             <CardTitle>All Requests</CardTitle>
             <CardDescription>
-              {requests.filter(r => !r.completed).length} pending requests
+              {requests.filter((r) => !r.completed).length} pending requests
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -41,7 +59,9 @@ export default function AdminBaconCashRequestsPage() {
                 <Loader2 className="w-8 h-8 animate-spin text-primary" />
               </div>
             ) : requests.length === 0 ? (
-              <p className="text-center text-muted-foreground py-16">No requests yet</p>
+              <p className="text-center text-muted-foreground py-16">
+                No requests yet
+              </p>
             ) : (
               <div className="overflow-x-auto">
                 <Table>
@@ -67,8 +87,12 @@ export default function AdminBaconCashRequestsPage() {
                           {Number(request.amount).toLocaleString()}
                         </TableCell>
                         <TableCell>
-                          <Badge variant={request.completed ? 'default' : 'secondary'}>
-                            {request.completed ? 'Completed' : 'Pending'}
+                          <Badge
+                            variant={
+                              request.completed ? "default" : "secondary"
+                            }
+                          >
+                            {request.completed ? "Completed" : "Pending"}
                           </Badge>
                         </TableCell>
                         <TableCell>
@@ -95,4 +119,3 @@ export default function AdminBaconCashRequestsPage() {
     </AdminOnly>
   );
 }
-

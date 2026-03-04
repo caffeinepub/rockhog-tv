@@ -1,8 +1,14 @@
-import { Mail } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Mail } from "lucide-react";
 
 export default function ContactPage() {
-  const ownerEmail = 'brianlellis24@gmail.com';
+  const ownerEmail = "brianlellis24@gmail.com";
 
   return (
     <div className="container mx-auto px-4 py-12">
@@ -22,8 +28,12 @@ export default function ContactPage() {
           <CardContent className="space-y-6">
             <div className="text-center space-y-4">
               <div>
-                <h3 className="text-sm font-medium text-muted-foreground mb-2">Email Address</h3>
-                <p className="text-lg font-mono text-foreground">{ownerEmail}</p>
+                <h3 className="text-sm font-medium text-muted-foreground mb-2">
+                  Email Address
+                </h3>
+                <p className="text-lg font-mono text-foreground">
+                  {ownerEmail}
+                </p>
               </div>
               <div>
                 <a
@@ -37,7 +47,8 @@ export default function ContactPage() {
             </div>
             <div className="pt-6 border-t border-border/50">
               <p className="text-sm text-muted-foreground text-center">
-                Click the button above to open your email client, or copy the email address to reach out directly.
+                Click the button above to open your email client, or copy the
+                email address to reach out directly.
               </p>
             </div>
           </CardContent>

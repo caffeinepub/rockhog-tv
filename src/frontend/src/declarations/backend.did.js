@@ -55,6 +55,20 @@ export const Channel = IDL.Record({
   'streamUrl' : IDL.Text,
   'ingestUrl' : IDL.Text,
 });
+export const RequestStatus = IDL.Variant({
+  'pending' : IDL.Null,
+  'approved' : IDL.Null,
+  'rejected' : IDL.Null,
+});
+export const WithdrawalRequest = IDL.Record({
+  'id' : IDL.Text,
+  'status' : RequestStatus,
+  'requester' : IDL.Principal,
+  'creatorNotes' : IDL.Opt(IDL.Text),
+  'timestamp' : IDL.Int,
+  'amount' : IDL.Nat,
+  'adminNotes' : IDL.Opt(IDL.Text),
+});
 export const UserProfile = IDL.Record({
   'baconCashBalance' : IDL.Nat,
   'name' : IDL.Text,
@@ -128,6 +142,11 @@ export const idlService = IDL.Service({
     ),
   'createChatRoom' : IDL.Func([IDL.Text], [IDL.Text], []),
   'createDefaultChatRoom' : IDL.Func([], [IDL.Text], []),
+  'createWithdrawalRequest' : IDL.Func(
+      [IDL.Nat, IDL.Opt(IDL.Text)],
+      [IDL.Text],
+      [],
+    ),
   'deleteChannel' : IDL.Func([IDL.Text], [], []),
   'fulfillBaconCashRequest' : IDL.Func([IDL.Text], [], []),
   'getAllBaconCashRequests' : IDL.Func(
@@ -139,6 +158,11 @@ export const idlService = IDL.Service({
   'getAllChatRooms' : IDL.Func(
       [],
       [IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))],
+      ['query'],
+    ),
+  'getAllWithdrawalRequests' : IDL.Func(
+      [],
+      [IDL.Vec(WithdrawalRequest)],
       ['query'],
     ),
   'getBalance' : IDL.Func([], [IDL.Nat], ['query']),
@@ -159,6 +183,11 @@ export const idlService = IDL.Service({
       ['query'],
     ),
   'getMyChannels' : IDL.Func([], [IDL.Vec(Channel)], ['query']),
+  'getMyWithdrawalRequests' : IDL.Func(
+      [],
+      [IDL.Vec(WithdrawalRequest)],
+      ['query'],
+    ),
   'getPaymentsReceived' : IDL.Func(
       [IDL.Principal],
       [IDL.Vec(StreamerPayment)],
@@ -176,6 +205,11 @@ export const idlService = IDL.Service({
     ),
   'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
   'postMessage' : IDL.Func([IDL.Text, IDL.Text, IDL.Text], [], []),
+  'processWithdrawalRequest' : IDL.Func(
+      [IDL.Text, RequestStatus, IDL.Opt(IDL.Text)],
+      [],
+      [],
+    ),
   'requestBaconCash' : IDL.Func([IDL.Nat], [IDL.Text], []),
   'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
   'sendTip' : IDL.Func(
@@ -251,6 +285,20 @@ export const idlFactory = ({ IDL }) => {
     'streamUrl' : IDL.Text,
     'ingestUrl' : IDL.Text,
   });
+  const RequestStatus = IDL.Variant({
+    'pending' : IDL.Null,
+    'approved' : IDL.Null,
+    'rejected' : IDL.Null,
+  });
+  const WithdrawalRequest = IDL.Record({
+    'id' : IDL.Text,
+    'status' : RequestStatus,
+    'requester' : IDL.Principal,
+    'creatorNotes' : IDL.Opt(IDL.Text),
+    'timestamp' : IDL.Int,
+    'amount' : IDL.Nat,
+    'adminNotes' : IDL.Opt(IDL.Text),
+  });
   const UserProfile = IDL.Record({
     'baconCashBalance' : IDL.Nat,
     'name' : IDL.Text,
@@ -324,6 +372,11 @@ export const idlFactory = ({ IDL }) => {
       ),
     'createChatRoom' : IDL.Func([IDL.Text], [IDL.Text], []),
     'createDefaultChatRoom' : IDL.Func([], [IDL.Text], []),
+    'createWithdrawalRequest' : IDL.Func(
+        [IDL.Nat, IDL.Opt(IDL.Text)],
+        [IDL.Text],
+        [],
+      ),
     'deleteChannel' : IDL.Func([IDL.Text], [], []),
     'fulfillBaconCashRequest' : IDL.Func([IDL.Text], [], []),
     'getAllBaconCashRequests' : IDL.Func(
@@ -335,6 +388,11 @@ export const idlFactory = ({ IDL }) => {
     'getAllChatRooms' : IDL.Func(
         [],
         [IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))],
+        ['query'],
+      ),
+    'getAllWithdrawalRequests' : IDL.Func(
+        [],
+        [IDL.Vec(WithdrawalRequest)],
         ['query'],
       ),
     'getBalance' : IDL.Func([], [IDL.Nat], ['query']),
@@ -359,6 +417,11 @@ export const idlFactory = ({ IDL }) => {
         ['query'],
       ),
     'getMyChannels' : IDL.Func([], [IDL.Vec(Channel)], ['query']),
+    'getMyWithdrawalRequests' : IDL.Func(
+        [],
+        [IDL.Vec(WithdrawalRequest)],
+        ['query'],
+      ),
     'getPaymentsReceived' : IDL.Func(
         [IDL.Principal],
         [IDL.Vec(StreamerPayment)],
@@ -376,6 +439,11 @@ export const idlFactory = ({ IDL }) => {
       ),
     'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
     'postMessage' : IDL.Func([IDL.Text, IDL.Text, IDL.Text], [], []),
+    'processWithdrawalRequest' : IDL.Func(
+        [IDL.Text, RequestStatus, IDL.Opt(IDL.Text)],
+        [],
+        [],
+      ),
     'requestBaconCash' : IDL.Func([IDL.Nat], [IDL.Text], []),
     'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
     'sendTip' : IDL.Func(

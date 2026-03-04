@@ -1,6 +1,6 @@
-import { useInternetIdentity } from '../../hooks/useInternetIdentity';
-import { useIsAdmin } from '../../hooks/useAuthz';
-import type { Channel } from '../../backend';
+import type { Channel } from "../../backend";
+import { useIsAdmin } from "../../hooks/useAuthz";
+import { useInternetIdentity } from "../../hooks/useInternetIdentity";
 
 interface RoleGateProps {
   children: React.ReactNode;
@@ -8,7 +8,11 @@ interface RoleGateProps {
   requireAdmin?: boolean;
 }
 
-export default function RoleGate({ children, channel, requireAdmin = false }: RoleGateProps) {
+export default function RoleGate({
+  children,
+  channel,
+  requireAdmin = false,
+}: RoleGateProps) {
   const { identity } = useInternetIdentity();
   const { data: isAdmin, isLoading } = useIsAdmin();
 
@@ -25,7 +29,8 @@ export default function RoleGate({ children, channel, requireAdmin = false }: Ro
   }
 
   if (channel && !isAdmin) {
-    const isOwner = channel.owner.toString() === identity.getPrincipal().toString();
+    const isOwner =
+      channel.owner.toString() === identity.getPrincipal().toString();
     if (!isOwner) {
       return null;
     }
@@ -33,4 +38,3 @@ export default function RoleGate({ children, channel, requireAdmin = false }: Ro
 
   return <>{children}</>;
 }
-

@@ -1,12 +1,14 @@
-import { ShieldAlert } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { useNavigate } from '@tanstack/react-router';
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "@tanstack/react-router";
+import { ShieldAlert } from "lucide-react";
 
 interface AccessDeniedScreenProps {
   message?: string;
 }
 
-export default function AccessDeniedScreen({ message = 'You do not have permission to access this content.' }: AccessDeniedScreenProps) {
+export default function AccessDeniedScreen({
+  message = "You do not have permission to access this content.",
+}: AccessDeniedScreenProps) {
   const navigate = useNavigate();
 
   return (
@@ -21,11 +23,8 @@ export default function AccessDeniedScreen({ message = 'You do not have permissi
           <h1 className="text-2xl font-bold">Access Denied</h1>
           <p className="text-muted-foreground">{message}</p>
         </div>
-        <Button onClick={() => navigate({ to: '/' })}>
-          Return Home
-        </Button>
+        <Button onClick={() => navigate({ to: "/" })}>Return Home</Button>
       </div>
     </div>
   );
 }
-

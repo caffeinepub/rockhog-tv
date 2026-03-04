@@ -1,7 +1,7 @@
-import { useEffect, useRef } from 'react';
-import { Loader2 } from 'lucide-react';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { useGetChatRoomMessages } from '../../hooks/useChatRooms';
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Loader2 } from "lucide-react";
+import { useEffect, useRef } from "react";
+import { useGetChatRoomMessages } from "../../hooks/useChatRooms";
 
 interface MessageListProps {
   roomId: string;
@@ -14,7 +14,7 @@ export default function MessageList({ roomId }: MessageListProps) {
 
   useEffect(() => {
     if (messages && messages.length > prevMessageCountRef.current) {
-      scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
+      scrollRef.current?.scrollIntoView({ behavior: "smooth" });
       prevMessageCountRef.current = messages.length;
     }
   }, [messages]);
@@ -49,19 +49,26 @@ export default function MessageList({ roomId }: MessageListProps) {
         {messages.map((message) => {
           const timestamp = new Date(Number(message.timestamp) / 1000000);
           const timeString = timestamp.toLocaleTimeString([], {
-            hour: '2-digit',
-            minute: '2-digit',
+            hour: "2-digit",
+            minute: "2-digit",
           });
 
           return (
-            <div key={`${message.id}-${message.timestamp}`} className="chat-room-bubble">
+            <div
+              key={`${message.id}-${message.timestamp}`}
+              className="chat-room-bubble"
+            >
               <div className="flex items-baseline gap-2 mb-1">
                 <span className="font-semibold text-chat-room-accent text-sm">
                   {message.senderName}
                 </span>
-                <span className="text-xs text-muted-foreground">{timeString}</span>
+                <span className="text-xs text-muted-foreground">
+                  {timeString}
+                </span>
               </div>
-              <p className="text-chat-room-text break-words">{message.message}</p>
+              <p className="text-chat-room-text break-words">
+                {message.message}
+              </p>
             </div>
           );
         })}
