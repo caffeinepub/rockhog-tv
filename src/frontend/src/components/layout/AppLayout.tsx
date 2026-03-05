@@ -10,6 +10,7 @@ import ProfileSetupDialog from "../auth/ProfileSetupDialog";
 import BrandLogo from "../branding/BrandLogo";
 import ChatWidget from "../chat/ChatWidget";
 import PrimaryNav from "../navigation/PrimaryNav";
+import BaconCashWidget from "../payments/BaconCashWidget";
 import ShareButton from "../share/ShareButton";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
@@ -111,6 +112,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       </footer>
 
       {showProfileSetup && <ProfileSetupDialog />}
+      <BaconCashWidget />
       <ChatWidget />
     </div>
   );
